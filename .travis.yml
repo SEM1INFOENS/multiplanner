@@ -1,0 +1,11 @@
+language: python
+    python:
+      - "3.6.4"
+    services:
+      - mysql
+    env:
+      -DJANGO=2.1.2 DB=mysql
+    install:
+      - pip install -r requirements.txt
+    script:
+      - python manage.py test
