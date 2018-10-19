@@ -32,6 +32,9 @@ class TimeRange(models.Model):
     date = models.DateTimeField()
     duration = models.DurationField()
 
+    def __repr__(self):
+        return "Begins at {}, lasts {}".format(self.date, self.duration)
+
 
 class Group(models.Model):
     '''A group of people, inside which transactions can be made.
