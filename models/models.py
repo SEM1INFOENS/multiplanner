@@ -5,31 +5,39 @@ from django.utils import timezone
 from django.contrib.auth.models import User
 
 
-class User(models.Model):
-    name = models.CharField(label='Gamertag', max_length=16, widget=forms.TextInput(attrs={'placeholder': 'Gamertag', 'class': 'form-input'}))
-    password = models.CharField(widget=forms.PasswordInput)
-    email  = models.EmailField(max_length=200)
-
-class Group(models.Models):
-    name = models.CharField(max_length=200)
-    members = models.ManyToManyField(User)
-    
 def validate_amount(value):
+    '''Checks that the amount is positive and returns a float which has less than two
+    figures after the comma.'''
     try:
-        assert (value >= 0.0)
+        assert value >= 0.0
         return round(float(value), 2)
     except:
         raise ValidationError(
-            _('%(value)s is not a positive integer or a float  number'),
+            _('%(value)s is neither a positive integer nor a float  number'),
             params={'value': value},
         )
+
 def to_choices(l):
+    '''Checks that every element is a string and [x, y, ...] returns [(x, x), (y,y), ...] to be
+    in adequation with choices's requirements'''
     out = []
     for s in l:
         assert isinstance(s, str)
         out.append((a,a))
     return out
 
+
+class User(models.Model):
+    '''An user'''
+    name = models.CharField(max_length=50)
+    password = models.CharField(widget=forms.PasswordInput)
+    email = models.EmailField(max_length=200)
+
+class Group(models.Models):
+    '''A group'''
+    name = models.CharField(max_length=200)
+    members = models.ManyToManyField(User)
+    
 class Transaction(models.Models):
     motive = models.CharField(max_length=1000)
     date = models.DateTimeField()
@@ -58,6 +66,7 @@ class Friendships(models.Models):
     Friend =  models.ForeignKey(User, on_delete=models.CASCADE)
     status_possibilities = ['friends', 'invited']
     status = models.CharField(choices=to_choices(status_possibilities))
+
 
 class Meeting(models.Models):
 minimum_delay
