@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/SEM1INFOENS/multiplanner.svg?branch=master)](https://travis-ci.com/SEM1INFOENS/multiplanner)
+
 # multiplanner
 Here you could find a project dedicated to money and friendship.
 
