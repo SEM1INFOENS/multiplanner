@@ -10,7 +10,7 @@ class User(models.Model):
     password = models.CharField(widget=forms.PasswordInput)
     email  = models.EmailField(max_length=200)
 
-class Group(models.Models):
+class Group(models.Model):
     name = models.CharField(max_length=200)
     members = models.ManyToManyField(User)
     
@@ -30,7 +30,8 @@ def to_choices(l):
         out.append((a,a))
     return out
 
-class Transaction(models.Models):
+# is it possible to make the class Transaction abstaract ?
+class Transaction(models.Model):
     motive = models.CharField(max_length=1000)
     date = models.DateTimeField()
     expeditor = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -43,7 +44,7 @@ class Transaction_1toGroup(Transaction):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     
 
-class Event(models.Models):
+class Event(models.Model):
     date = models.DateTimeField()
     place = models.CharField(max_length=500, blank=True)
     #place spécification could be better: GPS coordonates...?
@@ -53,19 +54,17 @@ class Event(models.Models):
     invited = models.ManyToManyField(User)
 
 
-class Friendships(models.Models):
+class Friendships(models.Model):
     User =    models.ForeignKey(User, on_delete=models.CASCADE)
     Friend =  models.ForeignKey(User, on_delete=models.CASCADE)
     status_possibilities = ['friends', 'invited']
     status = models.CharField(choices=to_choices(status_possibilities))
 
-class Meeting(models.Models):
-minimum_delay
-maximum_delay
-duration
-possible_time_ranges
-
-The way constraints are implemented is still to be discussed.
+class Meeting(models.Model):
+    minimum_delay = models.DurationField()
+    maximum_delay = models.DurationField()
+    duration  = models.DurationField()
+    possible_time_ranges = 
 
 
 
