@@ -17,14 +17,20 @@ def validate_amount(value):
             params={'value': value},
         )
 
-def to_choices(l):
-    '''Checks that every element is a string and [x, y, ...] returns [(x, x), (y,y), ...] to be
-    in adequation with choices's requirements'''
-    out = []
-    for s in l:
-        assert isinstance(s, str)
-        out.append((s, s))
-    return out
+# def to_choices(l):
+#     '''Checks that every element is a string and [x, y, ...] returns [(x, x), (y,y), ...] to be
+#     in adequation with choices's requirements'''
+#     out = []
+#     for s in l:
+#         assert isinstance(s, str)
+#         out.append((s, s))
+#     return out
+
+
+class TimeRange(models.Model):
+    '''A time range is defined by its beginning and its duration.'''
+    date = models.DateTimeField()
+    duration = models.DurationField()
 
 
 class Group(models.Model):
@@ -34,7 +40,7 @@ class Group(models.Model):
     name = models.CharField(max_length=200)
     members = models.ManyToManyField(User)
 
-    
+
 class Transaction(models.Model):
     '''One person gives money to one or more members of a group.
 
@@ -52,35 +58,40 @@ class Event(models.Model):
     '''An event is created by a person, and has a group of person attending it.
     If the subsequent group is deleted (which should not happen unless the event is being deleted),
     the event is automatically deleted.
+    It has administrators (at least one). In the case where the last administrator is deleted,
+    all members become administrators.
     If the creator is deleted, the event remains and the creator is set to NULL.'''
     date = models.DateTimeField()
     place = models.CharField(max_length=500, blank=True)
     #place specification could be better: GPS coordonates...?
     creator = models.ForeignKey(User, on_delete=models.SET_NULL)
-    administrators = models.ManyToManyField(User) #at least one
+    administrators = models.ManyToManyField(User) #At least one
     attendees = models.ForeignKey(Group, on_delete=models.CASCADE)
     invited = models.ManyToManyField(User)
 
-    
-class Friendships(models.Model):
-    ''''''
-    User =    models.ForeignKey(User, on_delete=models.CASCADE)
-    Friend =  models.ForeignKey(User, on_delete=models.CASCADE)
-    status_possibilities = ['friends', 'invited']
-    status = models.CharField(choices=to_choices(status_possibilities))
 
-class TimeRange(models.Model):
-    date = models.DateTimeField()
-    duration = models.DurationField()    
-class Meeting(models.Model):
+class MeetingRules(models.Model):
+    '''A set of rules which creates events.
+    They are created by a person, set to NULL if this person should be deleted.
+    It has administrators (at least one). In the case where the last administrator is deleted,
+    all members become administrators.'''
     minimum_delay = models.DurationField()
     maximum_delay = models.DurationField()
-    duration  = models.DurationField()
+    duration = models.DurationField()
     possible_time_ranges = models.ManyToManyField(TimeRange)
     creator = models.ForeignKey(User, on_delete=SET_NULL)
-    administrators = models.ManyToManyField(User) #at least one
+    administrators = models.ManyToManyField(User)#at least one
 
 
-class Shared_account(models.Model):
+class Friendships(models.Model):
+    '''Friendships is an extension for Users which adds a list of friends and a list of invited
+    friends. It is symmetrical.'''
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    friend_list = models.ManyToManyField(User)
+    invited_list = models.ManyToManyField(User)
+    
+
+class SharedAccount(models.Model):
+    '''A shared account is for a group of people that pay together.'''
     name = models.CharField(max_length=200)
     members = models.ManyToManyField(User) #at least one
