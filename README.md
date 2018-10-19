@@ -19,9 +19,14 @@ Test installation with:
 ```bash
 pytest manage.py
 ```
+Make migrations:
+```bash
+python3 manage.py makemigrations
+python3 manage.py migrate
+```
 Launch the server using:
 ```bash
-python manage.py runserver
+python3 manage.py runserver
 ```
 The applicatioin will be available at `http://127.0.0.1:8000/ `.
 
