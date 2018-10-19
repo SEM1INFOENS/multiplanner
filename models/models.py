@@ -23,7 +23,7 @@ def to_choices(l):
     out = []
     for s in l:
         assert isinstance(s, str)
-        out.append((a, a))
+        out.append((s, s))
     return out
 
 
