@@ -42,7 +42,7 @@ The applicatioin will be available at `http://127.0.0.1:8000/ `.
     * user_merpissions
     * is_staff
     * ...
-* relasionships
+* relationships
   * Friendships
     * user
     * friend_list
