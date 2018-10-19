@@ -24,10 +24,10 @@ class Event(models.Model):
     date = models.DateTimeField()
     place = models.CharField(max_length=500, blank=True)
     #place specification could be better: GPS coordonates...?
-    creator = models.ForeignKey(User, on_delete=models.SET_NULL)
-    administrators = models.ManyToManyField(User)
+    creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    administrators = models.ManyToManyField(User, related_name='+')
     attendees = models.ForeignKey(Group, on_delete=models.CASCADE)
-    invited = models.ManyToManyField(User)
+    invited = models.ManyToManyField(User, related_name='+')
 
 
 class MeetingRules(models.Model):
@@ -39,5 +39,5 @@ class MeetingRules(models.Model):
     maximum_delay = models.DurationField()
     duration = models.DurationField()
     possible_time_ranges = models.ManyToManyField(TimeRange)
-    creator = models.ForeignKey(User, on_delete=models.SET_NULL)
-    administrators = models.ManyToManyField(User)
+    creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
+    administrators = models.ManyToManyField(User, related_name='+')
