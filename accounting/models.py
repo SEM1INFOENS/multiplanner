@@ -33,7 +33,7 @@ class Transaction(models.Model):
     '''
     motive = models.CharField(max_length=1000)
     date = models.DateTimeField()
-    expeditor = models.ForeignKey(User, on_delete=models.CASCADE)
+    payer = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.FloatField(validators=[validate_amount])
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
 
