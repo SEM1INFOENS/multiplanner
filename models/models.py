@@ -23,41 +23,49 @@ def to_choices(l):
     out = []
     for s in l:
         assert isinstance(s, str)
-        out.append((a,a))
+        out.append((a, a))
     return out
 
+
 class Group(models.Model):
-    '''A group'''
+    '''A group of people, inside which transactions can be made.
+    To make transactions in an event, people will make transactions in the subsequent group.
+    '''
     name = models.CharField(max_length=200)
     members = models.ManyToManyField(User)
+
     
-# is it possible to make the class Transaction abstaract ?
 class Transaction(models.Model):
+    '''One person gives money to one or more members of a group.
+
+    Be careful! If the expeditor of the transaction is deleted, the transaction they made as well.
+    If the group is deleted, the transactions in it are deleted as well.
+    '''
     motive = models.CharField(max_length=1000)
     date = models.DateTimeField()
     expeditor = models.ForeignKey(User, on_delete=models.CASCADE)
     amount = models.FloatField(validators=[validate_amount])
-
-class Transaction_1to1(Transaction):
-    beneficiaire = models.ForeignKey(User, on_delete=models.CASCADE)
-
-class Transaction_1toGroup(Transaction):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
-    
+
 
 class Event(models.Model):
+    '''An event is created by a person, and has a group of person attending it.
+    If the subsequent group is deleted (which should not happen unless the event is being deleted),
+    the event is automatically deleted.
+    If the creator is deleted, the event remains and the creator is set to NULL.'''
     date = models.DateTimeField()
     place = models.CharField(max_length=500, blank=True)
-    #place spécification could be better: GPS coordonates...?
-    creator = models.ForeignKey(User, on_delete=models.CASCADE)
+    #place specification could be better: GPS coordonates...?
+    creator = models.ForeignKey(User, on_delete=models.SET_NULL)
     administrators = models.ManyToManyField(User) #at least one
     attendees = models.ForeignKey(Group, on_delete=models.CASCADE)
     invited = models.ManyToManyField(User)
 
-
+    
 class Friendships(models.Model):
-    user =    models.ForeignKey(User, on_delete=models.CASCADE)
-    friend =  models.ForeignKey(User, on_delete=models.CASCADE)
+    ''''''
+    User =    models.ForeignKey(User, on_delete=models.CASCADE)
+    Friend =  models.ForeignKey(User, on_delete=models.CASCADE)
     status_possibilities = ['friends', 'invited']
     status = models.CharField(choices=to_choices(status_possibilities))
 
