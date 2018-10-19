@@ -65,7 +65,7 @@ class Event(models.Model):
     place = models.CharField(max_length=500, blank=True)
     #place specification could be better: GPS coordonates...?
     creator = models.ForeignKey(User, on_delete=models.SET_NULL)
-    administrators = models.ManyToManyField(User) #At least one
+    administrators = models.ManyToManyField(User) 
     attendees = models.ForeignKey(Group, on_delete=models.CASCADE)
     invited = models.ManyToManyField(User)
 
@@ -80,7 +80,7 @@ class MeetingRules(models.Model):
     duration = models.DurationField()
     possible_time_ranges = models.ManyToManyField(TimeRange)
     creator = models.ForeignKey(User, on_delete=SET_NULL)
-    administrators = models.ManyToManyField(User)#at least one
+    administrators = models.ManyToManyField(User)
 
 
 class Friendships(models.Model):
@@ -92,6 +92,7 @@ class Friendships(models.Model):
     
 
 class SharedAccount(models.Model):
-    '''A shared account is for a group of people that pay together.'''
+    '''A shared account is for a group of people that pay together.
+    A shared account is not needed unless there are two or more persons in it.'''
     name = models.CharField(max_length=200)
-    members = models.ManyToManyField(User) #at least one
+    members = models.ManyToManyField(User)
