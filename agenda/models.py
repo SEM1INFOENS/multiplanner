@@ -1,5 +1,8 @@
+'''Models for the agenda app'''
+
 from django.db import models
-from group.models import Group
+from django.contrib.auth.models import User
+from groups.models import Group
 
 
 class TimeRange(models.Model):
@@ -22,7 +25,7 @@ class Event(models.Model):
     place = models.CharField(max_length=500, blank=True)
     #place specification could be better: GPS coordonates...?
     creator = models.ForeignKey(User, on_delete=models.SET_NULL)
-    administrators = models.ManyToManyField(User) 
+    administrators = models.ManyToManyField(User)
     attendees = models.ForeignKey(Group, on_delete=models.CASCADE)
     invited = models.ManyToManyField(User)
 
@@ -36,6 +39,5 @@ class MeetingRules(models.Model):
     maximum_delay = models.DurationField()
     duration = models.DurationField()
     possible_time_ranges = models.ManyToManyField(TimeRange)
-    creator = models.ForeignKey(User, on_delete=SET_NULL)
+    creator = models.ForeignKey(User, on_delete=models.SET_NULL)
     administrators = models.ManyToManyField(User)
-

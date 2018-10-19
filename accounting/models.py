@@ -1,5 +1,9 @@
+'''Models of the accounting app'''
+
 from django.db import models
-from group.models import Group
+from django.forms import ValidationError
+from django.contrib.auth.models import User
+from groups.models import Group
 
 
 def validate_amount(value):
@@ -9,10 +13,7 @@ def validate_amount(value):
         assert value >= 0.0
         return round(float(value), 2)
     except:
-        raise ValidationError(
-            _('%(value)s is neither a positive integer nor a float  number'),
-            params={'value': value},
-        )
+        raise ValidationError('{} is neither a positive integer nor a float  number'.format(value))
 
 # def to_choices(l):
 #     '''Checks that every element is a string and [x, y, ...] returns [(x, x), (y,y), ...] to be
