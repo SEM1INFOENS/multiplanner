@@ -3,6 +3,8 @@
 from django.db import models
 from django.contrib.auth.models import User
 from groups.models import Group
+from accounting.models import Transaction
+from django.core.exceptions import ValidationError
 
 
 class TimeRange(models.Model):
@@ -28,7 +30,21 @@ class Event(models.Model):
     administrators = models.ManyToManyField(User, related_name='+')
     attendees = models.ForeignKey(Group, on_delete=models.CASCADE)
     invited = models.ManyToManyField(User, related_name='+')
-
+    
+class TransactionForEvent(Transaction):
+    '''A transaction that was made for a certain event
+    '''
+    def validate_TransacEvent(event):
+        try:
+            att = event.attendees.members.all()
+            ben = self.beneficiaries.all()
+            for b in ben:
+                assert (b in att)
+                return event
+        except:
+            raise ValidationError("some beneficiaries of a TransactionForEvent don't attend to the event")
+    event = models.ForeignKey(Event, on_delete=models.PROTECT,
+                             validators=[validate_TransacEvent])
 
 class MeetingRules(models.Model):
     '''A set of rules which creates events.

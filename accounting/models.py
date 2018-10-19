@@ -3,7 +3,6 @@
 from django.db import models
 from django.forms import ValidationError
 from django.contrib.auth.models import User
-from groups.models import Group
 
 
 def validate_amount(value):
@@ -35,9 +34,10 @@ class Transaction(models.Model):
     '''
     motive = models.CharField(max_length=1000)
     date = models.DateTimeField()
-    payer = models.ForeignKey(User, on_delete=models.CASCADE)
+    payer = models.ForeignKey(User, on_delete=models.PROTECT,
+                              related_name='%(class)s_payer') # to fix the 'reverse accessor' problem
     amount = models.FloatField(validators=[validate_amount])
-    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    beneficiaries = models.ManyToManyField(User)
 
 
 class SharedAccount(models.Model):

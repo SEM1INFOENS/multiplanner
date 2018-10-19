@@ -55,6 +55,9 @@ The applicatioin will be available at `http://127.0.0.1:8000/ `.
   * Group
     * name
     * members
+  * TreasactionForGroup
+    * _Transaction_
+    * group
 * accounting
   * SharedAccount
     * name
@@ -64,7 +67,7 @@ The applicatioin will be available at `http://127.0.0.1:8000/ `.
     * date
     * payer
     * amount
-    * group
+    * beneficiaries
 * agenda
   * TimeRange
     * date
@@ -75,6 +78,9 @@ The applicatioin will be available at `http://127.0.0.1:8000/ `.
     * creator
     * attendees
     * invited
+  * TransactionForEvent
+    * _Transaction_
+    * event
   * MeetingRules
     * minimum_delay
     * maximum_delay
