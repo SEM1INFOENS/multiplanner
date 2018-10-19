@@ -7,11 +7,13 @@ from groups.models import Group
 
 
 def validate_amount(value):
-    '''Checks that the amount is positive and returns a float which has less than two
+    '''Checks that the amount is positive and has less than two
     figures after the comma.'''
     try:
-        assert value >= 0.0
-        return round(float(value), 2)
+        value = float(value)
+        assert ( value >= 0. )
+        assert ( round(value, 2) == value )
+        return value
     except:
         raise ValidationError('{} is neither a positive integer nor a float  number'.format(value))
 
