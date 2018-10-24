@@ -36,6 +36,7 @@ The applicatioin will be available at `http://127.0.0.1:8000/ `.
 Requirements:
 - `django-extensions`
 - `pyparsing` and `pydot` or `pygraphviz`
+
 Uncomment the `grango_extensions` lines in [manage.py](manage.py) and [multiplanner/settings.py](multiplanner/settings.py) then
 
 Generate a `.dot` graph:
