@@ -9,11 +9,17 @@ class Group(models.Model):
     '''A group of people, inside which transactions can be made.
     To make transactions in an event, people will make transactions in the subsequent group.
     '''
-    name = models.CharField(max_length=200)
+    name = models.CharField(max_length=200, blank=True)
     members = models.ManyToManyField(User)
+    def __init__(self, members, *args,  **kwargs):
+        super(Group, self).__init__(*args, **kwargs)
+        self.save()
+        if members!=[] : self.members.add(*members)
+    def get_transaction_list(self):
+        return self.transactionforgroup_set.all()
 
     
-class TreasactionForGroup(Transaction):
+class TransactionForGroup(Transaction):
     '''A transaction that was made for a certain group
     '''
     def validate_TransacGroup(group):

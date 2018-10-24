@@ -3,6 +3,7 @@
 from django.db import models
 from django.forms import ValidationError
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 
 def validate_amount(value):
@@ -32,10 +33,15 @@ class Transaction(models.Model):
     Be careful! If the expeditor of the transaction is deleted, the transaction they made as well.
     If the group is deleted, the transactions in it are deleted as well.
     '''
-    motive = models.CharField(max_length=1000)
-    date = models.DateTimeField()
+    def __init__(self,beneficiaries, *args,  **kwargs):
+        super(Transaction, self).__init__(*args,  **kwargs)
+        self.save()
+        if beneficiaries!=[] : self.beneficiaries.add(*beneficiaries)
+    motive = models.CharField(max_length=1000, blank=True)
+    date = models.DateTimeField(default=timezone.now)
     payer = models.ForeignKey(User, on_delete=models.PROTECT,
-                              related_name='%(class)s_payer') # to fix the 'reverse accessor' problem
+                              related_name='%(class)s_payer')
+    # related_name used to fix the 'reverse accessor' problem
     amount = models.FloatField(validators=[validate_amount])
     beneficiaries = models.ManyToManyField(User)
 

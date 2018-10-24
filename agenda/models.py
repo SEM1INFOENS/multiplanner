@@ -30,6 +30,8 @@ class Event(models.Model):
     administrators = models.ManyToManyField(User, related_name='+')
     attendees = models.ForeignKey(Group, on_delete=models.CASCADE)
     invited = models.ManyToManyField(User, related_name='+')
+    def get_transaction_list(self):
+        return self.transactionforevent_get.all()
     
 class TransactionForEvent(Transaction):
     '''A transaction that was made for a certain event
