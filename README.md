@@ -57,6 +57,7 @@ python3 manage.py graph_models --pygraphviz -a -g -o architecture_graph_pygraphv
 * multiplanner
 * presentation
   * User <https://docs.djangoproject.com/fr/2.1/ref/contrib/auth/>
+    * username (mandatory)
     * first_name
     * last_name
     * email
