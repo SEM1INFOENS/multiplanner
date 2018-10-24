@@ -5,7 +5,7 @@ from django.contrib.auth.models import User
 from groups.models import *
 from django.db.models.query import QuerySet
 
-class GroupTestCase(TestCase):
+#class GroupTestCase(TestCase):
     #u=User.objects.get(username='alice')
     #u=User.objects.create_user(username='alice', email='alice@mail.com', password='alicepass')
     #u.save()
