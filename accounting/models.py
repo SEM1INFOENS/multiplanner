@@ -16,6 +16,7 @@ def validate_amount(value):
     except:
         raise ValidationError('{} is neither a positive integer nor a float  number'.format(value))
 
+
 # def to_choices(l):
 #     '''Checks that every element is a string and [x, y, ...] returns [(x, x), (y,y), ...] to be
 #     in adequation with choices's requirements'''
@@ -39,9 +40,20 @@ class Transaction(models.Model):
     amount = models.FloatField(validators=[validate_amount])
     beneficiaries = models.ManyToManyField(User)
 
+    def __repr__(self):
+    	'''Enables to display a Transaction in a convenient way'''
+    	return "motive : {}, date : {}, payer : {}, amount : {}, beneficiaries : {}".format(self.motive,
+    		self.date, self.payer, self.amount, self.beneficiaries)
+
+
+
 
 class SharedAccount(models.Model):
     '''A shared account is for a group of people that pay together.
     A shared account is not needed unless there are two or more persons in it.'''
     name = models.CharField(max_length=200)
     members = models.ManyToManyField(User)
+
+    def __repr__(self):
+    	'''Enables to display a SharedAccount in a convenient way'''
+    	return "name : {}, members : {}".format(self.name, self.members)
