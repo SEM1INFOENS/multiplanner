@@ -33,6 +33,11 @@ The applicatioin will be available at `http://127.0.0.1:8000/ `.
 
 ## Project architecture
 ### Generate architecture's graph
+Requirements:
+- `django-extensions`
+- `pyparsing` and `pydot` or `pygraphviz`
+Uncomment the `grango_extensions` lines in <manage.py> and <multiplanner/settings.py> then
+
 Generate a `.dot` graph:
 ```bash
 python3 manage.py graph_models -a > architecture_graph.dot
