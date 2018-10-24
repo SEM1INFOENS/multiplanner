@@ -11,8 +11,8 @@ def validate_amount(value):
     figures after the comma.'''
     try:
         value = float(value)
-        assert ( value >= 0. )
-        assert ( round(value, 2) == value )
+        assert value >= 0.
+        assert round(value, 2) == value
         return value
     except:
         raise ValidationError('{} is neither a positive integer nor a float  number'.format(value))
@@ -34,10 +34,6 @@ class Transaction(models.Model):
     Be careful! If the expeditor of the transaction is deleted, the transaction they made as well.
     If the group is deleted, the transactions in it are deleted as well.
     '''
-    def __init__(self,beneficiaries, *args,  **kwargs):
-        super(Transaction, self).__init__(*args,  **kwargs)
-        self.save()
-        if beneficiaries!=[] : self.beneficiaries.add(*beneficiaries)
     motive = models.CharField(max_length=1000, blank=True)
     date = models.DateTimeField(default=timezone.now)
     payer = models.ForeignKey(User, on_delete=models.PROTECT,
@@ -46,10 +42,17 @@ class Transaction(models.Model):
     amount = models.FloatField(validators=[validate_amount])
     beneficiaries = models.ManyToManyField(User)
 
+
+    def __init__(self, beneficiaries, *args, **kwargs):
+        super(Transaction, self).__init__(*args, **kwargs)
+        self.save()
+        if beneficiaries != []:
+            self.beneficiaries.add(*beneficiaries)
+
+
     def __repr__(self):
-    	'''Enables to display a Transaction in a convenient way'''
-    	return "motive : {}, date : {}, payer : {}, amount : {}, beneficiaries : {}".format(self.motive,
-    		self.date, self.payer, self.amount, self.beneficiaries)
+        '''Enables to display a Transaction in a convenient way'''
+        return "motive : {}, date : {}, payer : {}, amount : {}, beneficiaries : {}".format(self.motive, self.date, self.payer, self.amount, self.beneficiaries)
 
 
 
@@ -61,5 +64,5 @@ class SharedAccount(models.Model):
     members = models.ManyToManyField(User)
 
     def __repr__(self):
-    	'''Enables to display a SharedAccount in a convenient way'''
-    	return "name : {}, members : {}".format(self.name, self.members)
+        '''Enables to display a SharedAccount in a convenient way'''
+        return "name : {}, members : {}".format(self.name, self.members)
