@@ -11,6 +11,12 @@ class Friendships(models.Model):
     friend_list = models.ManyToManyField(User, related_name='+')
     invited_list = models.ManyToManyField(User, related_name='+')
 
+    def __repr__(self):
+        '''Enables to display a Friendships object in a convenient way'''
+        return "user : {}, friend_list : {}, invited_list : {}".format(self.user,
+            self.friend_list, self.invited_list)
+
+
 MARK_MIN = -10
 MARK_MAX = 10
 
@@ -21,3 +27,10 @@ class SecretMark(models.Model):
     mark = models.IntegerField(validators=
                                [MaxValueValidator(MARK_MIN),
                                 MinValueValidator(MARK_MAX)])
+
+
+    def __repr__(self):
+        '''Enables to display a SecretMark in a convenient way'''
+        return "user : {}, marked_user : {}, mark : {}".format(self.user,
+            self.marked_user, self.mark)
+
