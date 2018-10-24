@@ -42,13 +42,8 @@ class Transaction(models.Model):
     amount = models.FloatField(validators=[validate_amount])
     beneficiaries = models.ManyToManyField(User)
 
-
-    def __init__(self, beneficiaries, *args, **kwargs):
-        super(Transaction, self).__init__(*args, **kwargs)
-        self.save()
-        if beneficiaries != []:
-            self.beneficiaries.add(*beneficiaries)
-
+    def get_beneficiaries(self):
+        return self.beneficiaries.all()
 
     def __repr__(self):
         '''Enables to display a Transaction in a convenient way'''

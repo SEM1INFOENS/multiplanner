@@ -11,12 +11,11 @@ class Group(models.Model):
     '''
     name = models.CharField(max_length=200, blank=True)
     members = models.ManyToManyField(User)
-    def __init__(self, members, *args,  **kwargs):
-        super(Group, self).__init__(*args, **kwargs)
-        self.save()
-        if members!=[] : self.members.add(*members)
     def get_transaction_list(self):
         return self.transactionforgroup_set.all()
+    def __repr__(self):
+        '''Enables to display an Event in a convenient way'''
+        return "name : {}".format(self.name)
 
     
 class TransactionForGroup(Transaction):
@@ -24,7 +23,7 @@ class TransactionForGroup(Transaction):
     '''
     def validate_TransacGroup(group):
         try:
-            att = event.group.members.all()
+            att = group.members.all()
             ben = self.beneficiaries.all()
             for b in ben:
                 assert (b in att)
@@ -33,3 +32,6 @@ class TransactionForGroup(Transaction):
             raise ValidationError("some beneficiaries of a TransactionForGroup are not in the group")
     group = models.ForeignKey(Group, on_delete=models.PROTECT,
                               validators=[validate_TransacGroup])
+    def __repr__(self):
+        '''Enables to display a TransactionForGroup in a convenient way'''
+        return "{}, group : <{}>".format(super(TransactionForGroup, self).__repr__(), self.group.__repr__())

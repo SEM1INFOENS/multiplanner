@@ -25,7 +25,6 @@ class Event(models.Model):
     If the creator is deleted, the event remains and the creator is set to NULL.'''
     date = models.DateTimeField()
     place = models.CharField(max_length=500, blank=True)
-    #place specification could be better: GPS coordonates...?
     creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     administrators = models.ManyToManyField(User, related_name='+')
     attendees = models.ForeignKey(Group, on_delete=models.CASCADE)
