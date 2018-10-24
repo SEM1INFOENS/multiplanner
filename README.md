@@ -32,6 +32,22 @@ The applicatioin will be available at `http://127.0.0.1:8000/ `.
 
 
 ## Project architecture
+### Generate architecture's graph
+Generate a `.dot` graph:
+```bash
+python3 manage.py graph_models -a > architecture_graph.dot
+```
+Generate a `.png` image graph:
+```bash
+python3 manage.py graph_models --pydot -a -g -o architecture_graph_pydot.png
+```
+or:
+```bash
+python3 manage.py graph_models --pygraphviz -a -g -o architecture_graph_pygraphviz.png
+```
+
+
+### Description
 * multiplanner
 * presentation
   * User <https://docs.djangoproject.com/fr/2.1/ref/contrib/auth/>
