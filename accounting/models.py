@@ -46,11 +46,26 @@ class Transaction(models.Model):
         '''Returns all the beneficiaries of the transaction'''
         return self.beneficiaries.all()
 
+    def __init__(self, motivet, datet, payert, amountt, beneficiariest):
+        '''Creates a transaction'''
+        super().__init__()
+
+        self.motive = motivet
+        self.payer = payert
+        self.date = datet
+        self.amount = amountt
+
+        self.save()#this have to be after the initialisations of the other fields
+        #because else when saving they are set to NULL and this creates an error
+
+        for ben in beneficiariest:
+            self.beneficiaries.add(ben)
+
+
     def __repr__(self):
         '''Enables to display a Transaction in a convenient way'''
         return "motive : {}, date : {}, payer : {}, amount : {}, beneficiaries : {}" \
         .format(self.motive, self.date, self.payer, self.amount, self.beneficiaries)
-
 
 
 
@@ -59,6 +74,19 @@ class SharedAccount(models.Model):
     A shared account is not needed unless there are two or more persons in it.'''
     name = models.CharField(max_length=200)
     members = models.ManyToManyField(User)
+
+
+    def __init__(self, nameSA, membersSA):
+        '''nameSA is the name of the Shared Account, members SA is a list of User'''
+        super().__init__()
+        self.save()
+
+        self.name = nameSA
+
+        for mem in membersSA:
+            self.members.add(mem)
+
+
 
     def __repr__(self):
         '''Enables to display a SharedAccount in a convenient way'''
