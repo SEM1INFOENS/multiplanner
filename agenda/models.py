@@ -2,9 +2,9 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
 from groups.models import Group
 from accounting.models import Transaction
-from django.core.exceptions import ValidationError
 
 
 class TimeRange(models.Model):
@@ -29,23 +29,32 @@ class Event(models.Model):
     administrators = models.ManyToManyField(User, related_name='+')
     attendees = models.ForeignKey(Group, on_delete=models.CASCADE)
     invited = models.ManyToManyField(User, related_name='+')
+
     def get_transaction_list(self):
+        '''Give the list of the transactions in the event.'''
         return self.transactionforevent_get.all()
-    
+
+
 class TransactionForEvent(Transaction):
-    '''A transaction that was made for a certain event
-    '''
-    def validate_TransacEvent(event):
+    '''A transaction that was made for a certain event'''
+
+    def validate_transac_event(self, event):
+        '''Checks that all the beneficiaries of the transaction did attend the event.'''
         try:
             att = event.attendees.members.all()
             ben = self.beneficiaries.all()
-            for b in ben:
-                assert (b in att)
-                return event
+            for beneficiary in ben:
+                assert beneficiary in att
+            return event
+
         except:
-            raise ValidationError("some beneficiaries of a TransactionForEvent don't attend to the event")
-    event = models.ForeignKey(Event, on_delete=models.PROTECT,
-                             validators=[validate_TransacEvent])
+            message = "Some beneficiaries of a TransactionForEvent don't attend the event."
+            raise ValidationError(message)
+
+
+    event = models.ForeignKey(Event, on_delete=models.PROTECT, \
+        validators=[validate_transac_event])
+
 
 class MeetingRules(models.Model):
     '''A set of rules which creates events.
