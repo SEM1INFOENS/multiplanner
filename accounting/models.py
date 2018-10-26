@@ -43,11 +43,13 @@ class Transaction(models.Model):
     beneficiaries = models.ManyToManyField(User)
 
     def get_beneficiaries(self):
+        '''Returns all the beneficiaries of the transaction'''
         return self.beneficiaries.all()
 
     def __repr__(self):
         '''Enables to display a Transaction in a convenient way'''
-        return "motive : {}, date : {}, payer : {}, amount : {}, beneficiaries : {}".format(self.motive, self.date, self.payer, self.amount, self.beneficiaries)
+        return "motive : {}, date : {}, payer : {}, amount : {}, beneficiaries : {}" \
+        .format(self.motive, self.date, self.payer, self.amount, self.beneficiaries)
 
 
 
