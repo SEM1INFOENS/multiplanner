@@ -23,11 +23,11 @@ class TransactionForGroup(Transaction):
     '''
     def validate_TransacGroup(group):
         try:
-            att = group.members.all()
+            gp_members = group.members.all()
             ben = self.beneficiaries.all()
             for b in ben:
-                assert (b in att)
-                return group
+                assert (b in gp_members)
+            return group
         except:
             raise ValidationError("some beneficiaries of a TransactionForGroup are not in the group")
     group = models.ForeignKey(Group, on_delete=models.PROTECT,

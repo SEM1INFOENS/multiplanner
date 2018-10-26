@@ -13,7 +13,8 @@ class TimeRange(models.Model):
     duration = models.DurationField()
 
     def __repr__(self):
-        return "Begins at {}, lasts {}".format(self.date, self.duration)
+        #return "Begins at {}, lasts {}".format(self.date, self.duration)
+        return "Between {} and {} ( lasts {} )".format(self.date,(self.date+self.duration), self.duration)
 
 
 class Event(models.Model):
@@ -29,6 +30,7 @@ class Event(models.Model):
     administrators = models.ManyToManyField(User, related_name='+')
     attendees = models.ForeignKey(Group, on_delete=models.CASCADE)
     invited = models.ManyToManyField(User, related_name='+')
+    # why isattendees a group and invited a ManyToManyField...?
     def get_transaction_list(self):
         return self.transactionforevent_get.all()
     
