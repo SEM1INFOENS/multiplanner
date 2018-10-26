@@ -13,7 +13,7 @@ class Friendships(models.Model):
 
     def __repr__(self):
         '''Enables to display a Friendships object in a convenient way'''
-        return "user : {}, friend_list : {}, invited_list : {}".format(self.user,
+        return "user : {}, friend_list : {}, invited_list : {}".format(self.user, \
             self.friend_list, self.invited_list)
 
 
@@ -31,6 +31,5 @@ class SecretMark(models.Model):
 
     def __repr__(self):
         '''Enables to display a SecretMark in a convenient way'''
-        return "user : {}, marked_user : {}, mark : {}".format(self.user,
+        return "user : {}, marked_user : {}, mark : {}".format(self.user, \
             self.marked_user, self.mark)
-
