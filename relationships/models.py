@@ -23,7 +23,7 @@ MARK_MAX = 10
 class SecretMark(models.Model):
     '''Users can mark other users.'''
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    marked_user = models.ForeignKey(User, related_name='+', on_delete=models.CASCADE)
+    marked_user = models.ForeignKey(User, related_name='marked_user_set', on_delete=models.CASCADE)
     mark = models.IntegerField(validators=
                                [MaxValueValidator(MARK_MIN),
                                 MinValueValidator(MARK_MAX)])
