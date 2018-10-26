@@ -1,3 +1,5 @@
+''' Test set for the relationship app '''
+
 from django.test import TestCase
 from django.contrib.auth.models import User
 from relationships.models import *
@@ -26,9 +28,9 @@ class GroupTestCase(TestCase):
             print("\n-user %s\nmarks given:" %u.username)
             for m in u.secretmark_set.all():
                 print(" to %s: %i" %(m.marked_user.username, m.mark))
-                #assert (m.user==u)
+                assert (m.user==u)
 
             print("marks recived:")
             for m in u.marked_user_set.all():
                 print(" from %s: %i" %(m.user.username, m.mark))
-                #assert (m.marked_user==u)
+                assert (m.marked_user==u)
