@@ -32,8 +32,11 @@ class TransactionTestCase(TestCase):
         tango.username = 'tango'
         tango.save()
 
+        bravo = User(username='bravo')
+        bravo.save()
+
         now = timezone.now()
-        t = Transaction('this is a tango test', now, tango, 20, [tango])
+        transaction = Transaction.create_new(tango, 20, [tango, bravo], motive='testing', date=now)
 
     def test(self):
         assert True

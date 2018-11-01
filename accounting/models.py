@@ -46,20 +46,12 @@ class Transaction(models.Model):
         '''Returns all the beneficiaries of the transaction'''
         return self.beneficiaries.all()
 
-    def __init__(self, motivet, datet, payert, amountt, beneficiariest):
-        '''Creates a transaction'''
-        super().__init__()
-
-        self.motive = motivet
-        self.payer = payert
-        self.date = datet
-        self.amount = amountt
-
-        self.save()#this have to be after the initialisations of the other fields
-        #because else when saving they are set to NULL and this creates an error
-
-        for ben in beneficiariest:
-            self.beneficiaries.add(ben)
+    @classmethod
+    def create_new(cls, payer, amount, beneficiaries, motive='', date=timezone.now()):
+        transaction = cls(motive=motive, date=date, payer=payer, amount=amount)
+        transaction.save()
+        transaction.beneficiaries.add(*beneficiaries)
+        return transaction
 
 
     def __repr__(self):
