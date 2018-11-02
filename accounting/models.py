@@ -48,6 +48,7 @@ class Transaction(models.Model):
 
     @classmethod
     def create_new(cls, payer, amount, beneficiaries, motive='', date=timezone.now()):
+        '''Default method for creating transaction given a list of beneficiaries'''
         transaction = cls(motive=motive, date=date, payer=payer, amount=amount)
         transaction.save()
         transaction.beneficiaries.add(*beneficiaries)
