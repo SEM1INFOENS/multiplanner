@@ -1,9 +1,13 @@
 # Balance
 
 The Balance function returns the list of people and the amount they should pay (negative amount) or recieve (positive amount)
+
 A small problem might occur if there are three people a,b,c:
-	* a pays 1 euro for b and c
-	* b and c have each an amount of -0.333333333
+
+	** a pays 1 euro for b and c
+
+	** b and c have each an amount of -0.333333333
+
 This problem will be resolved between the people themselves (who will lose one centime)
 
 # Resolution
