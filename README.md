@@ -80,9 +80,7 @@ python3 manage.py graph_models --pygraphviz -a -g -o architecture_graph_pygraphv
   * Group
     * name
     * members
-  * TreasactionForGroup
-    * _Transaction_
-    * group
+    * transactions
 * accounting
   * SharedAccount
     * name
@@ -103,9 +101,7 @@ python3 manage.py graph_models --pygraphviz -a -g -o architecture_graph_pygraphv
     * creator
     * attendees
     * invited
-  * TransactionForEvent
-    * _Transaction_
-    * event
+    * transactions
   * MeetingRules
     * minimum_delay
     * maximum_delay
