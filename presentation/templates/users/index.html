@@ -1,3 +1,7 @@
+{%extends "base_template.html" %}
+
+{% block content %}
+
 <h2>Full list of users</h2>
 
 <ul>
@@ -5,3 +9,5 @@
       <li><a href="/users/{{ user.username }}/">{{ user.username }}</a></li>
   {% endfor %}
 </ul>
+
+{% endblock %}

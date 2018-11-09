@@ -12,9 +12,15 @@ class TimeRange(models.Model):
     date = models.DateTimeField()
     duration = models.DurationField()
 
+    def __init__(self, dateTR, durationTR):
+    	'''Creates a Time Range starting at dateTR with duration durationTR'''
+    	self.date = dateTR
+    	self.duration = durationTR
+
     def __repr__(self):
         #return "Begins at {}, lasts {}".format(self.date, self.duration)
-        return "Between {} and {} ( lasts {} )".format(self.date,(self.date+self.duration), self.duration)
+        return "Between {} and {} ( lasts {} )".format(self.date,(self.date+self.duration), \
+        	self.duration)
 
 
 class Event(models.Model):
@@ -37,6 +43,13 @@ class Event(models.Model):
     def get_transaction_list(self):
         '''Give the list of the transactions in the event.'''
         return self.transactionforevent_get.all()
+
+    def __repr__(self):
+    	'''Enables to display an event in a convenient way.'''
+
+    	return "date : {}, place : {}, creator : {}, administrators : {}, attendees : {}, \
+    	invited : {}, transactions : {}".format(self.date, self.place, self.creator, \
+    		self.administrators, self.attendees, self.invited, self.transactions)
 
 
 # class TransactionForEvent(Transaction):
@@ -71,3 +84,11 @@ class MeetingRules(models.Model):
     possible_time_ranges = models.ManyToManyField(TimeRange)
     creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     administrators = models.ManyToManyField(User, related_name='+')
+
+
+    def __repr__(self):
+    	'''Enables to display meeting rules in a convenient way.'''
+
+    	return "minimum_delay : {}, maximum_delay : {}, duration : {}, possible_time_ranges : {}, \
+    	creator : {}, administrators : {}".format(self.minimum_delay, self.maximum_delay, \
+    		self.duration, self.possible_time_ranges, self.creator, self.administrators)
