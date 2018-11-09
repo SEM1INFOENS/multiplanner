@@ -1,0 +1,7 @@
+<h2>List of {{username}}'s transactions</h2>
+
+<ul>
+  {% for transaction in transactions %}
+      <li>Amount: {{ transaction.amount }}, motive: {{transaction.motive}}</a></li>
+  {% endfor %}
+</ul>
