@@ -12,11 +12,10 @@ class TimeRange(models.Model):
     date = models.DateTimeField()
     duration = models.DurationField()
 
-    def __init__(self, dateTR, durationTR):
+    @classmethod
+    def create_new(cls, dateTR, durationTR):
         '''Creates a Time Range starting at dateTR with duration durationTR'''
-        super().__init__()
-        self.date = dateTR
-        self.duration = durationTR
+        tr = cls(date=dateTR, duration=durationTR)
 
     def __repr__(self):
         #return "Begins at {}, lasts {}".format(self.date, self.duration)

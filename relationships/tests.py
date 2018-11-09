@@ -22,15 +22,21 @@ class GroupTestCase(TestCase):
         m1.save()
         m2.save()
 
-    # def test_mark(self):
-    #     u_qs=User.objects.all()
-    #     for u in u_qs:
-    #         print("\n-user %s\nmarks given:" %u.username)
-    #         for m in u.secretmark_set.all():
-    #             print(" to %s: %i" %(m.marked_user.username, m.mark))
-    #             assert (m.user==u)
+    def test_mark(self):
+        u_qs=User.objects.all()
+        for u in u_qs:
+            print("\n-user %s\nmarks given:" %u.username)
 
-    #         print("marks recived:")
-    #         for m in u.marked_user_set.all():
-    #             print(" from %s: %i" %(m.user.username, m.mark))
-    #             assert (m.marked_user==u)
+            # print("test1")
+            # print(u.secretmark_set)
+            # print("test2")
+            # print(u.secretmark_set.all())
+
+            # for m in u.secretmark_set.all():
+            #     print(" to %s: %i" %(m.marked_user.username, m.mark))
+            #     assert (m.user==u)
+
+            # print("marks received:")
+            # for m in u.marked_user_set.all():
+            #     print(" from %s: %i" %(m.user.username, m.mark))
+            #     assert (m.marked_user==u)
