@@ -68,18 +68,13 @@ class SharedAccount(models.Model):
     name = models.CharField(max_length=200)
     members = models.ManyToManyField(User)
 
-
-    def __init__(self, nameSA, membersSA):
+    @classmethod
+    def create_new(cls, nameSA, membersSA):
         '''nameSA is the name of the Shared Account, members SA is a list of User'''
-        super().__init__()
-        self.save()
-
-        self.name = nameSA
-
-        for mem in membersSA:
-            self.members.add(mem)
-
-
+        sa = cls(name=nameSA)
+        sa.save()
+        sa.members.add(*membersSA)
+        return sa
 
     def __repr__(self):
         '''Enables to display a SharedAccount in a convenient way'''

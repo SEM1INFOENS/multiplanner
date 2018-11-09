@@ -16,7 +16,8 @@ class TimeRange(models.Model):
     def create_new(cls, dateTR, durationTR):
         '''Creates a Time Range starting at dateTR with duration durationTR'''
         tr = cls(date=dateTR, duration=durationTR)
-
+        return tr
+        
     def __repr__(self):
         #return "Begins at {}, lasts {}".format(self.date, self.duration)
         return "Between {} and {} ( lasts {} )".format(self.date, (self.date+self.duration), \
