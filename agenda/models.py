@@ -30,32 +30,34 @@ class Event(models.Model):
     administrators = models.ManyToManyField(User, related_name='+')
     attendees = models.ForeignKey(Group, on_delete=models.CASCADE)
     invited = models.ManyToManyField(User, related_name='+')
-    # why is attendees a group and invited a ManyToManyField...?
+    # why is attendees a group and invited a ManyToManyField...? Because attendees will do things
+    # together, it makes sense to consider them as a group.
+    transactions = models.ManyToManyField(Transaction)
 
     def get_transaction_list(self):
         '''Give the list of the transactions in the event.'''
         return self.transactionforevent_get.all()
 
 
-class TransactionForEvent(Transaction):
-    '''A transaction that was made for a certain event'''
+# class TransactionForEvent(Transaction):
+#     '''A transaction that was made for a certain event'''
 
-    def validate_transac_event(self, event):
-        '''Checks that all the beneficiaries of the transaction did attend the event.'''
-        try:
-            att = event.attendees.members.all()
-            ben = self.beneficiaries.all()
-            for beneficiary in ben:
-                assert beneficiary in att
-            return event
+#     def validate_transac_event(self, event):
+#         '''Checks that all the beneficiaries of the transaction did attend the event.'''
+#         try:
+#             att = event.attendees.members.all()
+#             ben = self.beneficiaries.all()
+#             for beneficiary in ben:
+#                 assert beneficiary in att
+#             return event
 
-        except:
-            message = "Some beneficiaries of a TransactionForEvent don't attend the event."
-            raise ValidationError(message)
+#         except:
+#             message = "Some beneficiaries of a TransactionForEvent don't attend the event."
+#             raise ValidationError(message)
 
 
-    event = models.ForeignKey(Event, on_delete=models.PROTECT, \
-        validators=[validate_transac_event])
+#     event = models.ForeignKey(Event, on_delete=models.PROTECT, \
+#         validators=[validate_transac_event])
 
 
 class MeetingRules(models.Model):
