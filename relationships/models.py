@@ -11,6 +11,15 @@ class Friendships(models.Model):
     friend_list = models.ManyToManyField(User, related_name='+')
     invited_list = models.ManyToManyField(User, related_name='+')
 
+    @classmethod
+    def create_new(cls, user, friend_list, invited_list):
+        '''Default method for creating an event'''
+        friendship = cls(user=user)
+        friendship.save()
+        friendship.friend_list.add(*friend_list)
+        friendship.invited_list.add(*invited_list)
+        return friendship
+
     def __repr__(self):
         '''Enables to display a Friendships object in a convenient way'''
         return "user : {}, friend_list : {}, invited_list : {}".format(self.user, \
@@ -28,6 +37,12 @@ class SecretMark(models.Model):
                                [MaxValueValidator(MARK_MIN),
                                 MinValueValidator(MARK_MAX)])
 
+
+    def __init__(self, user, marked_user, mark):
+        super().__init__()
+        self.user = user
+        self.marked_user = marked_user
+        self.mark = mark
 
     def __repr__(self):
         '''Enables to display a SecretMark in a convenient way'''

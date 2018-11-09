@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+#from django.core.exceptions import ValidationError
 from groups.models import Group
 from accounting.models import Transaction
 
@@ -13,14 +13,15 @@ class TimeRange(models.Model):
     duration = models.DurationField()
 
     def __init__(self, dateTR, durationTR):
-    	'''Creates a Time Range starting at dateTR with duration durationTR'''
-    	self.date = dateTR
-    	self.duration = durationTR
+        '''Creates a Time Range starting at dateTR with duration durationTR'''
+        super().__init__()
+        self.date = dateTR
+        self.duration = durationTR
 
     def __repr__(self):
         #return "Begins at {}, lasts {}".format(self.date, self.duration)
-        return "Between {} and {} ( lasts {} )".format(self.date,(self.date+self.duration), \
-        	self.duration)
+        return "Between {} and {} ( lasts {} )".format(self.date, (self.date+self.duration), \
+            self.duration)
 
 
 class Event(models.Model):
@@ -40,16 +41,27 @@ class Event(models.Model):
     # together, it makes sense to consider them as a group.
     transactions = models.ManyToManyField(Transaction)
 
+
+    @classmethod
+    def create_new(cls, date, place, creator, administrators, attendees, invited, transactions):
+        '''Default method for creating an event'''
+        event = cls(date=date, place=place, creator=creator, attendees=attendees)
+        event.save()
+        event.administrators.add(*administrators)
+        event.invited.add(*invited)
+        event.transactions.add(*transactions)
+        return event
+
     def get_transaction_list(self):
         '''Give the list of the transactions in the event.'''
         return self.transactionforevent_get.all()
 
     def __repr__(self):
-    	'''Enables to display an event in a convenient way.'''
+        '''Enables to display an event in a convenient way.'''
 
-    	return "date : {}, place : {}, creator : {}, administrators : {}, attendees : {}, \
-    	invited : {}, transactions : {}".format(self.date, self.place, self.creator, \
-    		self.administrators, self.attendees, self.invited, self.transactions)
+        return "date : {}, place : {}, creator : {}, administrators : {}, attendees : {}, \
+        invited : {}, transactions : {}".format(self.date, self.place, self.creator, \
+            self.administrators, self.attendees, self.invited, self.transactions)
 
 
 # class TransactionForEvent(Transaction):
@@ -85,10 +97,21 @@ class MeetingRules(models.Model):
     creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     administrators = models.ManyToManyField(User, related_name='+')
 
+    @classmethod
+    def create_new(cls, minimum_delay, maximum_delay, duration, possible_time_ranges, \
+        creator, administrators):
+        '''Default method for creating a set of meeting rules'''
+        meeting = cls(minimum_delay=minimum_delay, maximum_delay=maximum_delay, duration=duration, \
+            creator=creator)
+        meeting.save()
+        meeting.administrators.add(*administrators)
+        meeting.possible_time_ranges.add(*possible_time_ranges)
+        return meeting
+
 
     def __repr__(self):
-    	'''Enables to display meeting rules in a convenient way.'''
+        '''Enables to display meeting rules in a convenient way.'''
 
-    	return "minimum_delay : {}, maximum_delay : {}, duration : {}, possible_time_ranges : {}, \
-    	creator : {}, administrators : {}".format(self.minimum_delay, self.maximum_delay, \
-    		self.duration, self.possible_time_ranges, self.creator, self.administrators)
+        return "minimum_delay : {}, maximum_delay : {}, duration : {}, possible_time_ranges : {}, \
+        creator : {}, administrators : {}".format(self.minimum_delay, self.maximum_delay, \
+            self.duration, self.possible_time_ranges, self.creator, self.administrators)

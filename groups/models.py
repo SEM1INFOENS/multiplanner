@@ -2,7 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
-from django.core.exceptions import ValidationError
+#from django.core.exceptions import ValidationError
 from accounting.models import Transaction
 
 
@@ -13,6 +13,15 @@ class Group(models.Model):
     name = models.CharField(max_length=200, blank=True)
     members = models.ManyToManyField(User)
     transactions = models.ManyToManyField(Transaction)
+
+    @classmethod
+    def create_new(cls, name, members, transactions):
+        '''Default method for creating a group'''
+        group = cls(name=name)
+        group.save()
+        group.members.add(*members)
+        group.transactions.add(*transactions)
+        return group
 
     def get_transaction_list(self):
         '''Return the list of transactions of the group'''
