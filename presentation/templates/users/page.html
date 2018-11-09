@@ -1,3 +1,7 @@
+{%extends "base_template.html" %}
+
+{% block content %}
+
 <h2>List of {{username}}'s transactions</h2>
 
 <ul>
@@ -5,3 +9,5 @@
       <li>Amount: {{ transaction.amount }}, motive: {{transaction.motive}}</a></li>
   {% endfor %}
 </ul>
+
+{%endblock%}

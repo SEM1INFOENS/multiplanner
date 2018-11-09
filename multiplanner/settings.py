@@ -61,7 +61,7 @@ ROOT_URLCONF = 'multiplanner.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': ['multiplanner/common_static'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
