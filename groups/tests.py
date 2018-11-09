@@ -51,7 +51,7 @@ class GroupTestCase(TestCase):
         #def should_fail():
         #    try:
         #        # should fail because c is not in g1
-        #        t2.beneficiaries.set([a,b,c,])
+        #        t2.beneficiaries.add(*[a,b,c,])
         #        return False
         #    except ValidationError:
         #        return True

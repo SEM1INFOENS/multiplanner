@@ -22,7 +22,7 @@ class AgendaTestCase(TestCase):
 
         g = Group()
         g.save()
-        g.members.set([a,b,c,])
+        g.members.add(*[a,b,c])
 
         e1 = Event(
             date=timezone.now(),
@@ -31,8 +31,8 @@ class AgendaTestCase(TestCase):
             attendees=g,
         )
         e1.save()
-        e1.invited.set([a,b,c])
-        e1.administrators.set([a])
+        e1.invited.add(*[a,b,c])
+        e1.administrators.add(a)
         self.event_list=[e1]
 
     def test_event(self):
