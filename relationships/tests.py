@@ -17,8 +17,8 @@ class GroupTestCase(TestCase):
         c.save()
         self.users_list = [a,b,c,]
 
-        m1=SecretMark(user=a, marked_user=b, mark=10)
-        m2=SecretMark(user=b, marked_user=c, mark=9)
+        m1=SecretMark(a, b, 10)
+        m2=SecretMark(b, c, 9)
         m1.save()
         m2.save()
 
