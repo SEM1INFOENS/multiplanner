@@ -38,11 +38,11 @@ class SecretMark(models.Model):
                                 MinValueValidator(MARK_MAX)])
 
 
-    def __init__(self, user, marked_user, mark):
-        super().__init__()
-        self.user = user
-        self.marked_user = marked_user
-        self.mark = mark
+    # def __init__(self, user, marked_user, mark):
+    #     super().__init__()
+    #     self.user = user
+    #     self.marked_user = marked_user
+    #     self.mark = mark
 
     def __repr__(self):
         '''Enables to display a SecretMark in a convenient way'''
