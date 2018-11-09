@@ -17,7 +17,7 @@ pip install -r requirements.txt
 ```
 Test installation with:
 ```bash
-pytest manage.py
+python3 manage.py test
 ```
 Make migrations:
 ```bash
@@ -29,6 +29,8 @@ Launch the server using:
 python3 manage.py runserver
 ```
 The applicatioin will be available at `http://127.0.0.1:8000/ `.
+
+For now, you can see list of users at `http://127.0.0.1:8000/users`, with links to user's transactions.
 
 
 ## Project architecture
