@@ -19,8 +19,9 @@ class Group(models.Model):
         return self.transactionforgroup_set.all()
 
     def __repr__(self):
-        '''Enables to display an Event in a convenient way'''
-        return "name : {}".format(self.name)
+        '''Enables to display a group in a convenient way'''
+        return "name : {}, members : {}, transactions : {}".\
+        format(self.name, self.members, self.transactions)
 
 
 # class TransactionForGroup(Transaction):

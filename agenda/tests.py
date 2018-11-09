@@ -13,7 +13,7 @@ class AgendaTestCase(TestCase):
     event_list=[]
     
     def setUp(self):
-        #two ways to create users (one does'nt need .save() ):
+        #two ways to create users (one doesn't need .save() ):
         a = User.objects.create_user(username='alice')
         b = User.objects.create_user(username='bob')
         c = User(username='carllotta')
