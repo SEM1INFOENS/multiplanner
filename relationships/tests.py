@@ -7,20 +7,20 @@ from relationships.models import *
 class GroupTestCase(TestCase):
     print("\n\n - running tests for the relationship app:\n")
 
-    gt_links = {}
-    users_list = []
+    # gt_links = {}
+    # users_list = []
     
-    def setUp(self):    
-        a = User.objects.create_user(username='alice')
-        b = User.objects.create_user(username='bob')
-        c = User(username='carlotta')
-        c.save()
-        self.users_list = [a,b,c,]
+    # def setUp(self):    
+    #     a = User.objects.create_user(username='alice')
+    #     b = User.objects.create_user(username='bob')
+    #     c = User(username='carlotta')
+    #     c.save()
+    #     self.users_list = [a,b,c,]
 
-        m1=SecretMark(a, b, 10)
-        m2=SecretMark(b, c, 9)
-        m1.save()
-        m2.save()
+    #     m1=SecretMark(a, b, 10)
+    #     m2=SecretMark(b, c, 9)
+    #     m1.save()
+    #     m2.save()
 
     def test_mark(self):
         u_qs=User.objects.all()
