@@ -7,6 +7,9 @@ from groups.models import Group
 from accounting.models import Transaction
 from relationships.models import SecretMark
 
+from treasuremap.fields import LatLongField
+
+
 class TimeRange(models.Model):
     '''A time range is defined by its beginning and its duration.'''
     date = models.DateTimeField()
@@ -31,11 +34,13 @@ class Event(models.Model):
     It has administrators (at least one). In the case where the last administrator is deleted,
     all members become administrators.
     If the creator is deleted, the event remains and the creator is set to NULL.'''
-    date = models.DateTimeField()
-    place = models.CharField(max_length=500, blank=True)
+    date = models.DateField()
+    time = models.TimeField()
+    place = LatLongField(blank=True)
+    #place = models.CharField(max_length=500, blank=True)
     creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     administrators = models.ManyToManyField(User, related_name='+')
-    attendees = models.ForeignKey(Group, on_delete=models.CASCADE)
+    attendees = models.ForeignKey(Group, blank=True, null=True, on_delete=models.CASCADE)
     invited = models.ManyToManyField(User, related_name='+')
     # why is attendees a group and invited a ManyToManyField...? Because attendees will do things
     # together, it makes sense to consider them as a group.
