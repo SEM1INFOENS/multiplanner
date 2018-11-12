@@ -1,5 +1,5 @@
 from django.http import HttpResponseRedirect
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from .forms import *
 
@@ -35,4 +35,16 @@ def agenda(request):
         'events_attendees': att,
     }
     return render(request, 'agenda.html', context)
+
+
+#we should check if the user is allowed to see the event
+@login_required
+def event(request, ide):
+    event = get_object_or_404(Event, pk=ide)
+    context = {
+        'event': event,
+        'invited' : event.invited.all(),
+        'admin' : event.administrators.all(),
+    }
+    return render(request, 'event.html', context)
 
