@@ -15,7 +15,7 @@ def create_event(request):
             # process the data in form.cleaned_data as required
             form.save()
             # redirect to a new URL:
-            return redirect('/users/')
+            return redirect('/agenda/')
             #return HttpResponseRedirect('/user/')
 
     # if a GET (or any other method) we'll create a blank form
@@ -23,3 +23,16 @@ def create_event(request):
         form = EventForm(creator_user=request.user)
 
     return render(request, 'new_event.html', {'form': form})
+
+
+@login_required
+def agenda(request):
+    user = request.user
+    att = Event.objects.filter(attendees__members=user)
+    context = {
+        'events_admin': Event.objects.filter(administrators=user),
+        'events_invited': Event.objects.filter(invited=user),
+        'events_attendees': att,
+    }
+    return render(request, 'agenda.html', context)
+

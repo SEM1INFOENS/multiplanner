@@ -6,5 +6,6 @@ from . import views
 
 urlpatterns = [
     path('new-event', views.create_event, name='new-event'),
+    path('', views.agenda, name='agenda'),
     #url(r'^admin/jsi18n', 'django.views.i18n.javascript_catalog'),
 ]

@@ -36,7 +36,7 @@ class Event(models.Model):
     If the creator is deleted, the event remains and the creator is set to NULL.'''
     date = models.DateField()
     time = models.TimeField()
-    place = LatLongField(blank=True)
+    place = LatLongField(blank=True, null=True)
     #place = models.CharField(max_length=500, blank=True)
     creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     administrators = models.ManyToManyField(User, related_name='+')
