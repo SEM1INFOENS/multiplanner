@@ -1,9 +1,10 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
-from .forms import *
+from django.core.exceptions import PermissionDenied
 from django.urls import reverse
+from .forms import *
 
 @login_required
 def create_event(request):
@@ -36,15 +37,22 @@ def create_event(request):
 @login_required
 def edit_event(request, ide):
     event = get_object_or_404(Event, pk=ide)
-    if request.method == "POST":
-        form = EventForm(request.POST, instance=event, creator_user=request.user)
-        if form.is_valid():
-            event = form.save(commit=False)
-            #event.save()
-            return redirect('event', ide=event.id)
+    user = request.user
+    if user in Event.objects.get(pk=ide).administrators.all() : #user can only edit events of which he is admin
+        if request.method == "POST":
+            form = EventForm(request.POST, instance=event, creator_user=request.user)
+            if form.is_valid():
+                event = form.save(commit=False)
+                #event.save() # here a new event is saved, but it is not what we want.. 
+
+                success = messages.success(request, 'Event successfully modified')                
+                return redirect('event', ide=event.id)
+        else:
+            form = EventForm(instance=event, creator_user=request.user)
+        return render(request, 'edit_event.html', {'form': form})
     else:
-        form = EventForm(instance=event, creator_user=request.user)
-    return render(request, 'edit_event.html', {'form': form})
+        raise PermissionDenied
+    
 
 @login_required
 def agenda(request):
@@ -62,10 +70,12 @@ def agenda(request):
 @login_required
 def event(request, ide):
     event = get_object_or_404(Event, pk=ide)
+    admin_l = event.administrators.all()
     context = {
         'event': event,
         'invited' : event.invited.all(),
-        'admin' : event.administrators.all(),
+        'admin' : admin_l,
+        'is_admin' : (request.user in admin_l), 
     }
     return render(request, 'event.html', context)
 

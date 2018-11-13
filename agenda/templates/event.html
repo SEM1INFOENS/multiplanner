@@ -4,20 +4,26 @@
 
 
 <form>
-  <input type="button" value="Back" onclick="history.back()">
+  <input type="button" value="Back" class="btn btn-primary" onclick="history.back()">
 </form>
 
-<a class="btn btn-default" href="{% url 'edit-event' ide=event.id %}">edit</a>
+{% if is_admin %}
+<a class="btn btn-primary" href="{% url 'edit-event' ide=event.id %}">edit</a>
 <!-- <span class="glyphicon glyphicon-pencil"></span> -->
+{% endif %}
 
 <h1>{{ event.name }}</h1>
-<b>{{ event.date }}</b>
-{% if event.time %}
-<b>{{ event.time }}</b>
-{% endif %}
+<p>
+  <b>{{ event.date }}</b>
+  {% if event.time %}
+  <b>{{ event.time }}</b>
+  {% endif %}
+</b>
 
 {% if event.description %}
 <p>{{ event.description }}</p>
+{% else %}
+<p><i>no description provided</i></p>
 {% endif %}
 
 
