@@ -1,6 +1,7 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from .forms import *
 
 
@@ -14,8 +15,15 @@ def create_event(request):
         if form.is_valid():
             # process the data in form.cleaned_data as required
             form.save()
+            success = messages.success(request, 'Event successfully created')
+            warn = messages.warning(request, 'Event created')
+            error = messages.error(request, 'Event created')
+            info = messages.info(request, 'Event created')
+            debug = messages.debug(request, 'Event created')
+            all_m = [success, warn, info, error]
+    
             # redirect to a new URL:
-            return redirect('/agenda/')
+            return redirect('/agenda/') #, {'messages': [success]})
             #return HttpResponseRedirect('/user/')
 
     # if a GET (or any other method) we'll create a blank form
