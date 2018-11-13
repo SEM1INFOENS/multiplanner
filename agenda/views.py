@@ -3,7 +3,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import *
-
+from django.urls import reverse
 
 @login_required
 def create_event(request):
@@ -14,24 +14,37 @@ def create_event(request):
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
-            form.save()
+            event = form.save()
             success = messages.success(request, 'Event successfully created')
             warn = messages.warning(request, 'Event created')
             error = messages.error(request, 'Event created')
             info = messages.info(request, 'Event created')
             debug = messages.debug(request, 'Event created')
             all_m = [success, warn, info, error]
-    
+
+            #url_e = reverse('event', event.id)
             # redirect to a new URL:
-            return redirect('/agenda/') #, {'messages': [success]})
+            return redirect('event', ide=event.id) #, {'messages': [success]})
             #return HttpResponseRedirect('/user/')
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = EventForm(creator_user=request.user)
 
-    return render(request, 'new_event.html', {'form': form})
+    return render(request, 'edit_event.html', {'form': form})
 
+@login_required
+def edit_event(request, ide):
+    event = get_object_or_404(Event, pk=ide)
+    if request.method == "POST":
+        form = EventForm(request.POST, instance=event, creator_user=request.user)
+        if form.is_valid():
+            event = form.save(commit=False)
+            #event.save()
+            return redirect('event', ide=event.id)
+    else:
+        form = EventForm(instance=event, creator_user=request.user)
+    return render(request, 'edit_event.html', {'form': form})
 
 @login_required
 def agenda(request):
