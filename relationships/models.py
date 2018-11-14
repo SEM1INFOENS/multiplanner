@@ -7,7 +7,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 class Friendships(models.Model):
     '''Friendships is an extension for Users which adds a list of friends and a list of invited
     friends. It is symmetrical.'''
-    user = models.ForeignKey(User, null=True, on_delete=models.CASCADE)
+    user = models.OneToOneField(User, primary_key=True, on_delete=models.CASCADE)
     friend_list = models.ManyToManyField(User, related_name='+')
     invited_list = models.ManyToManyField(User, related_name='+')
 
@@ -25,6 +25,9 @@ class Friendships(models.Model):
         return "user : {}, friend_list : {}, invited_list : {}".format(self.user, \
             self.friend_list, self.invited_list)
 
+    def __str__(self):
+        return str(self.user)
+    
 
 MARK_MIN = -10
 MARK_MAX = 10
