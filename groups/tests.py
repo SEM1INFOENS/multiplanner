@@ -81,3 +81,35 @@ class GroupTestCase(TestCase):
 
         for g in self.gt_links.keys():
             assert (g in groups)
+
+
+    def test_relationship_matrix(self):
+        a = User.objects.create_user(username='alice2')
+        b = User.objects.create_user(username='bob2')
+        c = User.objects.create_user(username='carlotta2')
+        self.users_list = [a, b, c]
+
+        g1 = Group(name='ab')
+        g1.save()
+        g1.members.add(*[a, b, c])
+
+        m1=SecretMark.create_new(a, b, 10)
+        m2=SecretMark.create_new(b, c, 9)
+        m1.save()
+        m2.save()
+
+        M = g1.relationship_matrix()
+        
+        print("Here comes the relationship matrix")
+        print(M)
+
+        assert( M == [[0, 10, 0], [0, 0, 9], [0, 0, 0]])
+
+        m3=SecretMark.create_new(b, a, -10)
+        m3.save()
+        m4=SecretMark.create_new(c, a, -10)
+        m4.save()
+
+        M = g1.relationship_matrix()
+        assert( M == [[0, 10, 0], [-10, 0, 9], [-10, 0, 0]])
+
