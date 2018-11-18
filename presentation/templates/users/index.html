@@ -1,13 +1,101 @@
 {%extends "base_template.html" %}
+{% load static %}
 
 {% block content %}
 
-<h2>Full list of users</h2>
+<div class="container-fluid" style="margin-top: 0.97rem">
 
-<ul>
-  {% for user in users %}
-      <li><a href="/users/{{ user.username }}/">{{ user.username }}</a></li>
-  {% endfor %}
-</ul>
+  <div class="row">
+    <div class="col">
+      <div class="mb-3">
+        <div class="row">
+          <div class="col-3" style="text-align: center">
+            <div>
+              <img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
+              <h3 class=""> {{username|default:"Me"}} </h3>
+            </div>
+          </div>
+          <div class="col">
+            <h3>Your current balance is:</h2>
+              <h2 class="text-success">{{balance|default:"+20€"}} <sub><a href=#>details</a></sub></h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-4">
+          <div class="card">
+            <div class="card-header" style="line-height: 40%"><a href=#>Friends</a></div>
+            <div class="card-body" style="text-align: center">
+              <div class="row">
+                <div class="col-4">
+                  <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
+                    <p><small>nickname</small></p>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
+                    <p><small>nickname</small></p>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
+                    <p><small>nickname</small></p>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-4">
+                  <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
+                    <p><small>nickname</small></p>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
+                    <p><small>nickname</small></p>
+                  </div>
+                </div>
+                <div class="col-4">
+                  <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
+                    <p><small>nickname</small></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="col-8">
+          <div class="card">
+
+            <div class="card-header" style="line-height: 40%">Latest news</div>
+            <div class="card-body">
+              <ul class="list-group list-group-flush">
+              {% for news in news_list %}
+              <li>{{news}}</li>
+              {% endfor %}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+
+  <div class="col-2">
+    Notifications
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">You are invited to <a href=#>this event</a></li>
+      <li class="list-group-item">Dapibus ac facilisis in</li>
+      <li class="list-group-item">Morbi leo risus</li>
+      <li class="list-group-item">Porta ac consectetur ac</li>
+      <li class="list-group-item">Vestibulum at eros</li>
+    </ul>
+  </div>
+</div>
+</div>
+
+</div>
 
 {% endblock %}

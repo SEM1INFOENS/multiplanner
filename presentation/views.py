@@ -6,7 +6,10 @@ from accounting.models import Transaction
 
 @login_required
 def index(request):
-    context = {'users': User.objects.all()}
+    user = request.user
+    last_transactions = Transaction.objects.filter(payer=user)
+    groups = user.group_set.all()
+    context = {'last_transactions': last_transactions, 'groups': groups}
     return render(request, 'users/index.html', context)
 
 @login_required
