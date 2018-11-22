@@ -28,7 +28,7 @@ Launch the server using:
 ```bash
 python3 manage.py runserver
 ```
-The applicatioin will be available at `http://127.0.0.1:8000/ `.
+The application will be available at `http://127.0.0.1:8000/ `.
 
 For now, you can see list of users at `http://127.0.0.1:8000/users`, with links to user's transactions.
 
