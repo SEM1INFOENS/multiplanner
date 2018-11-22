@@ -126,7 +126,7 @@ class ResolutionTestCase(TestCase) :
         for i in res:
             print (i[0], "should give", i[1], "an amount of", i[2])
 
-"""
+'''
 class ResolutionRandomTestCase(TestCase):
     people = []
     group = []
@@ -165,7 +165,17 @@ class ResolutionRandomTestCase(TestCase):
 
     def test_balance_in_fractions (self):
         members,balanceFrac = balance_in_fractions (self.group[0])
-        assert (sum(balanceFrac)==0)
+        assert (sum(balanceFrac) == 0)
         balanceFloat = balance_in_floats(self.group[0])
-        assert(balanceFloat[i] == balanceFrac[i] for i in range(len(balanceFloat)))
-"""
+        assert (sum(balanceFloat) == 0)
+
+    def test_resolution (self) :
+        balance = balance_in_floats(self.group[1])
+        res = resolution(self.group[0],balance)
+        cpt = 0
+        for i in balance:
+            if i<0:
+                cpt += 1
+        assert (len(res) == cpt)
+
+'''
