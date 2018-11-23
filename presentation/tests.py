@@ -1,6 +1,6 @@
 from django.test import TestCase
 from presentation.models import *
-from relationships.models import Friendships
+#from relationships.models import Friendships
 from .functions import *
 # Create your tests here.
 
