@@ -1,6 +1,6 @@
 import ctypes
 import numpy as np
-from agenda.models import events
+from agenda.models import Event
 
 def sitting_arrang(event,tables):
     sit = ctypes.CDLL("sitting.so")

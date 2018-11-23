@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.utils import timezone
 from agenda.models import *
 from groups.models import *
+from .sitting import *
 
 
 class AgendaTestCase(TestCase):
@@ -40,5 +41,14 @@ class AgendaTestCase(TestCase):
         for e in Event.objects.all():
             print(e.__repr__())
             assert (e in self.event_list)
-                       
 
+    #def test_sitting(self):
+    #    m1 = SecretMark.create_new(a, b, -10)
+    #    m1.save()
+
+    #    tables = [2,2]
+
+    #    assi = sitting_arrang(e1,tables)
+
+    #    assert(assi[0] == assi[2])
+    #    assert(assi[1] == assi[0])
