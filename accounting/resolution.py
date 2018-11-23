@@ -1,5 +1,6 @@
 import numpy as np
 import fractions
+import models
 
 def balance_in_fractions (group):
 	members = [m for m in group.members.all()]
@@ -9,16 +10,16 @@ def balance_in_fractions (group):
 
 	totalMoney = 0
 	for i in transactions :
-		# beneficiaries cannot be empty list 
+		# beneficiaries cannot be empty list
 		beneficiaries = [b for b in i.beneficiaries.all()]
-		
+
 		amount = fractions.Fraction(str(i.amount))
 		index = members.index(i.payer)
 		balance[index] += amount
 
 		for j in beneficiaries :
 			index = members.index(j)
-			balance[index] -= fractions.Fraction(amount,len(beneficiaries)) 
+			balance[index] -= fractions.Fraction(amount,len(beneficiaries))
 
 	return members,balance
 
@@ -35,28 +36,28 @@ def get_decimals (balance2) :
 def balance_in_floats (group):
 	members,balance1 = balance_in_fractions (group)
 	balance2 = []
-	
-	#transform the euros fractions into centimes floats 
-	for i in range(len(balance1)): 
+
+	#transform the euros fractions into centimes floats
+	for i in range(len(balance1)):
 		balance1[i] = float(100*balance1[i])
 		balance2.append(np.floor (balance1[i]))
-		
+
 	moneyPutOnTable = 0
 	moneyTakenFromTable = 0
-	
+
 	for i in balance2:
 		if i>0 :
 			moneyTakenFromTable += i
 		else :
 			moneyPutOnTable -= i
-	
+
 	if moneyTakenFromTable == moneyPutOnTable:
 		return balance2
 
 	exceedingMoneyOnTable = moneyPutOnTable - moneyTakenFromTable
 	decimals = get_decimals(balance1)
 
-	#redistributing the money 
+	#redistributing the money
 	#chosing the people who spent the most in the exceeding operation
 	i1 = np.argmax (decimals)
 	i2 = np.argmin (decimals)
@@ -71,23 +72,27 @@ def balance_in_floats (group):
 			balance2 [i2] +=1
 			decimals[i2] = 0
 			i2 = np.argmin (decimals)
-			
-	
+
+
 	#transform centimes to euros
 	for i in range(len(balance2)):
 		balance2[i] /=100
 	return balance2
 
-def resolution (group, balance) :
-	# resolution is a list of 3-tuple (a,b,amount)
-	# a has to pay b the amount 
+def resolution_tuple (group, balance) :
+	# resolution_tuple is a list of 3-tuple (a,b,amount)
+	# a has to pay b the amount
+	# takes the person 'a' that has to be payed the most,
+	# takes the person 'b' that has to pay the most;
+	# transacts all the money from  b to a. Repeats.
 	members = [m for m in group.members.all()]
 	resolution = []
 	while members :
 		maximum = np.argmax(balance)
 		minimum = np.argmin (balance)
 		amount = -balance[minimum]
-		assert (maximum != minimum)
+		if (maximum == minimum):
+			return resolution
 		if (balance[maximum] == amount):
 			balance.pop(maximum)
 			m = members.pop(maximum)
@@ -104,3 +109,19 @@ def resolution (group, balance) :
 			balance[maximum] -= amount
 
 	return resolution
+
+
+def resolution (group, balance):
+	# returns the transactions that has to be done after the resolution
+	tupRes = resolution_tuple(group, balance)
+	transaction =[]
+	for i in len(tupRes):
+		(a,b,amount) = tupRes[i]
+		t = Transaction.create_new(
+			motive = "Transaction " + str(i),
+			payer = a,
+			amount = amount,
+			beneficiaries = b
+		)
+		transaction.append(t)
+	return transaction
