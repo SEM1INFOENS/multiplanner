@@ -1,4 +1,3 @@
-git from relationships.models import Friendships
 from groups.models import Group
 from random import shuffle
 
