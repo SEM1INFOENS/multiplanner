@@ -33,9 +33,12 @@
 	    <i class="fa fa-search"></i>
 	  </button>
 	  <input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
-	</form>
-
-      </div>
+  </form>
+  
+  <form>
+    <a class="btn btn-primary" href="{% url 'users:logout'%}"> Logout</a>
+  </form>  
+  </div>
     </nav>
 
     <!-- To display messages, place a 'messages' in the context -->

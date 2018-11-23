@@ -30,7 +30,6 @@ def validate_amount(value):
 
 class Transaction(models.Model):
     '''One person gives money to one or more members of a group.
-
     Be careful! If the expeditor of the transaction is deleted, the transaction they made as well.
     If the group is deleted, the transactions in it are deleted as well.
     '''
