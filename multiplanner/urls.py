@@ -22,6 +22,7 @@ from . import views
 
 urlpatterns = [
     #path('', views.index),
+    path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('', include('presentation.urls', namespace='users')),
     path('admin/', admin.site.urls),
     path('agenda/', include('agenda.urls')),

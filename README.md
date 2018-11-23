@@ -30,10 +30,15 @@ python3 manage.py runserver
 ```
 The application will be available at `http://127.0.0.1:8000/ `.
 
-For now, you can see list of users at `http://127.0.0.1:8000/users`, with links to user's transactions.
+For now, you can see the main page at `http://127.0.0.1:8000/`.
 
 
 ## Project architecture
+
+### Project documentation
+
+Documentation is available at `http://127.0.0.1:8000/admin/doc`. To use this, you should install `docutils` module by `pip install docutils`.
+
 ### Generate architecture's graph
 Requirements:
 - `django-extensions`
