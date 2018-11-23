@@ -1,6 +1,6 @@
 import numpy as np
 import fractions
-import models
+from accounting.models import *
 
 def balance_in_fractions (group):
 	members = [m for m in group.members.all()]
