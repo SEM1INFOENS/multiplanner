@@ -6,6 +6,11 @@ from django.contrib.auth.models import User
 from groups.models import Group
 from accounting.models import Transaction
 
+
+from django_ical.views import ICalFeed
+from examplecom.models import Event
+
+
 class TimeRange(models.Model):
     '''A time range is defined by its beginning and its duration.'''
     date = models.DateTimeField()
@@ -38,7 +43,7 @@ class Event(models.Model):
     invited = models.ManyToManyField(User, related_name='+')
     # why is attendees a group and invited a ManyToManyField...? Because attendees will do things
     # together, it makes sense to consider them as a group.
-    transactions = models.ManyToManyField(Transaction)
+    # transactions = models.ManyToManyField(Transaction) => use the transactions field of the Group instead
 
 
     @classmethod
@@ -113,3 +118,26 @@ class MeetingRules(models.Model):
         return "minimum_delay : {}, maximum_delay : {}, duration : {}, possible_time_ranges : {}, \
         creator : {}, administrators : {}".format(self.minimum_delay, self.maximum_delay, \
             self.duration, self.possible_time_ranges, self.creator, self.administrators)
+
+
+
+class EventFeed(ICalFeed):
+    """
+    A simple event calender
+    """
+    product_id = '-//example.com//Example//EN'
+    timezone = 'UTC'
+    file_name = "event.ics"
+
+    def items(self):
+        return Event.objects.all().order_by('-start_datetime')
+
+    def item_title(self, item):
+        return item.title
+
+    def item_description(self, item):
+        return item.description
+
+    def item_start_datetime(self, item):
+        return item.start_datetime
+
