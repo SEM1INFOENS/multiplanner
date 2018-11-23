@@ -47,18 +47,18 @@ INSTALLED_APPS = [
     #'django_extensions',
 ]
 
-# app to select points on maps
-INSTALLED_APPS += [
-    'treasuremap',
-]
-TREASURE_MAP = {
-    'BACKEND': 'treasuremap.backends.google.GoogleMapBackend',
-    'API_KEY': 'Your API key',
-    'SIZE': (400, 600),
-    'MAP_OPTIONS': {
-        'zoom': 5
-    }
-}
+# # app to select points on maps
+# INSTALLED_APPS += [
+#     'treasuremap',
+# ]
+# TREASURE_MAP = {
+#     'BACKEND': 'treasuremap.backends.google.GoogleMapBackend',
+#     'API_KEY': 'Your API key',
+#     'SIZE': (400, 600),
+#     'MAP_OPTIONS': {
+#         'zoom': 5
+#     }
+# }
 
 # to display messages
 MESSAGE_STORAGE = 'django.contrib.messages.storage.session.SessionStorage'

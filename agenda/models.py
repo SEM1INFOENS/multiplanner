@@ -7,7 +7,7 @@ from groups.models import Group
 from accounting.models import Transaction
 from relationships.models import SecretMark
 
-from treasuremap.fields import LatLongField
+#from treasuremap.fields import LatLongField
 
 
 class TimeRange(models.Model):
@@ -38,8 +38,8 @@ class Event(models.Model):
     description = models.CharField(blank=True, max_length=1000)
     date = models.DateField()
     time = models.TimeField(blank=True, null=True)
-    place = LatLongField(blank=True, null=True)
-    #place = models.CharField(max_length=500, blank=True)
+    #place = LatLongField(blank=True, null=True)
+    place = models.CharField(max_length=500, blank=True)
     creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     administrators = models.ManyToManyField(User, related_name='+')
     attendees = models.ForeignKey(Group, blank=True, null=True, on_delete=models.CASCADE)

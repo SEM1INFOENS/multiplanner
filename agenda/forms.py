@@ -1,8 +1,8 @@
 from django import forms
 from django.forms import ModelForm, Form, modelform_factory
 from django.contrib.admin import widgets
-from treasuremap.forms import LatLongField
-from treasuremap import widgets as tmw
+#from treasuremap.forms import LatLongField
+#from treasuremap import widgets as tmw
 from .models import *
 
 # Form : to create a form
@@ -11,7 +11,7 @@ from .models import *
 
 class EventForm(ModelForm):
 
-    place = LatLongField()
+    #place = LatLongField()
     # I was not able to make it work...
     # https://github.com/silentsokolov/django-treasuremap
     
