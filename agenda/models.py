@@ -49,21 +49,20 @@ class Event(models.Model):
 
 
     @classmethod
-    def create_new(cls, date, place, creator, administrators, attendees, invited, transactions):
+    def create_new(cls, date, place, creator, administrators, attendees, invited):
         '''Default method for creating an event'''
         event = cls(date=date, place=place, creator=creator, attendees=attendees)
         event.save()
         event.administrators.add(*administrators)
         event.invited.add(*invited)
-        event.transactions.add(*transactions)
         return event
 
     def __repr__(self):
         '''Enables to display an event in a convenient way.'''
 
         return "date : {}, place : {}, creator : {}, administrators : {}, attendees : {}, \
-        invited : {}, transactions : {}".format(self.date, self.place, self.creator, \
-            self.administrators, self.attendees, self.invited, self.transactions)
+        invited : {}".format(self.date, self.place, self.creator, \
+            self.administrators, self.attendees, self.invited)
 
     def __str__(self):
         '''Function used when str(object) is called.
