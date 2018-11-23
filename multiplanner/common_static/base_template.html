@@ -7,17 +7,6 @@
 
     <!-- jQuery is required for treasuremap -->
     <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
-
-    <!-- Search Bar:
-	 to include a research bar, place:
-	 <div id="includedContent"></div>     -->
-    <script src="jquery.js"></script> 
-    <script> 
-      $(function(){
-      $("#includedContent").load("b.html"); 
-      });
-    </script> 
-    
     
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -36,6 +25,15 @@
 	    <a class="nav-link disabled" href="#">Events</a>
           </li>
         </ul>
+
+	<!-- Research Bar -->
+	<form id="searchform" action="{% url 'user-search' %}" method="get" accept-charset="utf-8">
+	  <button class="searchbutton" type="submit">
+	    <i class="fa fa-search"></i>
+	  </button>
+	  <input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
+	</form>
+
       </div>
     </nav>
 
