@@ -4,7 +4,7 @@ from django.test import TestCase
 from django.utils import timezone
 from agenda.models import *
 from groups.models import *
-from .sitting import *
+#from .sitting import sitting_arrang
 
 
 class AgendaTestCase(TestCase):
