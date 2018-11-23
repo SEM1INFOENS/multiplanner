@@ -20,7 +20,6 @@ class FunctionsTestCase(TestCase):
         n = 6
         
         print("six_random_friends")
-
         a = User.objects.create_user(username='a')
         b = User.objects.create_user(username='b')
         c = User.objects.create_user(username='c')
@@ -29,7 +28,6 @@ class FunctionsTestCase(TestCase):
         f = User.objects.create_user(username='f')
         g = User.objects.create_user(username='g')
         h = User.objects.create_user(username='h')
-
         L = [b, c, d, e, f, g, h]
         i = 0
         for u2 in L:
