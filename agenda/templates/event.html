@@ -14,17 +14,13 @@
 
 <h1>{{ event.name }}</h1>
 <p>
-  <b>{{ event.date }}</b>
-  {% if event.time %}
-  <b>{{ event.time }}</b>
-  {% endif %}
-</b>
+  <b>
+    {{ event.date }}<br>
+    {{ event.time|default:"" }}
+  </b>
+</p>
 
-{% if event.description %}
-<p>{{ event.description }}</p>
-{% else %}
-<p><i>no description provided</i></p>
-{% endif %}
+<p>{{ event.description|default:"<i>no description provided</i>" }}</p>
 
 
 
