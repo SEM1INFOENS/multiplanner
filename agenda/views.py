@@ -1,10 +1,16 @@
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
 from django.core.exceptions import PermissionDenied
+from django.template import Context, loader
 from django.urls import reverse
 from .forms import *
+
+
+from django.utils import timezone
+
+
 
 @login_required
 def create_event(request):
@@ -79,3 +85,68 @@ def event(request, ide):
     }
     return render(request, 'event.html', context)
 
+
+@login_required
+def generate_calendar(request):
+    # a = User.objects.create_user(username='bulbizarre3')
+    # b = User.objects.create_user(username='salazemece3')
+    # c = User.objects.create_user(username='carapueze3')
+
+    # g = Group()
+    # g.save()
+    # g.members.add(*[a,b,c])
+
+    # e1 = Event(
+    #     name='myawesomeevent',
+    #     date=timezone.now(),
+    #     time=timezone.now(),
+    #     place="ici",
+    #     creator=a,
+    #     attendees=g,
+    #     )
+    # e1.save()
+    # e1.invited.add(*[a,b,c])
+    # e1.administrators.add(a)
+
+    # e2 = Event(
+    #     name='myawesomeevent-thereturn',
+    #     date=timezone.now(),
+    #     time=timezone.now(),
+    #     place="bloublou",
+    #     creator=a,
+    #     attendees=g,
+    #     )
+    # e2.save()
+    # e2.invited.add(*[a,b,c])
+    # e2.administrators.add(a)
+
+    # e3 = Event(
+    #     name='myawesomeevent-thereturnagain',
+    #     date=timezone.now(),
+    #     time=timezone.now(),
+    #     place="là",
+    #     creator=a,
+    #     attendees=g,
+    #     )
+    # e3.save()
+    # e3.invited.add(*[a,b,c])
+    # e3.administrators.add(a)
+
+    # user = a
+
+
+    user = User.objects.get(username='zephyr')
+
+
+
+    list_event = Event.objects.filter(attendees__members=user)
+
+
+    response = HttpResponse(content_type='text/calendar')
+    response['Content-Disposition'] = 'attachment; filename="calendar.ics"'
+    t = loader.get_template('calendar.ics')
+    context = {
+       'list_event': list_event,
+    }
+    response.write(t.render(context))
+    return response

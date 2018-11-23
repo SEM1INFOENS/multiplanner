@@ -5,6 +5,7 @@ from django.conf.urls import url
 from . import views
 
 urlpatterns = [
+    path('calendar.ics', views.generate_calendar),
     path('new-event', views.create_event, name='new-event'),
     path('', views.agenda, name='agenda'),
     url(r'^event/(?P<ide>[0-9]+)$', views.event, name='event'),

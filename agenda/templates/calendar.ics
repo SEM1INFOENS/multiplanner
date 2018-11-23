@@ -1,0 +1,16 @@
+BEGIN:VCALENDAR
+VERSION:2.0
+PRODID:-//hacksw/handcal//NONSGML v1.0//EN
+
+{% for event in list_event %}
+BEGIN:VEVENT
+DTSTART:19970714T170000Z
+DTEND:19970715T035900Z
+SUMMARY:{{ event.name }}
+DESCRIPTION: {{ event.description }}
+LOCATION: {{ event.place }}
+URL:http://localhost:8000/agenda/calendar.ics
+END:VEVENT
+{% endfor %}
+
+END:VCALENDAR
