@@ -6,13 +6,20 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 
 from accounting.models import Transaction
+from .functions import *
 
 @login_required
 def index(request):
     user = request.user
     last_transactions = Transaction.objects.filter(payer=user)
     groups = user.group_set.all()
-    context = {'last_transactions': last_transactions, 'groups': groups}
+    context = {
+        'last_transactions': last_transactions,
+        'groups': groups,
+        'events_invitations' : events_invitations(user),
+        'events_will_attend' : events_will_attend(user),
+        'friendship_requests' : friendship_requests(user),
+    }
     return render(request, 'users/index.html', context)
 
 @login_required

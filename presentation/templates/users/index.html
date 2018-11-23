@@ -20,74 +20,105 @@
           </div>
           <div class="col">
             <h3>Your current balance is:</h2>
-              <h2 class="text-success">{{balance|default:"+20€"}} <sub><a href=#>details</a></sub></h2>
+<h2 class="text-success">{{balance|default:"+20€"}} <sub><a href=#>details</a></sub></h2>
+</div>
+</div>
+</div>
+
+<div class="row">
+  <div class="col-4">
+    <div class="card">
+      <div class="card-header" style="line-height: 40%"><a href=#>Friends</a></div>
+      <div class="card-body" style="text-align: center">
+        <div class="row">
+          <div class="col-4">
+            <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
+              <p><small>nickname</small></p>
+            </div>
+          </div>
+          <div class="col-4">
+            <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
+              <p><small>nickname</small></p>
+            </div>
+          </div>
+          <div class="col-4">
+            <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
+              <p><small>nickname</small></p>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-4">
+            <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
+              <p><small>nickname</small></p>
+            </div>
+          </div>
+          <div class="col-4">
+            <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
+              <p><small>nickname</small></p>
+            </div>
+          </div>
+          <div class="col-4">
+            <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
+              <p><small>nickname</small></p>
+            </div>
           </div>
         </div>
       </div>
 
-      <div class="row">
-        <div class="col-4">
-          <div class="card">
-            <div class="card-header" style="line-height: 40%"><a href=#>Friends</a></div>
-            <div class="card-body" style="text-align: center">
-              <div class="row">
-                <div class="col-4">
-                  <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
-                    <p><small>nickname</small></p>
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
-                    <p><small>nickname</small></p>
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
-                    <p><small>nickname</small></p>
-                  </div>
-                </div>
-              </div>
-              <div class="row">
-                <div class="col-4">
-                  <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
-                    <p><small>nickname</small></p>
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
-                    <p><small>nickname</small></p>
-                  </div>
-                </div>
-                <div class="col-4">
-                  <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
-                    <p><small>nickname</small></p>
-                  </div>
-                </div>
-              </div>
-            </div>
+    </div>
+  </div>
 
-          </div>
-        </div>
+  <div class="col-8">
+    <div class="card">
 
-        <div class="col-8">
-          <div class="card">
-
-            <div class="card-header" style="line-height: 40%">Latest news</div>
-            <div class="card-body">
-              <ul class="list-group list-group-flush">
-              {% for news in news_list %}
-              <li>{{news}}</li>
-              {% endfor %}
-              </ul>
-            </div>
-          </div>
-        </div>
+      <div class="card-header" style="line-height: 40%">Latest news</div>
+      <div class="card-body">
+        <ul class="list-group list-group-flush">
+          {% for news in news_list %}
+          <li>{{news}}</li>
+          {% endfor %}
+        </ul>
       </div>
     </div>
-  
+  </div>
+</div>
+</div>
 
-  <div class="col-2">
-    Notifications
+
+<div class="col-2">
+  <h3>Notifications</h3>
+  <div>
+    {% if events_invitations %}
+    <h4>Events invitations</h4>
+    <ul class="list-group list-group-flush">
+      {% for event in events_invitations %}
+      <li class="list-group-item"><a href={% url 'event' event.id %}>{{ event }}</a></li>      
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if events_will_attend %}
+    <h4>Your incomming events</h4>
+    <ul class="list-group list-group-flush">
+      {% for event in events_will_attend %}
+      <li class="list-group-item"><a href={% url 'event' event.id %}>{{ event }}</a></li>      
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+    {% if friendship_requests %}
+    <h4>Pending friendship requests</h4>
+    <ul class="list-group list-group-flush">
+      {% for req in friendship_requests %}
+      <li class="list-group-item"><a href={% url 'users:page' req.from_user %}>{{ req.from_user }}</a></li>      
+      {% endfor %}
+    </ul>
+    {% endif %}
+
+        
+    
+    <!--
     <ul class="list-group list-group-flush">
       <li class="list-group-item">You are invited to <a href=#>this event</a></li>
       <li class="list-group-item">Dapibus ac facilisis in</li>
@@ -95,7 +126,10 @@
       <li class="list-group-item">Porta ac consectetur ac</li>
       <li class="list-group-item">Vestibulum at eros</li>
     </ul>
+    -->
+    
   </div>
+</div>
 </div>
 </div>
 

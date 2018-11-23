@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 #from django.core.exceptions import ValidationError
 from groups.models import Group
 from accounting.models import Transaction
@@ -34,6 +35,7 @@ class Event(models.Model):
     all members become administrators.
     If the creator is deleted, the event remains and the creator is set to NULL.'''
     name = models.CharField(max_length=100)
+    creation_date = models.DateTimeField(default=timezone.now())
     description = models.CharField(blank=True, max_length=1000)
     date = models.DateField()
     time = models.TimeField(blank=True, null=True)

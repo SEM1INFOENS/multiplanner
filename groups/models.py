@@ -13,7 +13,7 @@ class Group(models.Model):
     '''
     name = models.CharField(max_length=200, blank=True)
     members = models.ManyToManyField(User)
-    transactions = models.ManyToManyField(Transaction)
+    transactions = models.ManyToManyField(Transaction, blank=True)
 
     @classmethod
     def create_new(cls, name, members, transactions):
