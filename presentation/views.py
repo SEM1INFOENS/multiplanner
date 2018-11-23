@@ -26,15 +26,12 @@ def page(request, username):
 
 def signup(request):
     if request.method == 'POST':
-        print("Trying registration")
         form = UserCreationForm(request.POST)
         if form.is_valid():
-            print("Form is valid")
             form.save()
             username = form.cleaned_data.get('username')
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
-            print("auth")
             auth_login(request, user)
             return redirect('users:index')
     else:
