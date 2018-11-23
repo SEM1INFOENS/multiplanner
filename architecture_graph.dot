@@ -1,6 +1,6 @@
 digraph model_graph {
   // Dotfile by Django-Extensions graph_models
-  // Created: 2018-10-24 07:47
+  // Created: 2018-11-13 14:08
   // Cli Options: -a
 
   fontname = "Helvetica"
@@ -151,9 +151,9 @@ digraph model_graph {
   
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica Bold">attendees</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Helvetica Bold">attendees</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica Bold">ForeignKey (id)</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Helvetica Bold">ForeignKey (id)</FONT>
     </TD></TR>
   
   
@@ -169,7 +169,23 @@ digraph model_graph {
     <TR><TD ALIGN="LEFT" BORDER="0">
     <FONT FACE="Helvetica ">date</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica ">DateTimeField</FONT>
+    <FONT FACE="Helvetica ">DateField</FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT COLOR="#7B7B7B" FACE="Helvetica ">description</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT COLOR="#7B7B7B" FACE="Helvetica ">CharField</FONT>
+    </TD></TR>
+  
+  
+  
+    <TR><TD ALIGN="LEFT" BORDER="0">
+    <FONT FACE="Helvetica ">name</FONT>
+    </TD><TD ALIGN="LEFT">
+    <FONT FACE="Helvetica ">CharField</FONT>
     </TD></TR>
   
   
@@ -177,33 +193,15 @@ digraph model_graph {
     <TR><TD ALIGN="LEFT" BORDER="0">
     <FONT COLOR="#7B7B7B" FACE="Helvetica ">place</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT COLOR="#7B7B7B" FACE="Helvetica ">CharField</FONT>
-    </TD></TR>
-  
-  
-    </TABLE>
-    >]
-
-  agenda_models_TransactionForEvent [label=<
-    <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
-    <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4">
-    <FONT FACE="Helvetica Bold" COLOR="white">
-    TransactionForEvent
-    </FONT></TD></TR>
-  
-  
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica Bold">transaction_ptr</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica Bold">OneToOneField (id)</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Helvetica ">LatLongField</FONT>
     </TD></TR>
   
   
   
     <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica Bold">event</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Helvetica ">time</FONT>
     </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica Bold">ForeignKey (id)</FONT>
+    <FONT COLOR="#7B7B7B" FACE="Helvetica ">TimeField</FONT>
     </TD></TR>
   
   
@@ -283,32 +281,6 @@ digraph model_graph {
     <FONT COLOR="#7B7B7B" FACE="Helvetica ">name</FONT>
     </TD><TD ALIGN="LEFT">
     <FONT COLOR="#7B7B7B" FACE="Helvetica ">CharField</FONT>
-    </TD></TR>
-  
-  
-    </TABLE>
-    >]
-
-  groups_models_TransactionForGroup [label=<
-    <TABLE BGCOLOR="palegoldenrod" BORDER="0" CELLBORDER="0" CELLSPACING="0">
-    <TR><TD COLSPAN="2" CELLPADDING="4" ALIGN="CENTER" BGCOLOR="olivedrab4">
-    <FONT FACE="Helvetica Bold" COLOR="white">
-    TransactionForGroup
-    </FONT></TD></TR>
-  
-  
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica Bold">transaction_ptr</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica Bold">OneToOneField (id)</FONT>
-    </TD></TR>
-  
-  
-  
-    <TR><TD ALIGN="LEFT" BORDER="0">
-    <FONT FACE="Helvetica Bold">group</FONT>
-    </TD><TD ALIGN="LEFT">
-    <FONT FACE="Helvetica Bold">ForeignKey (id)</FONT>
     </TD></TR>
   
   
@@ -849,11 +821,8 @@ digraph model_graph {
   agenda_models_Event -> django_contrib_auth_models_User
   [label="invited (_event_invited_+)"] [arrowhead=dot arrowtail=dot, dir=both];
 
-  agenda_models_TransactionForEvent -> agenda_models_Event
-  [label="event (transactionforevent)"] [arrowhead=none, arrowtail=dot, dir=both];
-
-  agenda_models_TransactionForEvent -> accounting_models_Transaction
-  [label="multi-table\ninheritance"] [arrowhead=empty, arrowtail=none, dir=both];
+  agenda_models_Event -> accounting_models_Transaction
+  [label="transactions (event)"] [arrowhead=dot arrowtail=dot, dir=both];
 
   agenda_models_MeetingRules -> django_contrib_auth_models_User
   [label="creator (meetingrules)"] [arrowhead=none, arrowtail=dot, dir=both];
@@ -868,11 +837,8 @@ digraph model_graph {
   groups_models_Group -> django_contrib_auth_models_User
   [label="members (group)"] [arrowhead=dot arrowtail=dot, dir=both];
 
-  groups_models_TransactionForGroup -> groups_models_Group
-  [label="group (transactionforgroup)"] [arrowhead=none, arrowtail=dot, dir=both];
-
-  groups_models_TransactionForGroup -> accounting_models_Transaction
-  [label="multi-table\ninheritance"] [arrowhead=empty, arrowtail=none, dir=both];
+  groups_models_Group -> accounting_models_Transaction
+  [label="transactions (group)"] [arrowhead=dot arrowtail=dot, dir=both];
 
 
   relationships_models_Friendships -> django_contrib_auth_models_User
@@ -888,7 +854,7 @@ digraph model_graph {
   [label="user (secretmark)"] [arrowhead=none, arrowtail=dot, dir=both];
 
   relationships_models_SecretMark -> django_contrib_auth_models_User
-  [label="marked_user (+)"] [arrowhead=none, arrowtail=dot, dir=both];
+  [label="marked_user (marked_user_set)"] [arrowhead=none, arrowtail=dot, dir=both];
 
 
   django_contrib_admin_models_LogEntry -> django_contrib_auth_models_User

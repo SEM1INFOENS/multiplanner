@@ -1,0 +1,43 @@
+{%extends "base_template.html" %}
+
+{% block content %}  
+
+
+<form>
+  <input type="button" value="Back" class="btn btn-primary" onclick="history.back()">
+</form>
+
+{% if is_admin %}
+<a class="btn btn-primary" href="{% url 'edit-event' ide=event.id %}">edit</a>
+<!-- <span class="glyphicon glyphicon-pencil"></span> -->
+{% endif %}
+
+<h1>{{ event.name }}</h1>
+<p>
+  <b>
+    {{ event.date }}<br>
+    {{ event.time|default:"" }}
+  </b>
+</p>
+
+<p>{{ event.description|default:"<i>no description provided</i>" }}</p>
+
+
+
+<p>
+  <h3>Invited</h3>
+  <ul>
+    {% for user in invited %}
+    <li><a href="/users/{{ user.username }}/">{{ user.username }}</a></li>
+    {% endfor %}
+  </ul>
+</p>
+
+<p>
+  <h4>Admin</h4>
+  {% for user in admin %}
+  <a href="/users/{{ user.username }}/">{{ user.username }}</a>
+  {% endfor %}
+</p>
+
+{% endblock %}

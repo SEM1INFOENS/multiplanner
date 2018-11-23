@@ -6,6 +6,9 @@ from django.contrib.auth.models import User
 from groups.models import Group
 from accounting.models import Transaction
 
+#from treasuremap.fields import LatLongField
+
+
 class TimeRange(models.Model):
     '''A time range is defined by its beginning and its duration.'''
     date = models.DateTimeField()
@@ -30,15 +33,19 @@ class Event(models.Model):
     It has administrators (at least one). In the case where the last administrator is deleted,
     all members become administrators.
     If the creator is deleted, the event remains and the creator is set to NULL.'''
-    date = models.DateTimeField()
+    name = models.CharField(max_length=100)
+    description = models.CharField(blank=True, max_length=1000)
+    date = models.DateField()
+    time = models.TimeField(blank=True, null=True)
+    #place = LatLongField(blank=True, null=True)
     place = models.CharField(max_length=500, blank=True)
     creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     administrators = models.ManyToManyField(User, related_name='+')
-    attendees = models.ForeignKey(Group, on_delete=models.CASCADE)
+    attendees = models.ForeignKey(Group, blank=True, null=True, on_delete=models.CASCADE)
     invited = models.ManyToManyField(User, related_name='+')
     # why is attendees a group and invited a ManyToManyField...? Because attendees will do things
     # together, it makes sense to consider them as a group.
-    transactions = models.ManyToManyField(Transaction)
+    transactions = models.ManyToManyField(Transaction, blank=True)
 
 
     @classmethod
@@ -58,6 +65,10 @@ class Event(models.Model):
         invited : {}, transactions : {}".format(self.date, self.place, self.creator, \
             self.administrators, self.attendees, self.invited, self.transactions)
 
+    def __str__(self):
+        '''Function used when str(object) is called.
+        Also used in the admin interface'''
+        return '%s (%s)' % (self.name, str(self.date))
 
 
 

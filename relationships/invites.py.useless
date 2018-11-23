@@ -1,0 +1,38 @@
+'''Functions about invitations'''
+
+from .models import Friendship
+from django.contrib.auth.models import User
+from django.core.exceptions import SuspiciousOperation
+
+
+
+def send_invite(invited, sender):
+    if (sender==invited) or (sender in invited.friendships.invited_list.all()) or (invited in sender.friendships.invited_list.all()) or (sender in invited.friendships.friend_list.all()) or (invited in sender.friendships.friend_list.all()) :
+        raise SuspiciousOperation
+    else:
+        invited.friendships.invited_list.add(sender)
+
+
+def accept_invite(invited, sender):
+    if (sender not in invited.friendships.invited_list.all()) or (sender in invited.friendships.friend_list.all()) or (invited in sender.friendships.friend_list.all()) :
+        raise SuspiciousOperation
+    else:
+        invited.friendships.invited_list.remove(sender)
+        invited.friendships.friend_list.add(sender)
+        sender.friendships.friend_list.add(invited)
+
+
+def decline_invite(invited, sender):
+    if (sender==invited) or (sender not in invited.friendships.invited_list.all()) or (invited in sender.friendships.invited_list.all()) or (sender in invited.friendships.friend_list.all()) or (invited in sender.friendships.friend_list.all()) :
+        raise SuspiciousOperation
+    else:
+        invited.friendships.invited_list.remove(sender)
+
+
+def remove_friend(invited, sender):
+    if (sender==invited) or (sender in invited.friendships.invited_list.all()) or (invited in sender.friendships.invited_list.all()) or (sender not in invited.friendships.friend_list.all()) or (invited not in sender.friendships.friend_list.all()) :
+        raise SuspiciousOperation
+    else:
+        invited.friendships.friend_list.remove(sender)
+        sender.friendships.friend_list.remove(invited)
+        

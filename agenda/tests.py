@@ -26,7 +26,8 @@ class AgendaTestCase(TestCase):
 
         e1 = Event(
             date=timezone.now(),
-            place="ici",
+            time=timezone.now(),
+            #place="ici",
             creator=a,
             attendees=g,
         )

@@ -6,3 +6,6 @@ Django==2.1.2
 # General part: here we list general packages
 pytest==3.9.1
 hypothesis==3.82.1
+
+# To diqplay mini maps
+#django-treasuremap==0.2.6

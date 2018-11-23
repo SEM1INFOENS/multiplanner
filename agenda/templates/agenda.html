@@ -1,0 +1,38 @@
+{%extends "base_template.html" %}
+
+{% block content %}  
+
+
+<!-- "/agenda/event?v={{ event.id }}" -->
+
+<form>
+  <input type="button" value="Back" class="btn btn-primary" onclick="history.back()">
+</form>
+
+<h2>Your Agenda</h2>
+
+<a href="/agenda/new-event">create a new event</a>
+
+<h3>Events you manage</h3>
+<ul>
+  {% for event in events_admin %}
+  <li><a href="{% url 'event' event.id %}">{{ event }} </a></li>
+  {% endfor %}
+</ul>
+
+<h3>Events you are invited to</h3>
+<ul>
+  {% for event in events_invited %}
+  <li><a href="{% url 'event' event.id %}">{{ event }} </a></li>
+  {% endfor %}
+</ul>
+
+<h3>Events you will atterd to</h3>
+<ul>
+  {% for event in events_attendees %}
+  <li><a href="{% url 'event' event.id %}">{{ event }} </a></li>
+  {% endfor %}
+</ul>
+
+
+{% endblock %}
