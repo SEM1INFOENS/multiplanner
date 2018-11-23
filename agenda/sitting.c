@@ -49,7 +49,7 @@ int* sitting(size_t group,int affection[group][group],int* tables,size_t nb_tabl
 				char *name = malloc(125);
 				sprintf(name, "p(%zu,%zu,%zu)", j, k, i);
 				glp_set_col_name(lp, index, name);
-				glp_set_obj_coef(lp, index, affection[j-1][k-1]);
+				glp_set_obj_coef(lp, index, affection[j-1][k-1] + 10); //added +10 to the coefficients to make them positive (going from [-10,10] to [0,20])
 				glp_set_col_kind(lp, index, GLP_BV);
 			}
 		}			
