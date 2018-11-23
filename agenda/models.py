@@ -46,11 +46,7 @@ class Event(models.Model):
     invited = models.ManyToManyField(User, related_name='+')
     # why is attendees a group and invited a ManyToManyField...? Because attendees will do things
     # together, it makes sense to consider them as a group.
-<<<<<<< HEAD
-    transactions = models.ManyToManyField(Transaction, blank=True)
-=======
     # transactions = models.ManyToManyField(Transaction) => use the transactions field of the Group instead
->>>>>>> ef651994e32053824f806612ed9f3648daf7e1b1
 
 
     @classmethod

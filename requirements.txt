@@ -7,5 +7,7 @@ Django==2.1.2
 pytest==3.9.1
 hypothesis==3.82.1
 
+django-friendship==1.8.0
+
 # To diqplay mini maps
 #django-treasuremap==0.2.6
