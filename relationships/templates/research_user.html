@@ -2,35 +2,18 @@
 
 {% block content %}
 
-<!-- Research Bar -->
-<form id="searchform" action="{% url 'user-search' %}" method="get" accept-charset="utf-8">
-  <button class="searchbutton" type="submit">
-    <i class="fa fa-search"></i>
-  </button>
-  <input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
-</form>
-
 
 <a href="/agenda/">my agenda</a>
 
 
-<h2>Research : {{ query }}</h2>
+<h2>Research : <i>{{ query }}</i></h2>
 
-
-{% if users %}
-<h3>Users</h3>
-<ul>
-  {% for user in users %}
-  <li><a href="/users/{{ user.username }}/">{{ user.username }}</a></li>
-  {% endfor %}
-</ul>
-{% endif %}
 
 {% if p_invites %}
 <h3>Pending invites</h3>
 <ul>
   {% for user in p_invites %}
-  <li><a href="/users/{{ user.username }}/">{{ user.username }}</a></li>
+  <li><a href="{% url 'users:page' user.username %}">{{ user.username }}</a></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -39,7 +22,16 @@
 <h3>Friends</h3>
 <ul>
   {% for user in friends %}
-  <li><a href="/users/{{ user.username }}/">{{ user.username }}</a></li>
+  <li><a href="{% url 'users:page' user.username %}">{{ user.username }}</a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if other_users %}
+<h3>Users</h3>
+<ul>
+  {% for user in other_users %}
+  <li><a href="{% url 'users:page' user.username %}">{{ user.username }}</a></li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -48,7 +40,7 @@
 <h3>Invited</h3>
 <ul>
   {% for user in s_invites %}
-  <li><a href="/users/{{ user.username }}/">{{ user.username }}</a></li>
+  <li><a href="{% url 'users:page' user.username %}">{{ user.username }}</a></li>
   {% endfor %}
 </ul>
 {% endif %}

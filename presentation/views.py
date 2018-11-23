@@ -11,8 +11,11 @@ def index(request):
 
 @login_required
 def page(request, username):
-    context = {'transactions': Transaction.objects.filter(payer=User.objects.get(username=username)),
-               'username': username}
+    user = User.objects.get(username=username)
+    context = {
+        'user' : user,
+        'transactions': Transaction.objects.filter(payer=user),
+    }
     return render(request, 'users/page.html', context)
 
 def login(request):

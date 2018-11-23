@@ -2,8 +2,13 @@
 
 {% block content %}
 
-<h2>List of {{username}}'s transactions</h2>
 
+
+<h1>{{ user.username }}</h1>
+
+<a href="{% url 'friends:add' user.username %}">add as friend</a> 
+
+<h2>List of transactions</h2>
 <ul>
   {% for transaction in transactions %}
       <li>Amount: {{ transaction.amount }}, motive: {{transaction.motive}}</a></li>
