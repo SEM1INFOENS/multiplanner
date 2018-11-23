@@ -22,7 +22,7 @@ python3 manage.py test
 Make migrations:
 ```bash
 python3 manage.py makemigrations
-python3 manage.py migrate --run-sydbd
+python3 manage.py migrate --run-syncdb
 ```
 Launch the server using:
 ```bash
