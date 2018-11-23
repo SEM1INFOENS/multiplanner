@@ -22,9 +22,8 @@ from . import views
 
 urlpatterns = [
     #path('', views.index),
-    path('', include('presentation.urls')),
+    path('', include('presentation.urls', namespace='users')),
     path('admin/', admin.site.urls),
-    path('users/', include('presentation.urls', namespace='users')),
     path('agenda/', include('agenda.urls')),
     #url(r'^friends/', include(('relationships.urls', 'friends'), namespace='friends')),
     url(r'^friends/', include('relationships.urls', namespace='friends')),
