@@ -7,6 +7,7 @@
   <input type="button" value="Back" class="btn btn-primary" onclick="history.back()">
 </form>
 
+
 {% if is_admin %}
 <a class="btn btn-primary" href="{% url 'edit-event' ide=event.id %}">edit</a>
 <!-- <span class="glyphicon glyphicon-pencil"></span> -->
@@ -15,9 +16,15 @@
 <h1>{{ event.name }}</h1>
 <p>
   <b>
-    {{ event.date }}<br>
+    From: {{ event.date }}<br>
     {{ event.time|default:"" }}
   </b>
+  <br><br>
+  <b>
+    To: {{ event.date_end }}<br>
+    {{ event.time_end|default:"" }}
+  </b>
+
 </p>
 
 <p>{{ event.description|default:"<i>no description provided</i>" }}</p>

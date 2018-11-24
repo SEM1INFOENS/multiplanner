@@ -4,6 +4,7 @@ from django.test import TestCase
 from django.utils import timezone
 from agenda.models import *
 from groups.models import *
+import datetime
 #from .sitting import sitting_arrang
 
 
@@ -28,6 +29,8 @@ class AgendaTestCase(TestCase):
         e1 = Event(
             date=timezone.now(),
             time=timezone.now(),
+            date_end=timezone.now()+datetime.timedelta(days=1),
+            time_end=timezone.now()+datetime.timedelta(hours=1),
             #place="ici",
             creator=a,
             attendees=g,

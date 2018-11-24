@@ -6,10 +6,32 @@ from django.core.exceptions import PermissionDenied
 from django.template import Context, loader
 from django.urls import reverse
 from .forms import *
+from django.utils import timezone
+import datetime
 
 
 from django.utils import timezone
 
+
+def date_format_ics(date, time):
+    '''Converts date to date in ICS format'''
+    def add_zeros(s, year=False):
+        '''Adds the right number of zeros before the string s so that len(s) = 2 (4 if it is a year)'''
+        if year:
+            return (4 -len(s))*'0' + s
+
+        return (2-len(s))*'0' + s
+
+    if time == None:
+        time = datetime.time.min
+
+    s1 = str(date.year)
+    s2 = str(date.month)
+    s3 = str(date.day)
+    s4 = str(time.hour)
+    s5 = str(time.minute)
+    s6 = str(time.second)
+    return add_zeros(s1) + add_zeros(s2) + add_zeros(s3) + "T" + add_zeros(s4) + add_zeros(s5) + add_zeros(s6) + "Z"
 
 
 @login_required
@@ -134,13 +156,12 @@ def generate_calendar(request):
 
     # user = a
 
-
-    user = User.objects.get(username='zephyr')
-
-
-
+    user = request.user
     list_event = Event.objects.filter(attendees__members=user)
 
+    for event in list_event:
+        event.date_start_ics = date_format_ics(event.date, event.time)
+        event.date_end_ics = date_format_ics(event.date_end, event.time_end)
 
     response = HttpResponse(content_type='text/calendar')
     response['Content-Disposition'] = 'attachment; filename="calendar.ics"'

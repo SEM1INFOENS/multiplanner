@@ -17,11 +17,13 @@ class EventForm(ModelForm):
     
     class Meta:
         model = Event
-        fields = ['name', 'description', 'date', 'time', 'place', 'administrators', 'invited']
+        fields = ['name', 'description', 'date', 'time', 'date_end', 'time_end', 'place', 'administrators', 'invited']
         widgets = {
             'description' : forms.Textarea,
             'time' : forms.TimeInput(format='%H:%M'),
+            'time_end' : forms.TimeInput(format='%H:%M'),
             'date' : forms.SelectDateWidget(), #bof
+            'date_end' : forms.SelectDateWidget(), #bof
             #'time' : widgets.AdminTimeWidget(),
             #'date' :  widgets.AdminDateWidget(), #top!
             # https://gilang.chandrasa.com/blog/using-django-admin-datepicker-in-custom-form/

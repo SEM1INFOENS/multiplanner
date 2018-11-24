@@ -39,6 +39,10 @@ class Event(models.Model):
     description = models.CharField(blank=True, max_length=1000)
     date = models.DateField()
     time = models.TimeField(blank=True, null=True)
+
+    date_end = models.DateField()
+    time_end = models.TimeField(blank=True, null=True)
+    
     #place = LatLongField(blank=True, null=True)
     place = models.CharField(max_length=500, blank=True)
     creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
@@ -51,9 +55,10 @@ class Event(models.Model):
 
 
     @classmethod
-    def create_new(cls, date, place, creator, administrators, attendees, invited):
+    def create_new(cls, date, time, date_end, time_end, place, creator, administrators, attendees, invited):
         '''Default method for creating an event'''
-        event = cls(date=date, place=place, creator=creator, attendees=attendees)
+        event = cls(date=date, time=time, date_end=date_end, time_end=time_end, place=place, \
+            creator=creator, attendees=attendees)
         event.save()
         event.administrators.add(*administrators)
         event.invited.add(*invited)
