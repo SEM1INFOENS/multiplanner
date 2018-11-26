@@ -11,3 +11,6 @@ django-friendship==1.8.0
 
 # To diqplay mini maps
 #django-treasuremap==0.2.6
+
+#To use glpk
+

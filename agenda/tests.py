@@ -6,7 +6,7 @@ from agenda.models import *
 from groups.models import *
 from accounting.models import *
 import datetime
-from .sit import *
+#from .sit import *
 
 
 class AgendaTestCase(TestCase):
