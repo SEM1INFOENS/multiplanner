@@ -4,6 +4,7 @@ from django.contrib.admin import widgets
 #from treasuremap.forms import LatLongField
 #from treasuremap import widgets as tmw
 from .models import *
+from groups.models import Group
 
 # Form : to create a form
 # ModelForm : to automaticaly create a form from a model
@@ -40,6 +41,9 @@ class EventForm(ModelForm):
     def save(self, commit=True):
         inst = super(EventForm, self).save(commit=False)
         inst.creator = self._user  # we set 'Event.creator' to the currently logged in user
+        att =  Group()
+        att.save()
+        inst.attendees = att
         if commit:
             inst.save()
             self.save_m2m()

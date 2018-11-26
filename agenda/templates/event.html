@@ -34,8 +34,10 @@
 <p>
   <h3>Invited</h3>
   <ul>
-    {% for user in invited %}
-    <li><a href="/users/{{ user.username }}/">{{ user.username }}</a></li>
+    {% for user,come in invited %}
+    <li><a href="/users/{{ user.username }}/">{{ user.username }}</a>
+      {% if come %}<i> - is comming</i> {% endif %}
+    </li>
     {% endfor %}
   </ul>
 </p>

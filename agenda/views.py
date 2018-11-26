@@ -98,10 +98,14 @@ def agenda(request):
 @login_required
 def event(request, ide):
     event = get_object_or_404(Event, pk=ide)
+    invited = event.invited.all()
+    attendees = event.attendees.members.all()
+    invited_attendees = [(u, (u in attendees)) for u in invited] 
+    print(invited_attendees)
     admin_l = event.administrators.all()
     context = {
         'event': event,
-        'invited' : event.invited.all(),
+        'invited' : invited_attendees,
         'admin' : admin_l,
         'is_admin' : (request.user in admin_l), 
     }
