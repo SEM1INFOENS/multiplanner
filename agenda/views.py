@@ -97,6 +97,12 @@ def agenda(request):
 @login_required
 def event(request, ide):
     event = get_object_or_404(Event, pk=ide)
+    user = request.user
+    if request.method == 'POST':
+        if "accept_invite" in request.POST:
+            event.accept_invite(user)
+        if "cancel_acceptance" in request.POST:
+            event.cancel_acceptance(user)
     invited = event.invited.all()
     attendees = event.attendees.members.all()
     invited_attendees = [(u, (u in attendees)) for u in invited] 
@@ -105,7 +111,9 @@ def event(request, ide):
         'event': event,
         'invited' : invited_attendees,
         'admin' : admin_l,
-        'is_admin' : (request.user in admin_l), 
+        'is_admin' : (request.user in admin_l),
+        'can_accept_invite' : event.can_accept_invite(user),
+        'can_cancel_acceptance' : event.can_cancel_acceptance(user),
     }
     return render(request, 'event.html', context)
 

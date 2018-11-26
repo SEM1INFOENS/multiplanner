@@ -12,7 +12,7 @@ class Group(models.Model):
     To make transactions in an event, people will make transactions in the subsequent group.
     '''
     name = models.CharField(max_length=200, blank=True)
-    members = models.ManyToManyField(User)
+    members = models.ManyToManyField(User, blank=True)
     transactions = models.ManyToManyField(Transaction, blank=True)
 
     @classmethod
@@ -33,6 +33,10 @@ class Group(models.Model):
         return "name : {}, members : {}, transactions : {}".\
         format(self.name, self.members, self.transactions)
 
+    def __str__(self):
+        members = '|'.join([m.username for m in self.members.all()])
+        if members == "": members = "empty"
+        return "{}:{} [{}]".format(self.id, self.name, members)
 
     def relationship_matrix(self):
         '''Returns M matrix of size n*n with n the number of attendees

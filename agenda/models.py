@@ -89,23 +89,27 @@ class Event(models.Model):
         return '%s (%s)' % (self.name, str(self.date))
 
     def is_over(self):
-        return self.datetime_end()<timezone.now()
+        return self.date_time_end()<timezone.now()
     def has_begun(self):
-        return self.datetime()<=timezone.now()
+        return self.date_time()<=timezone.now()
 
+    def can_accept_invite(self, user):
+        ''' to accept an invitation, the event must not be over'''
+        return not ((user not in self.invited.all()) or (user in self.attendees.members.all()) or self.is_over())
     #TODO: maby we could have an end of inscription date ?
     def accept_invite(self, user):
-        if (user not in inviteed.all()) or (user in attendees.members.all()) or self.is_over():
-            raise SuspiciousOperation
-        else:
+        if self.can_accept_invite(user):
             self.attendees.members.add(user)
-
+        else: raise SuspiciousOperation
+            
+    def can_cancel_acceptance(self, user):
+        ''' to cancel the comming to an event, the event must not have begun'''
+        return not((user not in self.invited.all()) or (user not in self.attendees.members.all()) or self.has_begun())
     def cancel_acceptance(self, user):
-        if (user not in inviteed.all()) or (user not in attendees.members.all()) or self.has_begun():
-            raise SuspiciousOperation
-        else:
+        if self.can_cancel_acceptance(user):
             self.attendees.members.remove(user)
-
+        else: raise SuspiciousOperation
+    
 
 # class TransactionForEvent(Transaction):
 #     '''A transaction that was made for a certain event'''
