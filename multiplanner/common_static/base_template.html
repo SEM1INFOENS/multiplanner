@@ -5,8 +5,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
+    <!-- Font Awsome (for icones) -->
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+    
     <!-- jQuery is required for treasuremap -->
-    <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <!-- <script type="text/javascript" src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script> -->
     
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -30,13 +33,13 @@
 	<!-- Research Bar -->
 	<form id="searchform" action="{% url 'friends:user-search' %}" method="get" accept-charset="utf-8">
 	  <button class="searchbutton" type="submit">
-	    <i class="fa fa-search"></i>
+	    <i class="fas fa-search"></i>
 	  </button>
 	  <input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
   </form>
   
   <form>
-    <a class="btn btn-primary" href="{% url 'users:logout'%}"> Logout</a>
+    <a class="btn btn-primary" href="{% url 'users:logout'%}"> Logout <i class="fas fa-sign-out-alt"></i></a>
   </form>  
   </div>
     </nav>
