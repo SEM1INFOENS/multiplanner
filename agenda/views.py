@@ -44,11 +44,11 @@ def create_event(request):
             # process the data in form.cleaned_data as required
             event = form.save()
             success = messages.success(request, 'Event successfully created')
-            warn = messages.warning(request, 'Event created')
-            error = messages.error(request, 'Event created')
-            info = messages.info(request, 'Event created')
-            debug = messages.debug(request, 'Event created')
-            all_m = [success, warn, info, error]
+            #warn = messages.warning(request, 'Event created')
+            #error = messages.error(request, 'Event created')
+            #info = messages.info(request, 'Event created')
+            #debug = messages.debug(request, 'Event created')
+            #all_m = [success, warn, info, error]
 
             #url_e = reverse('event', event.id)
             # redirect to a new URL:

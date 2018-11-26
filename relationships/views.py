@@ -49,19 +49,3 @@ def user_search(request):
     }
     return render(request, 'research_user.html', context)
 
-
-@login_required
-def add(request, to_username): #, template_name='friendship/friend/add.html'):
-    """ Create a FriendshipRequest """
-    context = {'to_username': to_username}
-
-    if request.method == 'POST':
-        to_user = User.objects.get(username=to_username)
-        from_user = request.user
-        try:
-            Friend.objects.add_friend(from_user, to_user)
-        except AlreadyExistsError as e:
-            context['errors'] = ["%s" % e]
-        else:
-            return redirect('presentation:page', username=to_username)
-    return redirect('presentation:page', username=to_username) # it woult be better to redirect the user to it's curent page

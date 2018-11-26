@@ -6,7 +6,33 @@
 
 <h1>{{ user.username }}</h1>
 
-<a href="{% url 'friends:add' user.username %}">add as friend</a> 
+<form action="{% url 'users:page' username=user.username %}" method="post">
+  {% csrf_token %}
+  {% if can_add %}
+  <button type="submit" class="btn btn-primary"  name="add">
+  Add <i class="fas fa-user-plus"></i></button>
+  {% endif %}
+  
+  {% if can_cancel %}
+  <i>invite sent <i class="fas fa-user-clock"></i></i>
+  <button type="submit" class="btn btn-danger"  name="cancel">
+    Cancel <i class="fas fa-times-circle"></i></button>
+  {% endif %} 
+
+  {% if can_accept_decline %}
+  {{ user.username }} sent you a friendship invitation
+  <button type="submit" class="btn btn-success"  name="accept">
+    Accept <i class="fas fa-user-check"></i></button>
+  <button type="submit" class="btn btn-warning"  name="decline">
+    Decline <i class="fas fa-user-times"></i></button>
+  {% endif %} 
+
+  {% if can_remove %}
+  Remove user from friends
+  <button type="submit" class="btn btn-danger"  name="remove">
+    <i class="fas fa-user-slash"></i></button>
+  {% endif %} 
+</form>
 
 <h2>List of transactions</h2>
 <ul>

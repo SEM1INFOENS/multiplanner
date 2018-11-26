@@ -4,9 +4,11 @@ from django.contrib.auth import authenticate
 from django.contrib.auth import login as auth_login
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
+from django.contrib import messages
 
 from accounting.models import Transaction
 from .functions import *
+from relationships import functions as rel
 
 @login_required
 def index(request):
@@ -24,11 +26,19 @@ def index(request):
 
 @login_required
 def page(request, username):
-    user = User.objects.get(username=username)
+    user_page = User.objects.get(username=username)
+    user = request.user
+    if request.method == 'POST':
+        success, message_str = rel.friendship_update(request, user_page)
+        if not success:
+            messages.warning(request, message_str)
     context = {
-        'user' : user,
-        'transactions': Transaction.objects.filter(payer=user),
+        'user' : user_page,
+        'transactions': Transaction.objects.filter(payer=user_page),
     }
+    rel_context = rel.friendship_context(user, user_page)
+    context.update(rel_context)
+    #context['old_context'] = rel_context
     return render(request, 'users/page.html', context)
 
 def signup(request):
