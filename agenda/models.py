@@ -29,6 +29,12 @@ class TimeRange(models.Model):
             self.duration)
 
 
+def combine(date, time, default_time):
+    if time == None:
+        t = datetime_module.time(*default_time)
+    else: t = time
+    return datetime_module.datetime.combine(date, t)
+
 class Event(models.Model):
     '''An event is created by a person, and has a group of person attending it.
     If the subsequent group is deleted (which should not happen unless the event is being deleted),
@@ -41,11 +47,13 @@ class Event(models.Model):
     description = models.CharField(blank=True, max_length=1000)
     date = models.DateField()
     time = models.TimeField(blank=True, null=True)
-    def datetime(self): return datetime_module.combine(date,time)
+    default_time = (8,)
+    def date_time(self): return combine(self.date, self.time, self.default_time)
 
     date_end = models.DateField()
     time_end = models.TimeField(blank=True, null=True)
-    def datetime_end(self): return datetime_module.combine(date_end, time_end)
+    default_time_end = (19,)
+    def date_time_end(self): return combine(self.date_end, self.time_end, self.default_time_end)
     
     #place = LatLongField(blank=True, null=True)
     place = models.CharField(max_length=500, blank=True)

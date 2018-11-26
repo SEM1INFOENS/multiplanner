@@ -16,12 +16,12 @@
 <h1>{{ event.name }}</h1>
 <p>
   <b>
-    From: {{ event.date }}<br>
+    From: {{ event.date_time }}<br>
     {{ event.time|default:"" }}
   </b>
   <br><br>
   <b>
-    To: {{ event.date_end }}<br>
+    To: {{ event.date_time_end }}<br>
     {{ event.time_end|default:"" }}
   </b>
 

@@ -9,7 +9,6 @@ from .forms import *
 from django.utils import timezone
 import datetime
 
-
 from django.utils import timezone
 
 
@@ -101,7 +100,6 @@ def event(request, ide):
     invited = event.invited.all()
     attendees = event.attendees.members.all()
     invited_attendees = [(u, (u in attendees)) for u in invited] 
-    print(invited_attendees)
     admin_l = event.administrators.all()
     context = {
         'event': event,
