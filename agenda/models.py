@@ -3,9 +3,11 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+import datetime as datetime_module
 #from django.core.exceptions import ValidationError
 from groups.models import Group
 from accounting.models import Transaction
+from django.core.exceptions import SuspiciousOperation
 #from treasuremap.fields import LatLongField
 
 
@@ -39,9 +41,11 @@ class Event(models.Model):
     description = models.CharField(blank=True, max_length=1000)
     date = models.DateField()
     time = models.TimeField(blank=True, null=True)
+    def datetime(self): return datetime_module.combine(date,time)
 
     date_end = models.DateField()
     time_end = models.TimeField(blank=True, null=True)
+    def datetime_end(self): return datetime_module.combine(date_end, time_end)
     
     #place = LatLongField(blank=True, null=True)
     place = models.CharField(max_length=500, blank=True)
@@ -76,12 +80,27 @@ class Event(models.Model):
         Also used in the admin interface'''
         return '%s (%s)' % (self.name, str(self.date))
 
+    def is_over(self):
+        return self.datetime_end()<timezone.now()
+    def has_begun(self):
+        return self.datetime()<=timezone.now()
 
+    #TODO: maby we could have an end of inscription date ?
+    def accept_invite(self, user):
+        if (user not in inviteed.all()) or (user in attendees.members.all()) or self.is_over():
+            raise SuspiciousOperation
+        else:
+            self.attendees.members.add(user)
+
+    def cancel_acceptance(self, user):
+        if (user not in inviteed.all()) or (user not in attendees.members.all()) or self.has_begun():
+            raise SuspiciousOperation
+        else:
+            self.attendees.members.remove(user)
 
 
 # class TransactionForEvent(Transaction):
 #     '''A transaction that was made for a certain event'''
-
 #     def validate_transac_event(self, event):
 #         '''Checks that all the beneficiaries of the transaction did attend the event.'''
 #         try:
@@ -90,12 +109,9 @@ class Event(models.Model):
 #             for beneficiary in ben:
 #                 assert beneficiary in att
 #             return event
-
 #         except:
 #             message = "Some beneficiaries of a TransactionForEvent don't attend the event."
 #             raise ValidationError(message)
-
-
 #     event = models.ForeignKey(Event, on_delete=models.PROTECT, \
 #         validators=[validate_transac_event])
 
