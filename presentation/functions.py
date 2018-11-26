@@ -3,6 +3,7 @@ from agenda.models import Event
 from random import shuffle
 from friendship.models import Friend
 from django.utils import timezone
+from accounting.models import Transaction
 
 def queryset_to_list(Q):
     L = []
@@ -12,12 +13,12 @@ def queryset_to_list(Q):
 
 def n_random_friends(user, n):
     '''Returns a random list of six friends of the User user'''
-    
+
     friendlist = Friend.objects.friends(user)
-    
+
     if len(friendlist) <= n:
         return friendlist
-    
+
     shuffle(friendlist)
     return friendlist[:n]
 
@@ -37,5 +38,18 @@ def friendship_requests(user):
     '''List the user's friendship requests'''
     return Friend.objects.unrejected_requests(user=user)
 
+def n_transactions_of_user(u, n):
+    """Returns the last n transactions implying an event or group u belongs to,
+    sorted in chronological time"""
+    groups_queryset = Group.objects.all()
+    groups_of_u = []
+    for g in queryset_to_list(groups_queryset):
+        if u in g.members.all():
+            groups_of_u.append(g)
 
+    all_transactions = []
+    for g in groups_of_u:
+        all_transactions = all_transactions + queryset_to_list(g.transactions.all())
 
+    all_transactions = sorted(all_transactions, key=lambda transaction: transaction.date)
+    return all_transactions[-n:]
