@@ -67,16 +67,16 @@ def edit_event(request, ide):
     user = request.user
     if user in Event.objects.get(pk=ide).administrators.all() : #user can only edit events of which he is admin
         if request.method == "POST":
-            form = EventForm(request.POST, instance=event, creator_user=request.user)
+            form = EventForm(request.POST, creator_user=request.user, instance=event)
             if form.is_valid():
                 event = form.save(commit=False)
-                #event.save() # here a new event is saved, but it is not what we want.. 
+                event.save() 
 
                 success = messages.success(request, 'Event successfully modified')                
                 return redirect('event', ide=event.id)
         else:
-            form = EventForm(instance=event, creator_user=request.user)
-        return render(request, 'edit_event.html', {'form': form})
+            form = EventForm(creator_user=request.user, instance=event)
+        return render(request, 'edit_event.html', {'form': form, 'ide':event.id})
     else:
         raise PermissionDenied
     
