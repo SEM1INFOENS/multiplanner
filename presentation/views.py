@@ -29,9 +29,7 @@ def page(request, username):
     user_page = User.objects.get(username=username)
     user = request.user
     if request.method == 'POST':
-        success, message_str = rel.friendship_update(request, user_page)
-        if not success:
-            messages.warning(request, message_str)
+        success = rel.friendship_update(request, user_page)
     context = {
         'user' : user_page,
         'transactions': Transaction.objects.filter(payer=user_page),
