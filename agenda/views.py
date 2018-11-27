@@ -35,6 +35,7 @@ def date_format_ics(date, time):
 
 @login_required
 def create_event(request):
+    context = {'new' : True}
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
@@ -52,17 +53,19 @@ def create_event(request):
 
             #url_e = reverse('event', event.id)
             # redirect to a new URL:
-            return redirect('event', ide=event.id) #, {'messages': [success]})
+            return redirect('event', ide=event.id)
             #return HttpResponseRedirect('/user/')
 
     # if a GET (or any other method) we'll create a blank form
     else:
         form = EventForm(creator_user=request.user)
 
-    return render(request, 'edit_event.html', {'form': form})
+    context.update({'form': form})
+    return render(request, 'edit_event.html', context)
 
 @login_required
 def edit_event(request, ide):
+    context = {'new' : False}
     event = get_object_or_404(Event, pk=ide)
     user = request.user
     if user in Event.objects.get(pk=ide).administrators.all() : #user can only edit events of which he is admin
@@ -76,7 +79,8 @@ def edit_event(request, ide):
                 return redirect('event', ide=event.id)
         else:
             form = EventForm(creator_user=request.user, instance=event)
-        return render(request, 'edit_event.html', {'form': form, 'ide':event.id})
+        context.update({'form': form, 'ide':event.id})
+        return render(request, 'edit_event.html', context)
     else:
         raise PermissionDenied
     
