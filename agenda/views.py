@@ -89,9 +89,10 @@ def edit_event(request, ide):
 def agenda(request):
     user = request.user
     att = Event.objects.filter(attendees__members=user)
+    inv = Event.objects.filter(invited=user).difference(att)
     context = {
         'events_admin': Event.objects.filter(administrators=user),
-        'events_invited': Event.objects.filter(invited=user),
+        'events_invited': inv,
         'events_attendees': att,
     }
     return render(request, 'agenda.html', context)
