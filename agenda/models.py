@@ -43,7 +43,7 @@ class Event(models.Model):
     all members become administrators.
     If the creator is deleted, the event remains and the creator is set to NULL.'''
     name = models.CharField(max_length=100)
-    creation_date = models.DateTimeField(default=timezone.now())
+    creation_date = models.DateTimeField(default=timezone.now)
     description = models.CharField(blank=True, max_length=1000)
     date = models.DateField()
     time = models.TimeField(blank=True, null=True)
@@ -54,7 +54,7 @@ class Event(models.Model):
     time_end = models.TimeField(blank=True, null=True)
     default_time_end = (19,)
     def date_time_end(self): return combine(self.date_end, self.time_end, self.default_time_end)
-    
+
     #place = LatLongField(blank=True, null=True)
     place = models.CharField(max_length=500, blank=True)
     creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
@@ -101,7 +101,7 @@ class Event(models.Model):
         if self.can_accept_invite(user):
             self.attendees.members.add(user)
         else: raise SuspiciousOperation
-            
+
     def can_cancel_acceptance(self, user):
         ''' to cancel the comming to an event, the event must not have begun'''
         return not((user not in self.invited.all()) or (user not in self.attendees.members.all()) or self.has_begun())
@@ -109,7 +109,7 @@ class Event(models.Model):
         if self.can_cancel_acceptance(user):
             self.attendees.members.remove(user)
         else: raise SuspiciousOperation
-    
+
 
 # class TransactionForEvent(Transaction):
 #     '''A transaction that was made for a certain event'''

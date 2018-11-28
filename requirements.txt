@@ -13,4 +13,5 @@ django-friendship==1.8.0
 #django-treasuremap==0.2.6
 
 #To use glpk
+swiglpk==4.65.0
 
