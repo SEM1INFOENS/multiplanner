@@ -79,8 +79,24 @@
       <div class="card-header" style="line-height: 40%">Latest news</div>
       <div class="card-body">
         <ul class="list-group list-group-flush">
-          {% for news in news_list %}
-          <li>{{news}}</li>
+          {% for tr,amount,type,entity in last_transactions %}
+	  <li>
+	    {% if amount >= 0 %}
+	    <span class="text-success">+{{ amount }}€</span>
+	    {% else %}
+	    <span class="text-danger">{{ amount }}€</span>
+	    {% endif %}
+	    <a href="#">{{ tr }}</a>
+	    {% if type == 'event' %}
+            for <a href="{% url 'agenda:event' event.id %}">
+	      <i class="far fa-calendar-alt"></i> {{ event }}
+	    </a>
+	    {% elif  type == 'group' %}
+	    for <a href="#">
+	      <i class="fas fa-users"></i> {{ group }}
+	    </a>
+	    {% endif %}
+	  </li>
           {% endfor %}
         </ul>
       </div>

@@ -13,13 +13,13 @@ from relationships import functions as rel
 @login_required
 def index(request):
     nb_of_friends = 6
+    nb_of_transactions = 5
     user = request.user
-    last_transactions = Transaction.objects.filter(payer=user)
     groups = user.group_set.all()
     spent, due = balance_of_user(user)
     context = {
         'loggedin_user' : user,
-        'last_transactions': last_transactions,
+        'last_transactions': n_transactions_of_user(user, nb_of_transactions),
         'groups': groups,
         'events_invitations' : events_invitations(user),
         'events_will_attend' : events_will_attend(user),

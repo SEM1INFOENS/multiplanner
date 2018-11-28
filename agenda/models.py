@@ -59,7 +59,7 @@ class Event(models.Model):
     place = models.CharField(max_length=500, blank=True)
     creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
     administrators = models.ManyToManyField(User, related_name='+')
-    attendees = models.ForeignKey(Group, on_delete=models.CASCADE)
+    attendees = models.OneToOneField(Group, on_delete=models.CASCADE)
     invited = models.ManyToManyField(User, related_name='+')
     # why is attendees a group and invited a ManyToManyField...? Because attendees will do things
     # together, it makes sense to consider them as a group.
