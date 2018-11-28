@@ -102,12 +102,23 @@ def agenda(request):
 @login_required
 def event(request, ide):
     event = get_object_or_404(Event, pk=ide)
+    group = event.attendees
     user = request.user
     if request.method == 'POST':
         if "accept_invite" in request.POST:
             event.accept_invite(user)
         if "cancel_acceptance" in request.POST:
             event.cancel_acceptance(user)
+
+        form = TransactionForm(request.POST, current_group=group)
+        
+        if form.is_valid():
+            transaction = form.save()
+            success = messages.success(request, 'Transaction successfully created')
+            return redirect('event', ide=event.id)
+    else:
+        form = TransactionForm(current_group=group)
+
     invited = event.invited.all()
     attendees = event.attendees.members.all()
     invited_attendees = [(u, (u in attendees)) for u in invited] 
@@ -119,6 +130,7 @@ def event(request, ide):
         'is_admin' : (request.user in admin_l),
         'can_accept_invite' : event.can_accept_invite(user),
         'can_cancel_acceptance' : event.can_cancel_acceptance(user),
+        'form' : form,
     }
     return render(request, 'event.html', context)
 
