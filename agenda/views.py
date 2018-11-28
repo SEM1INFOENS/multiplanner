@@ -68,9 +68,9 @@ def edit_event(request, ide):
     context = {'new' : False}
     event = get_object_or_404(Event, pk=ide)
     user = request.user
-    if user in Event.objects.get(pk=ide).administrators.all() : #user can only edit events of which he is admin
+    if user in event.administrators.all() : #user can only edit events of which he is admin
         if request.method == "POST":
-            form = EventForm(request.POST, creator_user=request.user, instance=event)
+            form = EventForm(request.POST, creator_user=event.creator, instance=event)
             if form.is_valid():
                 event = form.save(commit=False)
                 event.save() 
@@ -78,7 +78,7 @@ def edit_event(request, ide):
                 success = messages.success(request, 'Event successfully modified')                
                 return redirect('event', ide=event.id)
         else:
-            form = EventForm(creator_user=request.user, instance=event)
+            form = EventForm(creator_user=event.creator, instance=event)
         context.update({'form': form, 'ide':event.id})
         return render(request, 'edit_event.html', context)
     else:

@@ -5,6 +5,7 @@
 
 <h2>Event creator</h2>
 
+Please write down times with the format HH:MM.
 <form action="{% if new %}{% url 'new-event' %}{% else %}{% url 'edit-event' ide %}{% endif  %}" method="post">
   {{ form.media }}
   {% csrf_token %}
