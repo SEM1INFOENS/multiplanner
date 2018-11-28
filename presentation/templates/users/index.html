@@ -88,12 +88,12 @@
 	    {% endif %}
 	    <a href="#">{{ tr }}</a>
 	    {% if type == 'event' %}
-            for <a href="{% url 'agenda:event' event.id %}">
-	      <i class="far fa-calendar-alt"></i> {{ event }}
+            for <a href="{% url 'event' entity.id %}">
+	      <i class="far fa-calendar-alt"></i> {{ entity }}
 	    </a>
 	    {% elif  type == 'group' %}
 	    for <a href="#">
-	      <i class="fas fa-users"></i> {{ group }}
+	      <i class="fas fa-users"></i> {{ entity }}
 	    </a>
 	    {% endif %}
 	  </li>

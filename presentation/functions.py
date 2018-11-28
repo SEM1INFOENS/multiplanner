@@ -81,7 +81,7 @@ def n_transactions_of_user(u, n):
     # all_transactions = sorted(all_transactions, key=lambda transaction: transaction.date)
     # return all_transactions[-n:]
     
-    transactions = Transaction.objects.filter(Q(payer=u) | Q(beneficiaries=u)).order_by('-date')[:n]
+    transactions = Transaction.objects.filter(Q(payer=u) | Q(beneficiaries=u)).order_by('date')[:n]
     transactions_plus = [transaction_infos(tr,u) for tr in transactions]
     return transactions_plus
 
