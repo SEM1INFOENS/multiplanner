@@ -127,6 +127,10 @@ def event(request, ide):
         'can_cancel_acceptance' : event.can_cancel_acceptance(user),
         'form' : form,
     }
+    if event.is_over():
+        messages.warning(request, 'This event is over')
+    elif event.has_begun():
+        messages.warning(request, 'This event has already begun')
     return render(request, 'event.html', context)
 
 
