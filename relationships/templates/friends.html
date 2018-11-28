@@ -1,0 +1,35 @@
+{%extends "base_template.html" %}
+
+{% block content %}
+
+<h2>Your friends</h2>
+
+{% if p_invites %}
+<h3>Pending invites</h3>
+<ul>
+  {% for user in p_invites %}
+  <li><a href="{% url 'users:page' user.username %}">{{ user.username }} <i class="fas fa-user-plus"></i></a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% if friends %}
+<h3>Friends</h3>
+<ul>
+  {% for user in friends %}
+  <li><a href="{% url 'users:page' user.username %}">{{ user.username }}</a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+
+{% if s_invites %}
+<h3>Invited</h3>
+<ul>
+  {% for user in s_invites %}
+  <li><a href="{% url 'users:page' user.username %}">{{ user.username }} <i class="fas fa-user-clock"></i></a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+
+{% endblock %}
