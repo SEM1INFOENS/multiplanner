@@ -16,12 +16,12 @@ def amount_payed(tr, user):
         benef = tr.beneficiaries.all()
         if user == tr.payer:
             if user in benef:
-                return round(tr.amount*(1-1/len(benef)), 2)
+                return round(tr.amount*(1-1/benef.count()), 2)
             else:
                 return tr.amount
         else:
             if user in benef:
-                return -round(tr.amount/len(benef), 2)
+                return -round(tr.amount/benef.count(), 2)
             else:
                 return 0
     
@@ -81,7 +81,7 @@ def n_transactions_of_user(u, n):
     # all_transactions = sorted(all_transactions, key=lambda transaction: transaction.date)
     # return all_transactions[-n:]
     
-    transactions = Transaction.objects.filter(Q(payer=u) | Q(beneficiaries=u)).order_by('date')[:n]
+    transactions = Transaction.objects.filter(Q(payer=u) | Q(beneficiaries=u)).distinct().order_by('date')[:n]
     transactions_plus = [transaction_infos(tr,u) for tr in transactions]
     return transactions_plus
 
@@ -109,7 +109,7 @@ def balance_of_user(u):
     spent = 0
     due = 0
 
-    for tr in Transaction.objects.filter(Q(payer=u) | Q(beneficiaries=u)):
+    for tr in Transaction.objects.filter(Q(payer=u) | Q(beneficiaries=u)).distinct():
         payed = amount_payed(tr, u)
         if payed > 0:
             spent += payed
