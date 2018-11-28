@@ -57,26 +57,41 @@ def n_transactions_of_user(u, n):
 def balance_of_user(u):
     """Returns the financial balance of user u, i.e. the total amount that
     they owe and the total amount that is owed to them"""
-    groups_queryset = Group.objects.all()
-    groups_of_u = []
-    for g in queryset_to_list(groups_queryset):
-        if u in g.members.all():
-            groups_of_u.append(g)
+    # groups_queryset = Group.objects.all()
+    # groups_of_u = []
+    # for g in queryset_to_list(groups_queryset):
+    #     if u in g.members.all():
+    #         groups_of_u.append(g)
 
+    # spent = 0
+    # due = 0
+
+    # for g in groups_of_u:
+    #     for tr in queryset_to_list(g.transactions.all()):
+    #         benef = queryset_to_list(tr.beneficiaries.all())
+
+    #         if tr.payer == u:
+    #             if u in benef:
+    #                 spent += round(tr.amount*(1-1/len(benef)), 2)
+    #             else:
+    #                 spent += tr.amount
+
+    #         elif u in benef:
+    #             due += round(tr.amount/len(benef), 2)
+
+    # return spent, due
     spent = 0
     due = 0
 
-    for g in groups_of_u:
-        for tr in queryset_to_list(g.transactions.all()):
-            benef = queryset_to_list(tr.beneficiaries.all())
+    for tr in Transaction.objects.filter(payer=u):
+        benef = tr.beneficiaries.all()
+        if u in benef:
+            spent += round(tr.amount*(1-1/len(benef)), 2)
+        else:
+            spent += tr.amount
 
-            if tr.payer == u:
-                if u in benef:
-                    spent += round(tr.amount*(1-1/len(benef)), 2)
-                else:
-                    spent += tr.amount
-
-            elif u in benef:
-                due += round(tr.amount/len(benef), 2)
+    for tr in Transaction.objects.filter(beneficiaries=u).exclude(payer=u):
+        benef = tr.beneficiaries.all()
+        due += round(tr.amount/len(benef), 2)
 
     return spent, due

@@ -16,6 +16,7 @@ def index(request):
     user = request.user
     last_transactions = Transaction.objects.filter(payer=user)
     groups = user.group_set.all()
+    spent, due = balance_of_user(user)
     context = {
         'loggedin_user' : user,
         'last_transactions': last_transactions,
@@ -23,7 +24,10 @@ def index(request):
         'events_invitations' : events_invitations(user),
         'events_will_attend' : events_will_attend(user),
         'friendship_requests' : friendship_requests(user),
-        'friends' : n_random_friends(user, nb_of_friends)
+        'friends' : n_random_friends(user, nb_of_friends),
+        'balance' : spent - due,
+        'balance_plus' : spent,
+        'balance_minus' : -due,
     }
     return render(request, 'users/index.html', context)
 
