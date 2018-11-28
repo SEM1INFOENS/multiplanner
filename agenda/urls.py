@@ -10,6 +10,7 @@ urlpatterns = [
     path('', views.agenda, name='agenda'),
     url(r'^event/(?P<ide>[0-9]+)$', views.event, name='event'),
     url(r'^edit-event/(?P<ide>[0-9]+)$', views.edit_event, name='edit-event'),
+    path('invitation_answer/', views.invitation_answer, name='invitation_answer'),
     #url(r'^admin/jsi18n', 'django.views.i18n.javascript_catalog'),
 ]
 

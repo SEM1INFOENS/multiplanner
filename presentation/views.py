@@ -35,8 +35,6 @@ def index(request):
 def page(request, username):
     user_page = User.objects.get(username=username)
     user = request.user
-    if request.method == 'POST':
-        success = rel.friendship_update(request, user_page)
     context = {
         'user' : user_page,
         'transactions': Transaction.objects.filter(payer=user_page),

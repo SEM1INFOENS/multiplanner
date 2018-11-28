@@ -105,11 +105,6 @@ def event(request, ide):
     group = event.attendees
     user = request.user
     if request.method == 'POST':
-        if "accept_invite" in request.POST:
-            event.accept_invite(user)
-        if "cancel_acceptance" in request.POST:
-            event.cancel_acceptance(user)
-
         form = TransactionForm(request.POST, current_group=group)
         
         if form.is_valid():
@@ -198,3 +193,17 @@ def generate_calendar(request):
     }
     response.write(t.render(context))
     return response
+
+
+@login_required
+def invitation_answer(request):
+    assert request.method == 'POST'
+    redirect_url = request.POST.get('redirect_url')
+    user = request.user
+    event = Event.objects.get(pk=request.POST.get('event'))
+    if "accept_invite" in request.POST:
+        event.accept_invite(user)
+    if "cancel_acceptance" in request.POST:
+        event.cancel_acceptance(user)
+
+    return redirect(redirect_url)

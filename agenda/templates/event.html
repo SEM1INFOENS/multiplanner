@@ -1,4 +1,4 @@
-{%extends "base_template_agenda.html" %}
+3{%extends "base_template_agenda.html" %}
 
 {% block content %}  
 
@@ -40,7 +40,10 @@
   </div>
 </div>
 
-<form action="{% url 'event' ide=event.id %}" method="post">
+<form action="{% url 'invitation_answer' %}" method="post">
+  <input type="hidden" name="redirect_url" value="{{ request.get_full_path }}">
+  <input type="hidden" name="event" value="{{ event.id }}">
+
   {% csrf_token %}
   {% if can_accept_invite %}
   You are invited to this event

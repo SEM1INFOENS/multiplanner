@@ -7,7 +7,7 @@ from friendship.models import Friend
 import operator
 import functools
 from django.db.models import Q, F
-
+from . import functions
 
 
 def filter_r(query_list, result):
@@ -60,3 +60,11 @@ def friends(request):
     }
     return render(request, 'friends.html', context)
 
+@login_required
+def friendship_request(request):
+    assert request.method == 'POST'
+    redirect_url = request.POST.get('redirect_url')
+    user_page = User.objects.get(username=request.POST.get('user_page'))
+    success = functions.friendship_update(request, user_page)
+    return redirect(redirect_url)
+    
