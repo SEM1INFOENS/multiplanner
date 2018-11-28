@@ -58,7 +58,13 @@ class Transaction(models.Model):
         '''Enables to display a Transaction in a convenient way'''
         return "motive : {}, date : {}, payer : {}, amount : {}, beneficiaries : {}" \
         .format(self.motive, self.date, self.payer, self.amount, self.beneficiaries)
-
+ 
+    def __str__(self):
+        if self.beneficiaries.all().count() <= 3:
+            ben = [b.username for b in self.beneficiaries.all()]
+            return "{} ({} payed for {})".format(self.motive, self.payer.username, ", ".join(ben))
+        else:
+            return "{} ({} payed)".format(self.motive, self.payer.username)
 
 
 class SharedAccount(models.Model):
@@ -78,3 +84,7 @@ class SharedAccount(models.Model):
     def __repr__(self):
         '''Enables to display a SharedAccount in a convenient way'''
         return "name : {}, members : {}".format(self.name, self.members)
+
+    def __str__(self):
+        members = [m.username for m in self.members.all()]
+        return "{} [{}]".format(self.name, "|".join(members))
