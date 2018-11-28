@@ -12,15 +12,18 @@ from relationships import functions as rel
 
 @login_required
 def index(request):
+    nb_of_friends = 6
     user = request.user
     last_transactions = Transaction.objects.filter(payer=user)
     groups = user.group_set.all()
     context = {
+        'loggedin_user' : user,
         'last_transactions': last_transactions,
         'groups': groups,
         'events_invitations' : events_invitations(user),
         'events_will_attend' : events_will_attend(user),
         'friendship_requests' : friendship_requests(user),
+        'friends' : n_random_friends(user, nb_of_friends)
     }
     return render(request, 'users/index.html', context)
 

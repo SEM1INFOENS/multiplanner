@@ -7,8 +7,6 @@
 
 {% block content %}
 
-<a href="/agenda/">my agenda <i class="far fa-calendar"></i></a>
-
 
 <div class="container-fluid" style="margin-top: 0.97rem">
 
@@ -16,12 +14,16 @@
     <div class="col">
       <div class="mb-3">
         <div class="row">
-          <div class="col-3" style="text-align: center">
-            <div>
-              <img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
-              <h3 class=""> {{username|default:"Me"}} </h3>
-            </div>
-          </div>
+	  
+	  <div class="col-3" style="text-align: center">
+            <a href="{% url 'users:page' loggedin_user.username %}">
+              <div>
+		<img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
+		<h3 class=""> {{username|default:"Me"}} </h3>
+              </div>
+            </a>
+	  </div>
+	  
           <div class="col">
             <h3>Your current balance is:</h2>
 <h2 class="text-success">{{balance|default:"+20€"}} <sub><a href=#>details</a></sub></h2>
@@ -32,44 +34,29 @@
 <div class="row">
   <div class="col-4">
     <div class="card">
-      <div class="card-header" style="line-height: 40%"><a href=#>Friends</a></div>
+      <div class="card-header" style="line-height: 40%"><a href="{% url 'friends:friends' %}">Friends</a></div>
       <div class="card-body" style="text-align: center">
-        <div class="row">
-          <div class="col-4">
-            <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
-              <p><small>nickname</small></p>
-            </div>
-          </div>
-          <div class="col-4">
-            <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
-              <p><small>nickname</small></p>
-            </div>
-          </div>
-          <div class="col-4">
-            <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
-              <p><small>nickname</small></p>
-            </div>
-          </div>
-        </div>
-        <div class="row">
-          <div class="col-4">
-            <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
-              <p><small>nickname</small></p>
-            </div>
-          </div>
-          <div class="col-4">
-            <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
-              <p><small>nickname</small></p>
-            </div>
-          </div>
-          <div class="col-4">
-            <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
-              <p><small>nickname</small></p>
-            </div>
-          </div>
-        </div>
-      </div>
 
+	<div class="row">	  
+	  {% for user in friends %}
+	  
+	  {% if forloop.counter0 != 0 and forloop.counter0|divisibleby:3 %}
+	</div>
+        <div class="row">
+	  {% endif %}
+	  
+	  <div class="col-4">
+	    <a href="{% url 'users:page' user.username %}">
+            <div><img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
+              <p><small>{{ user }}</small></p>
+            </div>
+	    </a>
+          </div>
+
+	  {% endfor %}
+        </div>
+
+      </div>
     </div>
   </div>
 
