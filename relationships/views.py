@@ -49,3 +49,14 @@ def user_search(request):
     }
     return render(request, 'research_user.html', context)
 
+
+@login_required
+def friends(request):
+    user = request.user
+    context = {
+        'friends' :   Friend.objects.friends(user),
+        'p_invites' : [fr.from_user for fr in Friend.objects.unrejected_requests(user=user)],
+        's_invites' : [fr.to_user for fr in Friend.objects.sent_requests(user=user)],
+    }
+    return render(request, 'friends.html', context)
+
