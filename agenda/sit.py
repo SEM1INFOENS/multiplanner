@@ -17,7 +17,7 @@ def sitting(event, tables):
     nb_tables = len(tables)
     affection = event.attendees.relationship_matrix()
 
-    if(tables.sum >= group):
+    if(sum(tables) < group):
         return None
 
     lp = glp_create_prob();  # create the problem
