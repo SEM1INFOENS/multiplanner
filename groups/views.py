@@ -7,7 +7,11 @@ from .forms import *
 
 @login_required
 def showGroups (request):
-	return render(request, 'groups.html')
+	user = request.user
+	context = {
+		'groups' : Group.objects.groups_of_user(user),
+	}
+	return render(request, 'groups.html',context)
 
 
 @login_required

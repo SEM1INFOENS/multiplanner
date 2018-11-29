@@ -11,11 +11,16 @@
 
 <a href="{% url 'groups:new-group' %}">create a new group <i class="far fa-calendar-plus"></i></a>
 
+{% if not events_admin and not events_attendees and not events_invited and not events_past %}
+<p><i>You belong to 0 groups Mouahahahahah</i></p>
+{% else %}
+
 <h3>Groups you belong to</h3>
 <ul>
-  {% for group in groups_admin %}
-  <li><a href="{% url 'groups:group-number' group.id %}">{{ group }} </a></li>
+  {% for group in groups %}
+  <li><a href="{% url 'groups:group-number' group.id %}">{{ group.name }} </a></li>
   {% endfor %}
 </ul>
+{% endif %}
 
 {% endblock %}
