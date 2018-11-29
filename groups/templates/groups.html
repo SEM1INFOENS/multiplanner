@@ -1,0 +1,21 @@
+{%extends "base_template_groups.html" %}
+
+{% block content %}  
+
+<form>
+  <input type="button" value="Back" class="btn btn-primary" onclick="history.back()">
+</form>
+
+<h2>Your Groups</h2>
+
+
+<a href="/groups/new-group">create a new group <i class="far fa-calendar-plus"></i></a>
+
+<h3>Groups you belong to</h3>
+<ul>
+  {% for group in groups_admin %}
+  <li><a href="{% url 'groups' group.id %}">{{ group }} </a></li>
+  {% endfor %}
+</ul>
+
+{% endblock %}
