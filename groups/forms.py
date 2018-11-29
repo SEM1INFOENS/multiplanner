@@ -9,21 +9,19 @@ class GroupForm (ModelForm):
 
 	class Meta :
 		model = Group
-		fields = ['name','members','transactions']
+		fields = ['name','members']
 
 	def __init__(self, *args, **kwargs):
 		self._user =  kwargs.pop('creator_user')
 		super(GroupForm, self).__init__(*args, **kwargs)
 
 	def save(self, commit=True):
-		inst = super(GroupForm, self).save(commit=False)
-		inst.creator = self._user  # we set 'Event.creator' to the currently logged in user
-		att =  Group()
-		att.save()
-		inst.attendees = att
-		if commit:
-			inst.save()
-			self.save_m2m()
+		inst = super(GroupForm, self).save(commit=True)
+#		att =  Group()
+#		att.save()
+#		if commit:
+#			inst.save()
+#			self.save_m2m()
 		return inst
 
 
@@ -37,7 +35,7 @@ class TransactionForm(ModelForm):
 		widgets = {
 			'motive' : forms.Textarea,
 			'date' : forms.SelectDateWidget(),
-			'amoint' : forms.NumberInput
+			'amount' : forms.NumberInput
 		}
 
 	def __init__(self, *args, **kwargs):

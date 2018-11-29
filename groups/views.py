@@ -18,7 +18,7 @@ def create_group (request):
 		if form.is_valid():
 			group = form.save()
 			success = messages.success(request, 'Group has been successfully created')
-			return redirect('groups:edit-group', ide=group.id)
+			return redirect('groups:group-number', ide=group.id)
 	else :
 		form = GroupForm(creator_user=request.user)
 	
@@ -37,7 +37,8 @@ def edit_group (request,ide):
 
 
 @login_required
-def group_number (request):
-	context = {'new' : False}
-	group = get_object_or_404(Group, pk=ide)
+def group_number (request,ide):
+
+#	context = {'new' : False}
+#	group = get_object_or_404(Group, pk=ide)
 	return render(request, 'groups.html')
