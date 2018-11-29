@@ -33,6 +33,33 @@ The application will be available at `http://127.0.0.1:8000/ `.
 For now, you can see the main page at `http://127.0.0.1:8000/`.
 
 
+## Online version
+An online version is aviable at https://multiplanner.herokuapp.com/
+To run commands in the server, 
+first install the heroku toolbelt (https://devcenter.heroku.com/articles/heroku-cli).
+Then run :
+```bash
+heroku login
+heroku run -a multiplanner <your_command>
+```
+
+To apply migrations / create db :
+```bash
+heroku run -a multiplanner ./manage.py migrate
+heroku run -a multiplanner ./manage.py migrate --run-syncdb
+```
+To start the server : 
+```bash
+heroku ps:scale web=1 -a multiplanner
+```
+<aside class="warning">
+	The database should not be stored on heroku. 
+	For now it is the case but we may sometimes lose the db and have to recreate it.
+	
+	In the future we will have to place the db somewhere else
+</aside>
+
+
 ## Project architecture
 
 ### Project documentation
