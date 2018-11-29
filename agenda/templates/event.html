@@ -48,7 +48,7 @@
   {% if can_accept_invite %}
   You are invited to this event
   <button type="submit" class="btn btn-primary"  name="accept_invite">
-  Accept invite <i class="far fa-calendar-check"></i></button>
+    Accept invite <i class="far fa-calendar-check"></i></button>
   {% endif %}
   
   {% if can_cancel_acceptance %}
@@ -60,39 +60,64 @@
 
 
 <h1>{{ event.name }}</h1>
-<p>
-  <b>
-    From: {{ event.date_time }}<br>
-    {{ event.time|default:"" }}
-  </b>
-  <br><br>
-  <b>
-    To: {{ event.date_time_end }}<br>
-    {{ event.time_end|default:"" }}
-  </b>
 
-</p>
-
-<p>{{ event.description|default:"<i>no description provided</i>" }}</p>
+<div class="row">
+  <div class="col-sm-6">
 
 
+    <p>
+      <b>
+	From: {{ event.date_time }}<br>
+	{{ event.time|default:"" }}
+      </b>
+      <br><br>
+      <b>
+	To: {{ event.date_time_end }}<br>
+	{{ event.time_end|default:"" }}
+      </b>
 
-<p>
-  <h3>Invited</h3>
-  <ul>
-    {% for user,come in invited %}
-    <li><a href="/users/{{ user.username }}/">{{ user.username }}</a>
-      {% if come %}<i> - is comming</i> {% endif %}
-    </li>
-    {% endfor %}
-  </ul>
-</p>
+    </p>
 
-<p>
-  <h4>Admin</h4>
-  {% for user in admin %}
-  <a href="/users/{{ user.username }}/">{{ user.username }}</a>
-  {% endfor %}
-</p>
+    <p>{{ event.description|default:"<i>no description provided</i>" }}</p>
+
+
+
+    <p>
+      <h3>Invited</h3>
+      <ul>
+	{% for user,come in invited %}
+	<li><a href="/users/{{ user.username }}/">{{ user.username }}</a>
+	  {% if come %}<i> - is comming</i> {% endif %}
+	</li>
+	{% endfor %}
+      </ul>
+    </p>
+
+    <p>
+      <h4>Admin</h4>
+      {% for user in admin %}
+      <a href="/users/{{ user.username }}/">{{ user.username }}</a>
+      {% endfor %}
+    </p>
+
+  </div>
+  <div class="col-sm-4">
+    <div class="card">
+
+      <div class="card-header" style="line-height: 40%">Latest transactions</div>
+      <div class="card-body">
+	<ul class="list-group list-group-flush">
+	  {% for tr in last_transactions %}
+	  <li>
+	    <a href="#">
+	      {{ tr.amount }}€ {{ tr }}
+	    </a>
+	  </li>
+	  {% endfor %}
+	</ul>
+      </div>
+    </div>
+  </div>
+</div>
 
 {% endblock %}

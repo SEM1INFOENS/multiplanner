@@ -117,6 +117,7 @@ def event(request, ide):
     attendees = event.attendees.members.all()
     invited_attendees = [(u, (u in attendees)) for u in invited] 
     admin_l = event.administrators.all()
+    last_transactions = event.attendees.transactions.all().order_by('-date')
     context = {
         'event': event,
         'invited' : invited_attendees,
@@ -124,6 +125,7 @@ def event(request, ide):
         'is_admin' : (request.user in admin_l),
         'can_accept_invite' : event.can_accept_invite(user),
         'can_cancel_acceptance' : event.can_cancel_acceptance(user),
+        'last_transactions' : last_transactions,
         'form' : form,
     }
     if event.is_over():
