@@ -15,3 +15,5 @@ django-friendship==1.8.0
 #To use glpk
 swiglpk==4.65.0
 
+#To use heroku
+whitenoise==4.1.2
