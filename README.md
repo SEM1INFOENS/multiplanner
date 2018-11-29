@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/SEM1INFOENS/multiplanner.svg?branch=master)](https://travis-ci.com/SEM1INFOENS/multiplanner)
+You must replace `meowmeowmeow` with your personal API key.[![Build Status](https://travis-ci.com/SEM1INFOENS/multiplanner.svg?branch=master)](https://travis-ci.com/SEM1INFOENS/multiplanner)
 
 # multiplanner
 Here you could find a project dedicated to money and friendship.
@@ -52,12 +52,11 @@ To start the server :
 ```bash
 heroku ps:scale web=1 -a multiplanner
 ```
-<aside class="warning">
-	The database should not be stored on heroku. 
-	For now it is the case but we may sometimes lose the db and have to recreate it.
-	
-	In the future we will have to place the db somewhere else
-</aside>
+
+> **The database should not be stored on heroku.**
+> **For now it is the case but we may sometimes lose the db and have to recreate it.**
+>	
+> **In the future we will have to place the db somewhere else**
 
 
 ## Project architecture
