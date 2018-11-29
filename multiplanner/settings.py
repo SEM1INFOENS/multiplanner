@@ -153,4 +153,4 @@ LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/'
 
 #To use heroku
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
