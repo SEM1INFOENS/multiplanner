@@ -17,6 +17,9 @@ def sitting(event, tables):
     nb_tables = len(tables)
     affection = event.attendees.relationship_matrix()
 
+    if(tables.sum >= group):
+        return None
+
     lp = glp_create_prob();  # create the problem
     glp_set_prob_name(lp, "Sitting arrangement");
     glp_set_obj_dir(lp, GLP_MAX);  # indicated that we want to maximize
@@ -113,7 +116,7 @@ def sitting(event, tables):
 
     if(status == GLP_NOFEAS):
         glp_delete_prob(lp);
-        return;
+        return None
     # prepares the result array containing the corresponding tables for each guest
     assignements = intArray(group);
     for j in range(1, group + 1):
