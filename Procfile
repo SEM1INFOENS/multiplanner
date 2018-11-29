@@ -1,1 +1,1 @@
-web: gunicorn multiplanner.wsgi --log-file -
+web:  python3 manage.py migrate --run-syncdb ; python3 manage.py runserver
