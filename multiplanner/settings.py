@@ -153,5 +153,9 @@ LOGIN_URL = '/login'
 LOGIN_REDIRECT_URL = '/'
 
 #To use heroku
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
-ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
+
+import django_heroku
+django_heroku.settings(locals())
+
+#STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+#ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
