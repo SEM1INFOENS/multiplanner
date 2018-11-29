@@ -37,6 +37,29 @@
   {% endif %} 
 </form>
 
+<button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#secretModal">
+  Set secret mark
+</button>
+
+<div class="modal fade" id="secretModal" tabindex="-1" role="dialog" aria-labelledby="secretModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="secretModalLabel">Set secret mark </h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form action="" method="post">
+          <input type="button" class="btn btn-primary" value="Back" onclick="history.back()">
+          <input type="submit" class="btn btn-primary" value="Save">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
 <h2>List of transactions</h2>
 <ul>
   {% for transaction in transactions %}

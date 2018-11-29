@@ -38,8 +38,11 @@ def sitting(event, tables):
         for k in range(1, group + 1):
             for i in range(1, nb_tables + 1):
                 index = col_index_p(j, k, i, nb_tables, group);
-                glp_set_obj_coef(lp, index, affection[j - 1][
-                    k - 1] + 10);  # added +10 to the coefficients to make them positive (going from [-10,10] to [0,20])
+                if(j != k):
+                    glp_set_obj_coef(lp, index, affection[j - 1][
+                    k - 1] + 10); # added +10 to the coefficients to make them positive (going from [-10,10] to [0,20])
+                else:
+                    glp_set_obj_coef(lp, index, 10);
                 glp_set_col_kind(lp, index, GLP_BV);
 
     # ADD CONSTRAINTS #
