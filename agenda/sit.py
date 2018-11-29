@@ -109,6 +109,11 @@ def sitting(event, tables):
 
     glp_intopt(lp, None);  # then optimize using the intopt method
 
+    status = glp_mip_status(lp);
+
+    if(status == GLP_NOFEAS):
+        glp_delete_prob(lp);
+        return;
     # prepares the result array containing the corresponding tables for each guest
     assignements = intArray(group);
     for j in range(1, group + 1):
