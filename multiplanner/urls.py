@@ -26,7 +26,7 @@ urlpatterns = [
     path('', include('presentation.urls', namespace='users')),
     path('admin/', admin.site.urls),
     path('agenda/', include('agenda.urls')),
-    path('groups/', include('accounting.urls', namespace = 'groups')),
+    path('groups/', include('groups.urls', namespace = 'groups')),
     #url(r'^friends/', include(('relationships.urls', 'friends'), namespace='friends')),
     path('friends/', include('relationships.urls', namespace='friends')),
     #    url(r'^friendship/', include('friendship.urls')),
