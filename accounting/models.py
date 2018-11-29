@@ -5,7 +5,6 @@ from django.forms import ValidationError
 from django.contrib.auth.models import User
 from django.utils import timezone
 
-
 def validate_amount(value):
     '''Checks that the amount is positive and has less than two
     figures after the comma.'''

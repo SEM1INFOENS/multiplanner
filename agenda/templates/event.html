@@ -109,7 +109,7 @@
 	<ul class="list-group list-group-flush">
 	  {% for tr in last_transactions %}
 	  <li>
-	    <a href="#">
+	    <a href="{% url 'transaction_details' tr.id %}">
 	      {{ tr.amount }}€ {{ tr }}
 	    </a>
 	  </li>

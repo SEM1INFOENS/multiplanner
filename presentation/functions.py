@@ -5,6 +5,7 @@ from friendship.models import Friend
 from django.utils import timezone
 from django.db.models import Q
 from accounting.models import Transaction
+from accounting import functions as acc_functions
 
 def queryset_to_list(Q):
     L = []
@@ -46,17 +47,9 @@ def friendship_requests(user):
 
 def transaction_infos(tr, user):
     amount = amount_payed(tr, user)
-    try:
-        group = Group.objects.get(transactions=tr)
-        try:
-            event = group.event
-            return (tr, amount, 'event', event)
-        except Event.DoesNotExist:
-            return (tr, amount, 'group', group)
-    except Group.DoesNotExist:
-        return (tr, amount, '', None)
+    type_, entity = acc_functions.related_entity(tr)
+    return (tr, amount, type_,entity)
     
-
 def n_transactions_of_user(u, n):
     """Returns the last n transactions implying an event or group u belongs to,
     sorted in chronological time"""

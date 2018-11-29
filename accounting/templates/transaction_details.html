@@ -1,0 +1,51 @@
+{%extends base_template %}
+
+{% block content %}  
+
+
+<form>
+  <input type="button" value="Back" class="btn btn-primary" onclick="history.back()">
+</form>
+
+
+
+
+<h2>{{ transaction.motive }}</h2>
+
+<h3>{{ transaction.amount }}€</h3>
+
+<p>
+  <b>
+    {{ transaction.date }}
+  </b>
+</p>
+
+<p>
+  <b>payer : </b>
+  <a href="{% url 'users:page' user.username %}">{{ transaction.payer }}</a>
+</p>
+<p>
+  <b>beneficiaries</b>
+  <ul>
+    {% for user in beneficiaries %}
+    <li>
+      <a href="{% url 'users:page' user.username %}">{{ user }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</p>
+
+<p>
+  {% if type == "event" %}
+  This transaction was made for the event 
+  <i class="far fa-calendar-alt"></i>
+  <a href="{% url 'event' entity.id %}">{{ entity }}</a>
+  {% elif type == "group" %}
+  This transaction was made for the group
+  <i class="fas fa-users"></i>
+  <a href="#">{{ entity }}</a>
+  {% else %}
+  {% endif %}
+</p>
+
+{% endblock %}

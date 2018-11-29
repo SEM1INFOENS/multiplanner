@@ -30,4 +30,5 @@ urlpatterns = [
     #url(r'^friends/', include(('relationships.urls', 'friends'), namespace='friends')),
     path('friends/', include('relationships.urls', namespace='friends')),
     #    url(r'^friendship/', include('friendship.urls')),
+    path('accounting/', include('accounting.urls')),
 ]
