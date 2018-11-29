@@ -35,6 +35,29 @@ def combine(date, time, default_time):
     else: t = time
     return datetime_module.datetime.combine(date, t)
 
+
+class EventManager(models.Manager):
+    def invited(self, user):
+        '''List the futur events to which the user is invited'''
+        return Event.objects.filter( date__gte=timezone.now(), invited=user).exclude(attendees__members=user).order_by('creation_date')
+    
+    def attending(self, user):
+        '''List the futur events to which the user will attend'''
+        return Event.objects.filter( date__gte=timezone.now(), attendees__members=user).order_by('time','date').order_by('date')
+    
+    def past_invited(self, user):
+        '''List the past events to which the user was invited'''
+        return Event.objects.filter( date__lt=timezone.now(), invited=user).exclude(attendees__members=user).order_by('-date_end')
+    
+    def past_attending(self, user):
+        '''List the past events to which the user has attend'''
+        return Event.objects.filter( date__lt=timezone.now(), attendees__members=user).order_by('-date_end')
+
+    def past(self, user):
+        '''List the past events to which the user was invited or has attended'''
+        return Event.objects.filter( date__lt=timezone.now(), invited=user).order_by('-date_end')
+
+    
 class Event(models.Model):
     '''An event is created by a person, and has a group of person attending it.
     If the subsequent group is deleted (which should not happen unless the event is being deleted),
@@ -42,6 +65,9 @@ class Event(models.Model):
     It has administrators (at least one). In the case where the last administrator is deleted,
     all members become administrators.
     If the creator is deleted, the event remains and the creator is set to NULL.'''
+
+    objects = EventManager()
+    
     name = models.CharField(max_length=100)
     creation_date = models.DateTimeField(default=timezone.now)
     description = models.CharField(blank=True, max_length=1000)

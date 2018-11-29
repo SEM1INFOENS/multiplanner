@@ -17,26 +17,45 @@
 
 <a href="{% url 'new-event' %}">create a new event <i class="far fa-calendar-plus"></i></a>
 
+{% if not events_admin and not events_attendees and not events_invited and not events_past %}
+<p><i>Your agenda is empty</i></p>
+{% else %}
+{% if events_admin %}
 <h3>Events you manage</h3>
 <ul>
   {% for event in events_admin %}
   <li><a href="{% url 'event' event.id %}">{{ event }} </a></li>
   {% endfor %}
 </ul>
+{% endif %}
 
+{% if events_invited %}
 <h3>Events you are invited to</h3>
 <ul>
   {% for event in events_invited %}
   <li><a href="{% url 'event' event.id %}">{{ event }} </a></li>
   {% endfor %}
 </ul>
+{% endif %}
 
+{% if events_attendees %}
 <h3>Events you will attend</h3>
 <ul>
   {% for event in events_attendees %}
   <li><a href="{% url 'event' event.id %}">{{ event }} </a></li>
   {% endfor %}
 </ul>
+{% endif %}
+
+{% if events_past %}
+<h3>Passed events</h3>
+<ul>
+  {% for event in events_past %}
+  <li><a href="{% url 'event' event.id %}">{{ event }} </a></li>
+  {% endfor %}
+</ul>
+{% endif %}
+{% endif %}
 
 
 {% endblock %}

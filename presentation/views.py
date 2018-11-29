@@ -7,6 +7,7 @@ from django.contrib.auth.models import User
 from django.contrib import messages
 
 from accounting.models import Transaction
+from agenda.models import Event
 from .functions import *
 from relationships import functions as rel
 
@@ -21,8 +22,8 @@ def index(request):
         'loggedin_user' : user,
         'last_transactions': n_transactions_of_user(user, nb_of_transactions),
         'groups': groups,
-        'events_invitations' : events_invitations(user),
-        'events_will_attend' : events_will_attend(user),
+        'events_invitations' : Event.objects.invited(user),
+        'events_will_attend' : Event.objects.attending(user),
         'friendship_requests' : friendship_requests(user),
         'friends' : n_random_friends(user, nb_of_friends),
         'balance' : spent - due,

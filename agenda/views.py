@@ -88,12 +88,11 @@ def edit_event(request, ide):
 @login_required
 def agenda(request):
     user = request.user
-    att = Event.objects.filter(attendees__members=user)
-    inv = Event.objects.filter(invited=user).difference(att)
     context = {
         'events_admin': Event.objects.filter(administrators=user),
-        'events_invited': inv,
-        'events_attendees': att,
+        'events_invited': Event.objects.invited(user),
+        'events_attendees': Event.objects.attending(user),
+        'events_past': Event.objects.past(user),
     }
     return render(request, 'agenda.html', context)
 
