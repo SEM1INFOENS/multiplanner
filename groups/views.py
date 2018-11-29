@@ -1,7 +1,9 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
+from django.template import context
+from django.contrib import messages
 
-from . import forms
+from .forms import *
 
 @login_required
 def showGroups (request):
@@ -10,13 +12,32 @@ def showGroups (request):
 
 @login_required
 def create_group (request):
+	context = {'new' : True}
 	if request.method == 'POST':
-		form = forms.EventForm(request.POST, creator_user=request.user)
+		form = GroupForm(request.POST, creator_user=request.user)
+		if form.is_valid():
+			group = form.save()
+			success = messages.success(request, 'Group has been successfully created')
+			return redirect('groups:edit-group', ide=group.id)
 	else :
-		pass
-	return render(request, 'groups.html')
+		form = GroupForm(creator_user=request.user)
+	
+	context.update({'form': form})
+	return render(request, 'edit_group.html', context)
+
+
+
+
 
 
 @login_required
-def groups_number (request):
+def edit_group (request,ide):
+	return render(request, 'groups.html')
+
+
+
+@login_required
+def group_number (request):
+	context = {'new' : False}
+	group = get_object_or_404(Group, pk=ide)
 	return render(request, 'groups.html')
