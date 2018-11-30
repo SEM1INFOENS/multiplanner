@@ -15,9 +15,9 @@ def col_index_p(guestj,guestk,tablei,nb_tables, nb_guests):
 def sitting(event, tables):
     group = len(event.attendees.members.all())
     nb_tables = len(tables)
-    affection = event.attendees.relationship_matrix()
+    affection, members = event.attendees.relationship_matrix()
 
-    if(sum(tables) < group):
+    if(sum(tables) < group) or group==0:
         return None
 
     lp = glp_create_prob();  # create the problem
@@ -128,5 +128,9 @@ def sitting(event, tables):
                 assignements[j - 1] = i;
 
     glp_delete_prob(lp);
-    return assignements;
+    #return assignements;
+    assignements_users = {}
+    for i in range(len(members)):
+        assignements_users[members[i]] = assignements[i]-1 #first table is 0
 
+    return assignements_users

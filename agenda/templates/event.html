@@ -49,8 +49,14 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="" method="post">
-          <input type="button" class="btn btn-primary" value="Back" onclick="history.back()">
+        <form action="{% url 'new_sitting' %}" method="post">
+	  {% csrf_token %}
+	  <input type="hidden" name="redirect_url" value="{{ request.get_full_path }}">
+	  <input type="hidden" name="event" value="{{ event.id }}">
+	  Enter tables capacities separed by ','
+	  <input type="text" name="tables" placeholder="4,10,8...">
+
+	  <input type="button" class="btn btn-primary" value="Back" onclick="history.back()">
           <input type="submit" class="btn btn-primary" value="Save">
         </form>
       </div>
@@ -104,7 +110,7 @@
       <h3>Invited</h3>
       <ul>
 	{% for user,come in invited %}
-	<li><a href="/users/{{ user.username }}/">{{ user.username }}</a>
+	<li><a href="{% url 'users:page' user.username %}">{{ user }}</a>
 	  {% if come %}<i> - is comming</i> {% endif %}
 	</li>
 	{% endfor %}
@@ -114,7 +120,7 @@
     <p>
       <h4>Admin</h4>
       {% for user in admin %}
-      <a href="/users/{{ user.username }}/">{{ user.username }}</a>
+      <a href="{% url 'users:page' user.username %}">{{ user }}</a>
       {% endfor %}
     </p>
 
@@ -137,5 +143,33 @@
     </div>
   </div>
 </div>
+
+{% if sitting_arrangement != None %}
+<div class="row">
+  <h3>Optimal sitting arangement</h3>
+  </div>
+  <div class="row">
+    {% for table in sitting_arrangement.table_set.all %}
+    <div class="col">
+      <div class="card">
+
+	<div class="card-header" style="line-height: 40%">      <h4>Table {{ forloop.counter }}</h4>
+	</div>
+	<div class="card-body">
+	  <ul class="list-group">
+	    {% for user in table.members.all %}
+	    <li class="list-group-item">
+	      <a href="{% url 'users:page' user.username %}">{{ user }}</a>
+	    </li>
+	    {% endfor %}
+	  </ul>
+	</div>
+      </div>
+    </div>
+    {% endfor %}
+  
+</div>
+{% endif %}
+
 
 {% endblock %}

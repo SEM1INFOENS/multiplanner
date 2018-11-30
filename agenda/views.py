@@ -10,7 +10,7 @@ from django.utils import timezone
 import datetime
 from django.forms.formsets import formset_factory
 from django.utils import timezone
-
+from .models import *
 
 def date_format_ics(date, time):
     '''Converts date to date in ICS format'''
@@ -118,7 +118,10 @@ def event(request, ide):
     invited_attendees = [(u, (u in attendees)) for u in invited] 
     admin_l = event.administrators.all()
     last_transactions = event.attendees.transactions.all().order_by('-date')
-    TableSizeFormSet = formset_factory(TableSizeForm)
+    try :
+        sitting_arrangement = event.sitting#.table__set.all()
+    except Sitting.DoesNotExist:
+        sitting_arrangement = None
     context = {
         'event': event,
         'invited' : invited_attendees,
@@ -128,7 +131,7 @@ def event(request, ide):
         'can_cancel_acceptance' : event.can_cancel_acceptance(user),
         'last_transactions' : last_transactions,
         'form' : form,
-        'tablesize_formset' : TableSizeFormSet,
+        'sitting_arrangement' : sitting_arrangement,
     }
     if event.is_over():
         messages.warning(request, 'This event is over')
@@ -221,6 +224,7 @@ def new_sitting(request):
     assert request.method == 'POST'
     redirect_url = request.POST.get('redirect_url')
     event = Event.objects.get(pk=request.POST.get('event'))
-    # get list
-    #create sitting
+    tables_str = request.POST.get('tables')
+    tables = [int(s) for s in tables_str.split(',')]
+    Sitting.set_new(event, tables)
     return redirect(redirect_url)

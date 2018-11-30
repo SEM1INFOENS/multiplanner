@@ -46,7 +46,7 @@ class Group(models.Model):
     def relationship_matrix(self):
         '''Returns M matrix of size n*n with n the number of attendees
         with M[i][j] the secrete mark i gave j, 0 if no such mark exists'''
-        list_mem = self.members.all()
+        list_mem = [m for m in self.members.all()]
         n = len(list_mem)
 
         M = [[0 for _ in range(n)] for _ in range(n)]
@@ -60,7 +60,7 @@ class Group(models.Model):
                     M[i][j] = SecretMark.objects.get(user=list_mem[i], marked_user=list_mem[j]).mark
                 except SecretMark.DoesNotExist:
                     ()
-        return M
+        return M, list_mem
 
 
 # class TransactionForGroup(Transaction):

@@ -8,6 +8,7 @@ import datetime as datetime_module
 from groups.models import Group
 from accounting.models import Transaction
 from django.core.exceptions import SuspiciousOperation
+from . import sit
 #from treasuremap.fields import LatLongField
 
 
@@ -136,7 +137,34 @@ class Event(models.Model):
             self.attendees.members.remove(user)
         else: raise SuspiciousOperation
 
-
+        
+class Sitting(models.Model):
+    event = models.OneToOneField(Event, primary_key=True, on_delete=models.CASCADE)
+    
+    @classmethod
+    def set_new(self,event, tables):
+        try :
+            old_s = event.sitting
+            old_s.delete()
+        except Sitting.DoesNotExist:
+            pass
+        optimal_s = sit.sitting(event, tables)
+        s_obj = Sitting(event=event)
+        s_obj.save()
+        tables_obj = {}
+        for i in range(len(tables)):
+            t = Table(sitting=s_obj)
+            t.save()
+            tables_obj[i] = t
+        for user, i in optimal_s.items():
+            tables_obj[i].members.add(user)
+        return True
+            
+class Table(models.Model):
+    sitting = models.ForeignKey(Sitting, unique=False, on_delete=models.CASCADE)
+    members = models.ManyToManyField(User, blank=True)
+    
+        
 # class TransactionForEvent(Transaction):
 #     '''A transaction that was made for a certain event'''
 #     def validate_transac_event(self, event):
