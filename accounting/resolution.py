@@ -104,9 +104,16 @@ def resolution_tuple (group, balance) :
 				balance.pop(minimum)
 
 		else :
-			resolution.append((members.pop(minimum),members[maximum],amount))
-			balance.pop(minimum)
-			balance[maximum] -= amount
+			if (minimum > maximum):
+				resolution.append((members.pop(minimum),members[maximum],amount))
+				balance.pop(minimum)
+				balance[maximum] -= amount
+			else:
+				resolution.append((members.pop(minimum),members[maximum-1],amount))
+				balance.pop(minimum)
+				balance[maximum-1] -= amount
+
+
 
 	return resolution
 

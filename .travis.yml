@@ -3,7 +3,9 @@ python:
   - "3.6.4"
 env:
   -DJANGO_VERSION=2.1.2
+before_install: 
+  - sed '/django-heroku==/d' requirements.txt > requirements-build.txt
 install:
-  - pip install -r requirements.txt
+  - pip install -r requirements-build.txt
 script:
   - python manage.py test
