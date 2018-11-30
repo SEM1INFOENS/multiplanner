@@ -61,26 +61,3 @@ class Group(models.Model):
                 except SecretMark.DoesNotExist:
                     ()
         return M, list_mem
-
-
-# class TransactionForGroup(Transaction):
-#     '''A transaction that was made for a certain group
-#     '''
-#     def validate_transac_group(self, group):
-#         '''Checks that all the beneficiaries of the transaction are in the group'''
-#         try:
-#             gp_members = group.members.all()
-#             ben = self.beneficiaries.all()
-#             for beneficiary in ben:
-#                 assert beneficiary in gp_members
-#             return group
-#         except:
-#             message = "Some beneficiaries of a TransactionForGroup are not in the group."
-#             raise ValidationError(message)
-
-#     group = models.ForeignKey(Group, on_delete=models.PROTECT,
-#                               validators=[validate_transac_group])
-#     def __repr__(self):
-#         '''Enables to display a TransactionForGroup in a convenient way'''
-#         return "{}, group : <{}>".format(super(TransactionForGroup, self). \
-#             __repr__(), self.group.__repr__())
