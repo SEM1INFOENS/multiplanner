@@ -82,20 +82,22 @@ class AgendaTestCase(TestCase):
     def test_sitting(self):
         tables = [2,2]
         #Case with 4 people
-        assi = sitting(self.event_list[0],tables)
-
-        assert(assi[0] == assi[2])
-        assert(assi[1] != assi[0])
-        assert(assi[1] == assi[3])
+        assignements = sitting(self.event_list[0],tables)
+        assi = lambda i : assignements[self.event_list[0].attendees.members.all()[i]]
+        
+        assert(assi(0) == assi(2))
+        assert(assi(1) != assi(0))
+        assert(assi(1) == assi(3))
 
         #Case with 6 people
 
         tables = [3,3]
 
-        assi = sitting(self.event_list[1],tables)
+        assignements = sitting(self.event_list[1],tables)
+        assi = lambda i : assignements[self.event_list[1].attendees.members.all()[i]]
 
-        assert(assi[0] == assi[2])
-        assert(assi[2] ==  assi[4])
-        assert(assi[1] != assi[0])
-        assert(assi[1] == assi[3])
-        assert(assi[3] == assi[5])
+        assert(assi(0) == assi(2))
+        assert(assi(2) ==  assi(4))
+        assert(assi(1) != assi(0))
+        assert(assi(1) == assi(3))
+        assert(assi(3) == assi(5))
