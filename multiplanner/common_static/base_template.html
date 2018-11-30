@@ -33,21 +33,28 @@
         </ul>
 
 	<!-- Research Bar -->
-	<form id="searchform" action="{% url 'friends:user-search' %}" method="get" accept-charset="utf-8">
-	  <button class="searchbutton" type="submit">
-	    <i class="fas fa-search"></i>
-	  </button>
-	  <input class="searchfield" id="searchbox" name="q" type="text" placeholder="Search">
-  </form>
+      <form id="searchform" action="{% url 'friends:user-search' %}" method="get" accept-charset="utf-8">
+        <div class="form-row">
+          <div class="input-group">
+            <div class="input-group-prepend">
+              <button class="btn searchbutton" type="submit">
+                <i class="fas fa-search"></i>
+              </button>
+            </div>
+            <input class="searchfield form-control" id="searchbox" name="q" type="text" placeholder="Search">
+          </div>
+        </div>
+      </form>
   
-  <form>
-    <a class="btn btn-primary" href="{% url 'users:logout'%}"> Logout <i class="fas fa-sign-out-alt"></i></a>
-  </form>  
+      <form>
+        <a class="btn btn-primary ml-4" href="{% url 'users:logout'%}"> Logout <i class="fas fa-sign-out-alt"></i></a>
+      </form>  
   </div>
     </nav>
-      <form>
-    <input type="button" value="Back" class="btn btn-primary" onclick="history.back()">
-  </form>
+    
+    <button class="btn btn-light btn-lg" onclick="history.back()"> <i class="fas fa-long-arrow-alt-left"></i></button>
+  
+  
     <!-- To display messages, place a 'messages' in the context -->
     {% if messages %}
     <ul class="messages">
