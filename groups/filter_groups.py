@@ -9,10 +9,13 @@ def all_groups_of_user (user):
 
 
 def groups_not_in_events ():
-	att = Event.objects.all()
-	for i in att:
-		i.attendees
-	return Group.objects.difference(att)
+	pass
+#	att = Event.objects.all()
+#	for i in att:
+#		i.attendees
+#	return Group.objects.difference(att)
 
 def groups_of_user(user) :
-	return groups_not_in_events().filter(members = user).order_by('name')
+#	return groups_not_in_events().filter(members = user).order_by('name')
+	return Group.objects.filter(members = user).order_by('name')
+	
