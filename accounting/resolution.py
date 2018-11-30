@@ -52,7 +52,11 @@ def balance_in_floats (group):
 			moneyPutOnTable -= i
 
 	if moneyTakenFromTable == moneyPutOnTable:
-		return balance2
+                print("case1!!!!!!")
+                #transform centimes to euros
+                for i in range(len(balance2)):
+                        balance2[i] /=100
+                return balance2
 
 	exceedingMoneyOnTable = moneyPutOnTable - moneyTakenFromTable
 	decimals = get_decimals(balance1)
