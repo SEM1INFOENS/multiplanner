@@ -11,6 +11,7 @@ import datetime
 from django.forms.formsets import formset_factory
 from django.utils import timezone
 from .models import *
+from accounting import resolution
 
 def date_format_ics(date, time):
     '''Converts date to date in ICS format'''
@@ -103,6 +104,9 @@ def event(request, ide):
     event = get_object_or_404(Event, pk=ide)
     group = event.attendees
     user = request.user
+
+   
+
     if request.method == 'POST':
         form = TransactionForm(request.POST, current_group=group)
         
@@ -122,6 +126,19 @@ def event(request, ide):
         sitting_arrangement = event.sitting#.table__set.all()
     except Sitting.DoesNotExist:
         sitting_arrangement = None
+
+
+    balance = resolution.balance_in_floats(group)
+    balance1 = [b for b in balance]
+    res = resolution.resolution_tuple(group,balance1)
+    
+    list_context =[]
+    members = [m for m in group.members.all()]
+    for i in range(len(balance)):
+        list_context.append((members[i],balance[i]))
+
+
+
     context = {
         'event': event,
         'invited' : invited_attendees,
@@ -132,6 +149,8 @@ def event(request, ide):
         'last_transactions' : last_transactions,
         'form' : form,
         'sitting_arrangement' : sitting_arrangement,
+        'list_context' : list_context,
+        'resolution' : res ,
     }
     if event.is_over():
         messages.warning(request, 'This event is over')
