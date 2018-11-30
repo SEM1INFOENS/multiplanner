@@ -98,7 +98,7 @@ class GroupTestCase(TestCase):
         m1.save()
         m2.save()
 
-        M = g1.relationship_matrix()
+        M,members = g1.relationship_matrix()
         
         print("Here comes the relationship matrix")
         print(M)
@@ -110,6 +110,6 @@ class GroupTestCase(TestCase):
         m4=SecretMark.create_new(c, a, -10)
         m4.save()
 
-        M = g1.relationship_matrix()
+        M,members = g1.relationship_matrix()
         assert( M == [[0, 10, 0], [-10, 0, 9], [-10, 0, 0]])
 
