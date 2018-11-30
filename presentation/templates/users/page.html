@@ -51,7 +51,14 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="" method="post">
+        <form action="{% url 'users:set_secret_mark' %}" method="post">
+          {% csrf_token %}
+	  <input type="hidden" name="redirect_url" value="{{ request.get_full_path }}">
+	  <input type="hidden" name="user_to_mark" value="{{ user.id }}">
+
+	  Choose secret mark
+	  <input type="number" name="mark" min="-10" max="10" required="required">
+
           <input type="button" class="btn btn-primary" value="Back" onclick="history.back()">
           <input type="submit" class="btn btn-primary" value="Save">
         </form>
@@ -64,6 +71,13 @@
 <ul>
   {% for transaction in transactions %}
   <li>Amount: {{ transaction.amount }}, motive: {{transaction.motive}}</a></li>
+{% endfor %}
+</ul>
+
+<h2>List of secret marks</h2>
+<ul>
+  {% for mark in marks %}
+  <li>Mark: {{ mark.mark }}, marker: {{mark.user}}</a></li>
 {% endfor %}
 </ul>
 
