@@ -37,7 +37,7 @@
   {% elif type == "group" %}
   This transaction was made for the group
   <i class="fas fa-users"></i>
-  <a href="#">{{ entity }}</a>
+  <a href="{% url 'groups:group-number' entity.id %}">{{ entity }}</a>
   {% else %}
   {% endif %}
 </p>

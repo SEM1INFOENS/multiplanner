@@ -38,7 +38,7 @@
 	<h3> The balances for this group's members are: </h3>
 		<ul>
 		{% for user,b in list_context %}
- 			<li>{{ user }} has a balance of {{b}} </li>
+ 			<li>{{ user }} has a balance of {{ b }}€ </li>
   		{% endfor %}
 		</ul>
 
@@ -46,14 +46,14 @@
 	<h3> The resolutions of this group's members are: </h3>
 	<ul>
 		{% for a,b,amount in resolution %}
- 			<li>{{ a }} has to pay {{amount}} to {{b}} </li>
+ 			<li>{{ a }} has to pay {{ amount }}€ to {{ b }} </li>
   		{% endfor %}
 	</ul>
 
 	<h3> Transactions made in this group </h3>
 	<ul>
 		{% for t in transactions %}
- 			<li>{{forloop.counter}} {{ t}} </li>
+ 			<li>{{ forloop.counter }} {{ t }} </li>
   		{% endfor %}
 	</ul>
 {% endif %}

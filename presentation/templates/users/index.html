@@ -91,7 +91,7 @@
                     <i class="far fa-calendar-alt"></i> {{ entity }}
                   </a>
                   {% elif type == 'group' %}
-                  for <a href="#">
+                  for <a href="{% url 'groups:group-number' entity.id %}">
                     <i class="fas fa-users"></i> {{ entity }}
                   </a>
                   {% endif %}
