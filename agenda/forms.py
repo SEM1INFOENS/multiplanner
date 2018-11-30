@@ -63,6 +63,9 @@ class TransactionForm(ModelForm):
     def __init__(self, *args, **kwargs):
         self._group = kwargs.pop('current_group')
         super(TransactionForm, self).__init__(*args, **kwargs)
+        
+        self.fields['payer'].queryset = self._group.members
+        self.fields['beneficiaries'].queryset = self._group.members
 
     def save(self, commit=True):
         inst = super(TransactionForm, self).save()
