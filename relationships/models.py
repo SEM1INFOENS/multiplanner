@@ -28,7 +28,6 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 
 #     def __str__(self):
 #         return str(self.user)
-    
 
 MARK_MIN = -10
 MARK_MAX = 10
@@ -41,6 +40,7 @@ class SecretMark(models.Model):
                                [MaxValueValidator(MARK_MIN),
                                 MinValueValidator(MARK_MAX)])
 
+    ''' Create a new SecretMark'''
     @classmethod
     def create_new(cls, user, marked_user, mark):
         sm = cls(user=user, marked_user=marked_user, mark=mark)

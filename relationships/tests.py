@@ -9,28 +9,28 @@ class GroupTestCase(TestCase):
 
     gt_links = {}
     users_list = []
-    
-    def setUp(self):    
+
+    def setUp(self):
         a = User.objects.create_user(username='alice')
         b = User.objects.create_user(username='bob')
         c = User(username='carlotta')
         c.save()
-        self.users_list = [a,b,c,]
+        self.users_list = [a, b, c,]
 
-        m1=SecretMark.create_new(a, b, 10)
-        m2=SecretMark.create_new(b, c, 9)
+        m1 = SecretMark.create_new(a, b, 10)
+        m2 = SecretMark.create_new(b, c, 9)
         m1.save()
         m2.save()
 
     def test_mark(self):
-        u_qs=User.objects.all()
+        u_qs = User.objects.all()
         for u in u_qs:
             print("\n-user %s\nmarks given:" %u.username)
             for m in u.secretmark_set.all():
                 print(" to %s: %i" %(m.marked_user.username, m.mark))
-                assert (m.user==u)
-    
+                assert m.user == u
+
             print("marks received:")
             for m in u.marked_user_set.all():
                 print(" from %s: %i" %(m.user.username, m.mark))
-                assert (m.marked_user==u)
+                assert m.marked_user == u
