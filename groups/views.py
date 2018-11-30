@@ -5,13 +5,12 @@ from django.contrib import messages
 
 from .forms import *
 from accounting import resolution
-from .filter_groups import *
+from .models import Group
 
 @login_required
 def showGroups (request):
 	user = request.user
-#	groups  = Group.objects.groups_of_user(user)
-	groups  = groups_of_user(user)
+	groups  = Group.objects.containsUser(user)
 	context = {
 		'groups' : groups ,
 	}

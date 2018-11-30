@@ -94,10 +94,11 @@ class Event(models.Model):
 
 
     @classmethod
-    def create_new(cls, date, time, date_end, time_end, place, creator, administrators, attendees, invited):
+    def create_new(cls, date, time, date_end, time_end, place, creator, administrators, invited):
         '''Default method for creating an event'''
         event = cls(date=date, time=time, date_end=date_end, time_end=time_end, place=place, \
-            creator=creator, attendees=attendees)
+            creator=creator)
+        event.attendees = Group(inEvent=True).save()
         event.save()
         event.administrators.add(*administrators)
         event.invited.add(*invited)

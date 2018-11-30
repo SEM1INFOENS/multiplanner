@@ -41,7 +41,7 @@ class EventForm(ModelForm):
     def save(self, commit=True):
         inst = super(EventForm, self).save(commit=False)
         inst.creator = self._user  # we set 'Event.creator' to the currently logged in user
-        att =  Group()
+        att =  Group(inEvent=True)
         att.save()
         inst.attendees = att
         if commit:

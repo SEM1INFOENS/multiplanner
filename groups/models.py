@@ -6,18 +6,29 @@ from django.contrib.auth.models import User
 from accounting.models import Transaction
 from relationships.models import SecretMark
 
+class GroupManager(models.Manager):
 
+    @classmethod
+    def all(self):
+        return Group.objects.filter(inEvent=False)
+
+    @classmethod
+    def containsUser(self, user):
+        return Group.objects.filter(inEvent=False, members=user)
+
+    
 class Group(models.Model):
     '''A group of people, inside which transactions can be made.
     To make transactions in an event, people will make transactions in the subsequent group.
     '''
 
-#    objects = GroupManager()
+    objects = GroupManager()
 
     name = models.CharField(max_length=200, blank=True)
     members = models.ManyToManyField(User, blank=True)
     transactions = models.ManyToManyField(Transaction, blank=True)
-
+    inEvent = models.BooleanField(default=False)
+    
     @classmethod
     def create_new(cls, name, members, transactions):
         '''Default method for creating a group'''
