@@ -27,7 +27,7 @@ class Group(models.Model):
     name = models.CharField(max_length=200, blank=True)
     members = models.ManyToManyField(User, blank=True)
     transactions = models.ManyToManyField(Transaction, blank=True)
-    inEvent = models.BooleanField(default=False)
+    #inEvent = models.BooleanField(default=False)
     
     @classmethod
     def create_new(cls, name, members, transactions):
