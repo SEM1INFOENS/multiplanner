@@ -156,8 +156,9 @@ class Sitting(models.Model):
             t = Table(sitting=s_obj)
             t.save()
             tables_obj[i] = t
-        for user, i in optimal_s.items():
-            tables_obj[i].members.add(user)
+        if optimal_s != None:
+            for user, i in optimal_s.items():
+                tables_obj[i].members.add(user)
         return True
             
 class Table(models.Model):

@@ -54,7 +54,7 @@
 	  <input type="hidden" name="redirect_url" value="{{ request.get_full_path }}">
 	  <input type="hidden" name="event" value="{{ event.id }}">
 	  Enter tables capacities separed by ','
-	  <input type="text" name="tables" placeholder="4,10,8...">
+	  <input type="text" name="tables" placeholder="4,10,8..." pattern="[0-9]+(,[0-9]+)*" required="required">
 
 	  <input type="button" class="btn btn-primary" value="Back" onclick="history.back()">
           <input type="submit" class="btn btn-primary" value="Save">
