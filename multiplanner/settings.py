@@ -154,8 +154,10 @@ LOGIN_REDIRECT_URL = '/'
 
 #To use heroku
 
-import django_heroku
-django_heroku.settings(locals())
-
+try:
+    import django_heroku
+    django_heroku.settings(locals())
+except ImportError:
+    found = False
 #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 #ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
