@@ -3,11 +3,6 @@
 {% block content %}  
 
 
-<form>
-  <input type="button" value="Back" class="btn btn-primary" onclick="history.back()">
-</form>
-
-
 {% if is_admin %}
 <a class="btn btn-primary" href="{% url 'edit-event' ide=event.id %}">edit <i class="fas fa-edit"></i></a>
 <!-- <span class="glyphicon glyphicon-pencil"></span> -->

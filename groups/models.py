@@ -33,10 +33,6 @@ class Group(models.Model):
         group.transactions.add(*transactions)
         return group
 
-    def get_transaction_list(self):
-        '''Return the list of transactions of the group'''
-        return self.transactionforgroup_set.all()
-
     def __repr__(self):
         '''Enables to display a group in a convenient way'''
         return "name : {}, members : {}, transactions : {}".\

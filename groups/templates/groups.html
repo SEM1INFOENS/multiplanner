@@ -2,9 +2,6 @@
 
 {% block content %}  
 
-<form>
-  <input type="button" value="Back" class="btn btn-primary" onclick="history.back()">
-</form>
 
 <h2>Your Groups</h2>
 
@@ -18,7 +15,7 @@
 <h3>Groups you belong to</h3>
 <ul>
   {% for group in groups %}
-  <li><a href="{% url 'groups:group-number' group.id %}">{{ group.name }} </a></li>
+  <a href="{% url 'groups:group-number' group.id %}"><li>{{ group.name }} </li></a>
   {% endfor %}
 </ul>
 {% endif %}

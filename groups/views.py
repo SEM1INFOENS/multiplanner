@@ -4,6 +4,7 @@ from django.template import context
 from django.contrib import messages
 
 from .forms import *
+from accounting import resolution
 
 @login_required
 def showGroups (request):
@@ -42,7 +43,25 @@ def edit_group (request,ide):
 
 @login_required
 def group_number (request,ide):
-
-	context = {'new' : False}
 	group = get_object_or_404(Group, pk=ide)
-	return render(request, 'groups.html')
+	#balance = resolution.balance_in_floats(group)
+	#res = resolution.resolution(group,balance)
+	
+	if request.method == 'POST':
+		form = TransactionForm(request.POST, current_group=group)  
+		if form.is_valid():
+			transaction = form.save()
+			success = messages.success(request, 'Transaction successfully created')
+			return redirect('groups:group-number', ide=group.id)
+	else:
+		form = TransactionForm(current_group=group)	
+
+	transactions = [t for t in group.transactions.all()]
+	context= {
+		'group' : group,
+		#'balance' : balance,
+		#'resolution' : res ,
+		'transactions' : transactions,
+		'form' : form,
+	}
+	return render(request, 'group_number.html',context)
