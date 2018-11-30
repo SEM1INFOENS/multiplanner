@@ -2,6 +2,7 @@
 
 {% block content %}  
 
+{% load static %}
 
 <form>
   <input type="button" value="Back" class="btn btn-primary" onclick="history.back()">
@@ -54,14 +55,41 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="" method="post">
-          <input type="button" class="btn btn-primary" value="Back" onclick="history.back()">
-          <input type="submit" class="btn btn-primary" value="Save">
+	
+        <form action="{% url 'new_sitting' %}" method="post">
+	  {% csrf_token %}        
+	  <input type="hidden" name="redirect_url" value="{{ request.get_full_path }}">
+	  <input type="hidden" name="event" value="{{ event.id }}">
+
+	  {% for tablesize_form in tablesize_formset.forms %}
+          <div id="tablesize_formset_id">
+            {{ tablesize_form.size }}
+            {% if tablesize_form.size.errors %}
+            {% for error in tablesize_form.size.errors %}
+            {{ error|escape }}
+            {% endfor %}
+            {% endif %}
+          </div>
+	  {% endfor %}	  
+
+	  {{ tablesize_formset.management_form }}
+	  
+	  <input type="button" class="btn btn-primary" value="Back" onclick="history.back()">
+          <input type="submit" class="btn btn-primary" value="Generate sitting">
         </form>
       </div>
     </div>
   </div>
 </div>
+
+
+<script src="{% static 'formset_bootstrap/js/jquery.formset.js' %}" type="text/javascript"></script>
+<script type="text/javascript">
+    $(function () {
+        $('#tablesize_formset_id size').formset();
+    });
+</script>
+
 
 <form action="{% url 'invitation_answer' %}" method="post">
   <input type="hidden" name="redirect_url" value="{{ request.get_full_path }}">

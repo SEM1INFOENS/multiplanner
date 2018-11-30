@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admindocs',
     'friendship',
+    'formset_bootstrap',
     #'django_extensions',
 ]
 

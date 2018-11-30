@@ -1,5 +1,6 @@
 from django import forms
 from django.forms import ModelForm, Form, modelform_factory
+from django.forms.formsets import BaseFormSet
 from django.contrib.admin import widgets
 #from treasuremap.forms import LatLongField
 #from treasuremap import widgets as tmw
@@ -70,3 +71,11 @@ class TransactionForm(ModelForm):
         self._group.save()
 
         return inst
+
+class TableSizeForm(Form):
+    size = forms.IntegerField(
+        initial = 1,
+        label = "Table size",
+    )
+    
+#class TableSizeFormSet(BaseFormSet):
