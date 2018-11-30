@@ -35,13 +35,22 @@
 
 
 {% if transactions%}
+	<h3> The balances for this group members are</h3>
+		<ul>
+		{% for user,b in list_context %}
+ 			<li>{{ user }} has a balance of {{b}} </li>
+  		{% endfor %}
+		</ul>
+
 	<h3> Transaction made in this group </h3>
 	<ul>
 		{% for t in transactions %}
- 			<li>{{ i }} </li>
+ 			<li>{{forloop.counter}} {{ t}} </li>
   		{% endfor %}
 	</ul>
 {% endif %}
+
+
 
 
 {% endblock %}

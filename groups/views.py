@@ -44,7 +44,8 @@ def edit_group (request,ide):
 @login_required
 def group_number (request,ide):
 	group = get_object_or_404(Group, pk=ide)
-	#balance = resolution.balance_in_floats(group)
+	# For the moment calculate the balance each time we click on the group
+	balance = resolution.balance_in_floats(group)
 	#res = resolution.resolution(group,balance)
 	
 	if request.method == 'POST':
@@ -56,12 +57,17 @@ def group_number (request,ide):
 	else:
 		form = TransactionForm(current_group=group)	
 
-	transactions = [t for t in group.transactions.all()]
+	list_context =[]
+	members = [m for m in group.members.all()]
+	for i in range(len(balance)):
+		list_context.append((members[i],balance[i]))
+
 	context= {
 		'group' : group,
-		#'balance' : balance,
+		'balance' : balance,
+		'list_context' : list_context,
 		#'resolution' : res ,
-		'transactions' : transactions,
+		'transactions' :  group.transactions.all(),
 		'form' : form,
 	}
 	return render(request, 'group_number.html',context)
