@@ -15,20 +15,14 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
-from django.conf.urls import url
 
-
-from . import views
 
 urlpatterns = [
-    #path('', views.index),
     path('admin/doc/', include('django.contrib.admindocs.urls')),
     path('', include('presentation.urls', namespace='users')),
     path('admin/', admin.site.urls),
     path('agenda/', include('agenda.urls')),
-    path('groups/', include('groups.urls', namespace = 'groups')),
-    #url(r'^friends/', include(('relationships.urls', 'friends'), namespace='friends')),
+    path('groups/', include('groups.urls', namespace='groups')),
     path('friends/', include('relationships.urls', namespace='friends')),
-    #    url(r'^friendship/', include('friendship.urls')),
     path('accounting/', include('accounting.urls')),
 ]

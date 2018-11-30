@@ -10,6 +10,7 @@ from accounting.models import Transaction
 from agenda.models import Event
 from .functions import *
 from relationships import functions as rel
+from relationships.models import SecretMark
 
 @login_required
 def index(request):
@@ -44,6 +45,16 @@ def page(request, username):
     context.update(rel_context)
     #context['old_context'] = rel_context
     return render(request, 'users/page.html', context)
+
+@login_required
+def set_secret_mark(request):
+    assert request.method == 'POST'
+    redirect_url = request.POST.get('redirect_url')
+    user_to_mark = User.objects.get(pk=request.POST.get('user_to_mark'))
+    mark = request.POST.get('mark')
+    m = SecretMark.create_new(request.user,user_to_mark,mark)
+    m.save()
+    return redirect(redirect_url)	
 
 def signup(request):
     if request.method == 'POST':

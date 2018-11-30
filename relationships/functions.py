@@ -1,3 +1,4 @@
+''' Various functions about the friendship relationships '''
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from friendship.models import Friend, FriendshipRequest
@@ -5,16 +6,16 @@ from django.contrib import messages
 
 
 def friendship_context(user, user_page):
-    '''returns a context that specifies which friendship operations are possible or not'''  
+    '''returns a context that specifies which friendship operations are possible or not'''
     print(Friend.objects.sent_requests(user=user))
     uSendPage = user_page in [fr.to_user for fr in Friend.objects.sent_requests(user=user)]
     pageSendU = user in [fr.to_user for fr in Friend.objects.sent_requests(user=user_page)]
     uRecivedPage = user_page in [fr.from_user for fr in Friend.objects.unrejected_requests(user=user)]
-    areFr = Friend.objects.are_friends(user,user_page)
-    nsame = not (user == user_page)
+    areFr = Friend.objects.are_friends(user, user_page)
+    nsame = user != user_page
     context = {
         'can_add' : nsame and (not areFr) and (not uSendPage) and (not pageSendU),
-        'can_cancel' : nsame and (not areFr) and uSendPage ,
+        'can_cancel' : nsame and (not areFr) and uSendPage,
         'can_accept_decline' : nsame and (not areFr) and uRecivedPage,
         'can_remove' : nsame and areFr,
     }
@@ -27,7 +28,7 @@ def friendship_update(request, user_page):
     ''' update the friendship status according to the buttons pressed by the user'''
     user = request.user
     context = friendship_context(user, user_page)
-    assert(request.method == 'POST')
+    assert request.method == 'POST'
     try:
         if "add" in request.POST:
             assert context['can_add']
@@ -56,5 +57,3 @@ def friendship_update(request, user_page):
     except AssertionError:
         messages.warning(request, "something changed between page load and click")
         return False
-
-

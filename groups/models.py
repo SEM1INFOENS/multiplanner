@@ -7,18 +7,12 @@ from accounting.models import Transaction
 from relationships.models import SecretMark
 
 
-class GroupManager(models.Manager):
-    def groups_of_user (self,user):
-        ''' Lists the groups that the user belong to '''
-        # we should exclude the groups that are in events !!  How to do it ??
-        return Group.objects.filter(members = user).order_by('name')
-
 class Group(models.Model):
     '''A group of people, inside which transactions can be made.
     To make transactions in an event, people will make transactions in the subsequent group.
     '''
 
-    objects = GroupManager()
+#    objects = GroupManager()
 
     name = models.CharField(max_length=200, blank=True)
     members = models.ManyToManyField(User, blank=True)

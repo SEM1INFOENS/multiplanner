@@ -9,32 +9,32 @@
 <form action="{% url 'friends:friendship_request' %}" method="post">
   <input type="hidden" name="redirect_url" value="{{ request.get_full_path }}">
   <input type="hidden" name="user_page" value="{{ user.username }}">
-  
+
   {% csrf_token %}
   {% if can_add %}
-  <button type="submit" class="btn btn-primary"  name="add">
+  <button type="submit" class="btn btn-primary" name="add">
     Add <i class="fas fa-user-plus"></i></button>
   {% endif %}
-  
+
   {% if can_cancel %}
   <i>invite sent <i class="fas fa-user-clock"></i></i>
-  <button type="submit" class="btn btn-danger"  name="cancel">
+  <button type="submit" class="btn btn-danger" name="cancel">
     Cancel <i class="fas fa-times-circle"></i></button>
-  {% endif %} 
+  {% endif %}
 
   {% if can_accept_decline %}
   {{ user.username }} sent you a friendship invitation
-  <button type="submit" class="btn btn-success"  name="accept">
+  <button type="submit" class="btn btn-success" name="accept">
     Accept <i class="fas fa-user-check"></i></button>
-  <button type="submit" class="btn btn-warning"  name="decline">
+  <button type="submit" class="btn btn-warning" name="decline">
     Decline <i class="fas fa-user-times"></i></button>
-  {% endif %} 
+  {% endif %}
 
   {% if can_remove %}
   Remove user from friends
-  <button type="submit" class="btn btn-danger"  name="remove">
+  <button type="submit" class="btn btn-danger" name="remove">
     <i class="fas fa-user-slash"></i></button>
-  {% endif %} 
+  {% endif %}
 </form>
 
 <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#secretModal">
@@ -51,7 +51,14 @@
         </button>
       </div>
       <div class="modal-body">
-        <form action="" method="post">
+        <form action="{% url 'users:set_secret_mark' %}" method="post">
+          {% csrf_token %}
+          <input type="hidden" name="redirect_url" value="{{ request.get_full_path }}">
+          <input type="hidden" name="user_to_mark" value="{{ user.id }}">
+
+          Choose secret mark
+          <input type="number" name="mark" min="-10" max="10" required="required">
+
           <input type="button" class="btn btn-primary" value="Back" onclick="history.back()">
           <input type="submit" class="btn btn-primary" value="Save">
         </form>
@@ -64,7 +71,6 @@
 <ul>
   {% for transaction in transactions %}
   <li>Amount: {{ transaction.amount }}, motive: {{transaction.motive}}</a></li>
-{% endfor %}
+  {% endfor %}
 </ul>
-
 {%endblock%}
