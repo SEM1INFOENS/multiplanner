@@ -40,7 +40,6 @@ def page(request, username):
     context = {
         'user' : user_page,
         'transactions': Transaction.objects.filter(payer=user_page),
-	'marks': user_page.secretmark_set.all(),
     }
     rel_context = rel.friendship_context(user, user_page)
     context.update(rel_context)
