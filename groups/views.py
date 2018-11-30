@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.template import context
 from django.contrib import messages
@@ -43,6 +43,6 @@ def edit_group (request,ide):
 @login_required
 def group_number (request,ide):
 
-#	context = {'new' : False}
-#	group = get_object_or_404(Group, pk=ide)
+	context = {'new' : False}
+	group = get_object_or_404(Group, pk=ide)
 	return render(request, 'groups.html')

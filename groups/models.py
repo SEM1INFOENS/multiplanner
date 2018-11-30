@@ -9,7 +9,7 @@ from relationships.models import SecretMark
 
 class GroupManager(models.Manager):
     def groups_of_user (self,user):
-        ''' List the groups that the user belong to '''
+        ''' Lists the groups that the user belong to '''
         # we should exclude the groups that are in events !!  How to do it ??
         return Group.objects.filter(members = user).order_by('name')
 

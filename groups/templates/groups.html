@@ -11,7 +11,7 @@
 
 <a href="{% url 'groups:new-group' %}">create a new group <i class="far fa-calendar-plus"></i></a>
 
-{% if not events_admin and not events_attendees and not events_invited and not events_past %}
+{% if not groups %}
 <p><i>You belong to 0 groups Mouahahahahah</i></p>
 {% else %}
 
