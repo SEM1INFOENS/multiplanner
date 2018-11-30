@@ -19,36 +19,36 @@
 {% else %}
 {% if events_admin %}
 <h3>Events you manage</h3>
-<ul>
+<ul class="list-group list-group-flush">
   {% for event in events_admin %}
-  <li><a href="{% url 'event' event.id %}">{{ event }} </a></li>
+  <li class="list-group-item"><a href="{% url 'event' event.id %}">{{ event }} </a></li>
   {% endfor %}
 </ul>
 {% endif %}
 
 {% if events_invited %}
 <h3>Events you are invited to</h3>
-<ul>
+<ul class="list-group list-group-flush">
   {% for event in events_invited %}
-  <li><a href="{% url 'event' event.id %}">{{ event }} </a></li>
+  <li class="list-group-item"><a href="{% url 'event' event.id %}">{{ event }} </a></li>
   {% endfor %}
 </ul>
 {% endif %}
 
 {% if events_attendees %}
 <h3>Events you will attend</h3>
-<ul>
+<ul class="list-group list-group-flush">
   {% for event in events_attendees %}
-  <li><a href="{% url 'event' event.id %}">{{ event }} </a></li>
+  <li class="list-group-item"><a href="{% url 'event' event.id %}">{{ event }} </a></li>
   {% endfor %}
 </ul>
 {% endif %}
 
 {% if events_past %}
 <h3>Passed events</h3>
-<ul>
+<ul class="list-group list-group-flush">
   {% for event in events_past %}
-  <li><a href="{% url 'event' event.id %}">{{ event }} </a></li>
+  <li class="list-group-item"><a href="{% url 'event' event.id %}">{{ event }} </a></li>
   {% endfor %}
 </ul>
 {% endif %}
