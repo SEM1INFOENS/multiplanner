@@ -111,6 +111,8 @@ def resolution_tuple (group, balance) :
 	return resolution
 
 
+
+#NOT WORKING PERFERCTLY -- COMPILATION ERROR
 def resolution (group, balance):
 	# returns the transactions that has to be done after the resolution
 	tupRes = resolution_tuple(group, balance)

@@ -2,20 +2,22 @@
 
 {% block content %}  
 
-<form>
-  <input type="button" value="Back" class="btn btn-primary" onclick="history.back()">
-</form>
 
 <h2>Your Groups</h2>
 
 
 <a href="{% url 'groups:new-group' %}">create a new group <i class="far fa-calendar-plus"></i></a>
 
+{% if not groups %}
+<p><i>You belong to 0 groups Mouahahahahah</i></p>
+{% else %}
+
 <h3>Groups you belong to</h3>
 <ul>
-  {% for group in groups_admin %}
-  <li><a href="{% url 'groups:group-number' group.id %}">{{ group }} </a></li>
+  {% for group in groups %}
+  <a href="{% url 'groups:group-number' group.id %}"><li>{{ group.name }} </li></a>
   {% endfor %}
 </ul>
+{% endif %}
 
 {% endblock %}
