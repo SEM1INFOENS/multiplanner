@@ -43,8 +43,13 @@ class SecretMark(models.Model):
 
     @classmethod
     def create_new(cls, user, marked_user, mark):
-        sm = cls(user=user, marked_user=marked_user, mark=mark)
-        return sm
+        try:
+            secret_mark = SecretMark.objects.get(user=user, marked_user=marked_user)
+        except SecretMark.DoesNotExist:    		
+            sm = cls(user=user, marked_user=marked_user, mark=mark)
+            return sm
+        secret_mark.mark = mark
+        return secret_mark
 
     def __repr__(self):
         '''Enables to display a SecretMark in a convenient way'''
