@@ -140,7 +140,6 @@ def event(request, ide):
     return render(request, 'event.html', context)
 
 
-@login_required
 def generate_calendar(request):
     # a = User.objects.create_user(username='bulbizarre3')
     # b = User.objects.create_user(username='salazemece3')
