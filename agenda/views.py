@@ -139,7 +139,7 @@ def event(request, ide):
         messages.warning(request, 'This event has already begun')
     return render(request, 'event.html', context)
 
-
+@login_required
 def generate_calendar(request):
     # a = User.objects.create_user(username='bulbizarre3')
     # b = User.objects.create_user(username='salazemece3')
