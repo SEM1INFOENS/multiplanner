@@ -8,9 +8,9 @@ from django.urls import reverse
 from .forms import *
 from django.utils import timezone
 import datetime
-from django.forms.formsets import formset_factory
+
 from django.utils import timezone
-from .models import *
+
 
 def date_format_ics(date, time):
     '''Converts date to date in ICS format'''
@@ -88,11 +88,12 @@ def edit_event(request, ide):
 @login_required
 def agenda(request):
     user = request.user
+    att = Event.objects.filter(attendees__members=user)
+    inv = Event.objects.filter(invited=user).difference(att)
     context = {
         'events_admin': Event.objects.filter(administrators=user),
-        'events_invited': Event.objects.invited(user),
-        'events_attendees': Event.objects.attending(user),
-        'events_past': Event.objects.past(user),
+        'events_invited': inv,
+        'events_attendees': att,
     }
     return render(request, 'agenda.html', context)
 
@@ -101,27 +102,16 @@ def agenda(request):
 @login_required
 def event(request, ide):
     event = get_object_or_404(Event, pk=ide)
-    group = event.attendees
     user = request.user
     if request.method == 'POST':
-        form = TransactionForm(request.POST, current_group=group)
-        
-        if form.is_valid():
-            transaction = form.save()
-            success = messages.success(request, 'Transaction successfully created')
-            return redirect('event', ide=event.id)
-    else:
-        form = TransactionForm(current_group=group)
-
+        if "accept_invite" in request.POST:
+            event.accept_invite(user)
+        if "cancel_acceptance" in request.POST:
+            event.cancel_acceptance(user)
     invited = event.invited.all()
     attendees = event.attendees.members.all()
     invited_attendees = [(u, (u in attendees)) for u in invited] 
     admin_l = event.administrators.all()
-    last_transactions = event.attendees.transactions.all().order_by('-date')
-    try :
-        sitting_arrangement = event.sitting#.table__set.all()
-    except Sitting.DoesNotExist:
-        sitting_arrangement = None
     context = {
         'event': event,
         'invited' : invited_attendees,
@@ -129,17 +119,11 @@ def event(request, ide):
         'is_admin' : (request.user in admin_l),
         'can_accept_invite' : event.can_accept_invite(user),
         'can_cancel_acceptance' : event.can_cancel_acceptance(user),
-        'last_transactions' : last_transactions,
-        'form' : form,
-        'sitting_arrangement' : sitting_arrangement,
     }
-    if event.is_over():
-        messages.warning(request, 'This event is over')
-    elif event.has_begun():
-        messages.warning(request, 'This event has already begun')
     return render(request, 'event.html', context)
 
 
+@login_required
 def generate_calendar(request):
     # a = User.objects.create_user(username='bulbizarre3')
     # b = User.objects.create_user(username='salazemece3')
@@ -202,28 +186,3 @@ def generate_calendar(request):
     }
     response.write(t.render(context))
     return response
-
-
-@login_required
-def invitation_answer(request):
-    assert request.method == 'POST'
-    redirect_url = request.POST.get('redirect_url')
-    user = request.user
-    event = Event.objects.get(pk=request.POST.get('event'))
-    if "accept_invite" in request.POST:
-        event.accept_invite(user)
-    if "cancel_acceptance" in request.POST:
-        event.cancel_acceptance(user)
-
-    return redirect(redirect_url)
-
-
-@login_required
-def new_sitting(request):
-    assert request.method == 'POST'
-    redirect_url = request.POST.get('redirect_url')
-    event = Event.objects.get(pk=request.POST.get('event'))
-    tables_str = request.POST.get('tables')
-    tables = [int(s) for s in tables_str.split(',')]
-    Sitting.set_new(event, tables)
-    return redirect(redirect_url)
