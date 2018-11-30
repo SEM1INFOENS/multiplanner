@@ -1,4 +1,4 @@
-from django.http import HttpResponseRedirect, HttpResponse
+from django.http import HttpResponseRedirect, HttpResponse, HttpRequest
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required, user_passes_test
 from django.contrib import messages
@@ -94,6 +94,7 @@ def agenda(request):
         'events_invited': Event.objects.invited(user),
         'events_attendees': Event.objects.attending(user),
         'events_past': Event.objects.past(user),
+        'username' : user.username,
     }
     return render(request, 'agenda.html', context)
 
@@ -158,69 +159,25 @@ def event(request, ide):
         messages.warning(request, 'This event has already begun')
     return render(request, 'event.html', context)
 
-@login_required
+#@login_required
 def generate_calendar(request):
-    # a = User.objects.create_user(username='bulbizarre3')
-    # b = User.objects.create_user(username='salazemece3')
-    # c = User.objects.create_user(username='carapueze3')
+    if request.method == 'GET':
+        username = request.GET.get('username')
+        user = User.objects.get(username=username)
+        list_event = Event.objects.filter(attendees__members=user)
 
-    # g = Group()
-    # g.save()
-    # g.members.add(*[a,b,c])
+        for event in list_event:
+            event.date_start_ics = date_format_ics(event.date, event.time)
+            event.date_end_ics = date_format_ics(event.date_end, event.time_end)
 
-    # e1 = Event(
-    #     name='myawesomeevent',
-    #     date=timezone.now(),
-    #     time=timezone.now(),
-    #     place="ici",
-    #     creator=a,
-    #     attendees=g,
-    #     )
-    # e1.save()
-    # e1.invited.add(*[a,b,c])
-    # e1.administrators.add(a)
-
-    # e2 = Event(
-    #     name='myawesomeevent-thereturn',
-    #     date=timezone.now(),
-    #     time=timezone.now(),
-    #     place="bloublou",
-    #     creator=a,
-    #     attendees=g,
-    #     )
-    # e2.save()
-    # e2.invited.add(*[a,b,c])
-    # e2.administrators.add(a)
-
-    # e3 = Event(
-    #     name='myawesomeevent-thereturnagain',
-    #     date=timezone.now(),
-    #     time=timezone.now(),
-    #     place="là",
-    #     creator=a,
-    #     attendees=g,
-    #     )
-    # e3.save()
-    # e3.invited.add(*[a,b,c])
-    # e3.administrators.add(a)
-
-    # user = a
-
-    user = request.user
-    list_event = Event.objects.filter(attendees__members=user)
-
-    for event in list_event:
-        event.date_start_ics = date_format_ics(event.date, event.time)
-        event.date_end_ics = date_format_ics(event.date_end, event.time_end)
-
-    response = HttpResponse(content_type='text/calendar')
-    response['Content-Disposition'] = 'attachment; filename="calendar.ics"'
-    t = loader.get_template('calendar.ics')
-    context = {
-       'list_event': list_event,
-    }
-    response.write(t.render(context))
-    return response
+        response = HttpResponse(content_type='text/calendar')
+        response['Content-Disposition'] = 'attachment; filename="calendar.ics"'
+        t = loader.get_template('calendar.ics')
+        context = {
+           'list_event': list_event,
+        }
+        response.write(t.render(context))
+        return response
 
 
 @login_required
