@@ -35,12 +35,20 @@
 
 
 {% if transactions%}
-	<h3> The balances for this group members are</h3>
+	<h3> The balances for this group members are: </h3>
 		<ul>
 		{% for user,b in list_context %}
  			<li>{{ user }} has a balance of {{b}} </li>
   		{% endfor %}
 		</ul>
+
+
+	<h3> The Resolution of this group member is: </h3>
+	<ul>
+		{% for a,b,amount in resolution %}
+ 			<li>{{ a }} has to pay {{amount}} to {{b}} </li>
+  		{% endfor %}
+	</ul>
 
 	<h3> Transaction made in this group </h3>
 	<ul>

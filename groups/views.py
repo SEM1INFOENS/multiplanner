@@ -46,7 +46,8 @@ def group_number (request,ide):
 	group = get_object_or_404(Group, pk=ide)
 	# For the moment calculate the balance each time we click on the group
 	balance = resolution.balance_in_floats(group)
-	#res = resolution.resolution(group,balance)
+	balance1 = [b for b in balance]
+	res = resolution.resolution_tuple(group,balance1)
 	
 	if request.method == 'POST':
 		form = TransactionForm(request.POST, current_group=group)  
@@ -64,9 +65,8 @@ def group_number (request,ide):
 
 	context= {
 		'group' : group,
-		'balance' : balance,
 		'list_context' : list_context,
-		#'resolution' : res ,
+		'resolution' : res ,
 		'transactions' :  group.transactions.all(),
 		'form' : form,
 	}
