@@ -26,8 +26,8 @@ def create_group (request):
             group = form.save()
             success = messages.success(request, 'Group has been successfully created')
             return redirect('groups:group-number', ide=group.id)
-        else :
-            form = GroupForm(creator_user=request.user)
+    else :
+        form = GroupForm(creator_user=request.user)
 
     context.update({'form': form})
     return render(request, 'edit_group.html', context)
