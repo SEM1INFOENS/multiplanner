@@ -40,7 +40,7 @@ def create_event(request):
     # if this is a POST request we need to process the form data
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
-        form = EventForm(request.POST, creator_user=request.user)
+        form = EventForm(request.POST, creator_user=request.user, new=True)
         # check whether it's valid:
         if form.is_valid():
             # process the data in form.cleaned_data as required
@@ -59,7 +59,7 @@ def create_event(request):
 
     # if a GET (or any other method) we'll create a blank form
     else:
-        form = EventForm(creator_user=request.user)
+        form = EventForm(creator_user=request.user, new=True)
 
     context.update({'form': form})
     return render(request, 'edit_event.html', context)
@@ -71,7 +71,7 @@ def edit_event(request, ide):
     user = request.user
     if user in event.administrators.all() : #user can only edit events of which he is admin
         if request.method == "POST":
-            form = EventForm(request.POST, creator_user=event.creator, instance=event)
+            form = EventForm(request.POST, creator_user=event.creator, new=False, instance=event)
             if form.is_valid():
                 event = form.save(commit=False)
                 event.save() 
@@ -79,7 +79,7 @@ def edit_event(request, ide):
                 success = messages.success(request, 'Event successfully modified')                
                 return redirect('event', ide=event.id)
         else:
-            form = EventForm(creator_user=event.creator, instance=event)
+            form = EventForm(creator_user=event.creator, new=False, instance=event)
         context.update({'form': form, 'ide':event.id})
         return render(request, 'edit_event.html', context)
     else:

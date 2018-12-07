@@ -35,15 +35,19 @@ class EventForm(ModelForm):
         error_messages = {}
 
     def __init__(self, *args, **kwargs):
-        self._user =  kwargs.pop('creator_user')
+        self.creator_user =  kwargs.pop('creator_user')
+        self.new = kwargs.pop('new')
         super(EventForm, self).__init__(*args, **kwargs)
 
     def save(self, commit=True):
         inst = super(EventForm, self).save(commit=False)
-        inst.creator = self._user  # we set 'Event.creator' to the currently logged in user
-        att =  Group(inEvent=True)
-        att.save()
-        inst.attendees = att
+        inst.creator = self.creator_user
+        
+        if self.new:
+            att =  Group(inEvent=True)
+            att.save()
+            inst.attendees = att
+        
         if commit:
             inst.save()
             self.save_m2m()
