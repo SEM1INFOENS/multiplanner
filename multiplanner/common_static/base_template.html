@@ -17,8 +17,12 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
     crossorigin="anonymous">
 
+  <!-- Nav Bar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="{% url 'users:index' %}">Multiplanner</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
       <ul class="navbar-nav mr-auto">
 
@@ -35,23 +39,28 @@
         </li>
       </ul>
 
-      <!-- Research Bar -->
-      <form id="searchform" action="{% url 'friends:user-search' %}" method="get" accept-charset="utf-8">
-        <div class="form-row">
-          <div class="input-group">
-            <div class="input-group-prepend">
-              <button class="btn searchbutton" type="submit">
-                <i class="fas fa-search"></i>
-              </button>
+      <ul class="nav navbar-nav navbar-right">
+	<li class="nav-item mr-4">
+	  <!-- Research Bar -->
+	  <form class="navbar-form" id="searchform" action="{% url 'friends:user-search' %}" method="get" accept-charset="utf-8">
+            <div class="form-row">
+              <div class="input-group">
+		<div class="input-group-prepend">
+		  <button class="btn searchbutton" type="submit">
+                    <i class="fas fa-search"></i>
+		  </button>
+		</div>
+		<input class="searchfield form-control" id="searchbox" name="q" type="text" placeholder="Search">
+              </div>
             </div>
-            <input class="searchfield form-control" id="searchbox" name="q" type="text" placeholder="Search">
-          </div>
-        </div>
-      </form>
-
-      <form>
-        <a class="btn btn-primary ml-4" href="{% url 'users:logout'%}"> Logout <i class="fas fa-sign-out-alt"></i></a>
-      </form>
+	  </form>
+	</li>
+	<li class="nav-item">
+          <form>
+            <a class="btn btn-primary" href="{% url 'users:logout'%}"> Logout <i class="fas fa-sign-out-alt"></i></a>
+	  </form>
+	</li>
+      </ul>
     </div>
   </nav>
 
