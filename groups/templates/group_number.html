@@ -2,9 +2,9 @@
 
 {% block content %}  
 
-{% if not group.name%}<h2> NoName</h2>
+{% if not group.name%}<h1> NoName</h1>
 {% else %}
-<h2>{{group.name}}</h2>
+<h1>{{group.name}}</h1>
 {% endif %}
 <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal">
   Add transaction
@@ -33,29 +33,46 @@
   </div>
 </div>
 
+<p>
+  <h2>Members</h2>
+  <ul>
+    {% for user in group.members.all %}
+    <li>
+      <b>
+	<a href="{% url 'users:page' user.username %}">{{ user }}</a>
+      </b>
+    </li>
+    {% endfor %}
+  </ul>
+</p>
 
 {% if transactions%}
-	<h3> The balances for this group's members are: </h3>
-		<ul>
-		{% for user,b in list_context %}
- 			<li>{{ user }} has a balance of {{ b }}€ </li>
-  		{% endfor %}
-		</ul>
+<p>
+  <h3> The balances for this group's members are: </h3>
+  <ul>
+    {% for user,b in list_context %}
+    <li>{{ user }} has a balance of {{ b }}€ </li>
+    {% endfor %}
+  </ul>
+</p>
 
+<p>
+  <h3> The resolutions of this group's members are: </h3>
+  <ul>
+    {% for a,b,amount in resolution %}
+    <li>{{ a }} has to pay {{ amount }}€ to {{ b }} </li>
+    {% endfor %}
+  </ul>
+</p>
 
-	<h3> The resolutions of this group's members are: </h3>
-	<ul>
-		{% for a,b,amount in resolution %}
- 			<li>{{ a }} has to pay {{ amount }}€ to {{ b }} </li>
-  		{% endfor %}
-	</ul>
-
-	<h3> Transactions made in this group </h3>
-	<ul>
-		{% for t in transactions %}
- 			<li>{{ forloop.counter }} {{ t }} </li>
-  		{% endfor %}
-	</ul>
+<p>
+  <h3> Transactions made in this group </h3>
+  <ul>
+    {% for t in transactions %}
+    <li>{{ forloop.counter }} {{ t }} </li>
+    {% endfor %}
+  </ul>
+</p>
 {% endif %}
 
 
