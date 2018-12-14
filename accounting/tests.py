@@ -16,13 +16,13 @@ import numpy as np
 class SharedAccountTestcase(TestCase):
     sa_list=[]
 
-    def SetUp(self):
+    def setUp(self):
         bob = User()
         bob.username = "blou"
         bob.save()
 
         sa_name="this is bob"
-        sa = SharedAccount(sa_name, [bob])
+        sa = SharedAccount.create_new(sa_name, [bob])
         self.sa_list=[(sa, sa_name)]
 
 
@@ -34,7 +34,7 @@ class SharedAccountTestcase(TestCase):
 
 class TransactionTestCase(TestCase):
 
-    def SetUp(self):
+    def setUp(self):
         tango = User()
         tango.username = 'tango'
         tango.save()
