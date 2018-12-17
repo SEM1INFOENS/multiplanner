@@ -149,7 +149,10 @@ class Sitting(models.Model):
             old_s.delete()
         except Sitting.DoesNotExist:
             pass
-        optimal_s = sit.sitting(event, tables)
+        try:
+            optimal_s = sit.sitting(event, tables)
+        except ValueError:
+            return False
         s_obj = Sitting(event=event)
         s_obj.save()
         tables_obj = {}
