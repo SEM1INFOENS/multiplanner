@@ -7,7 +7,7 @@ import datetime as datetime_module
 #from django.core.exceptions import ValidationError
 from groups.models import Group
 from accounting.models import Transaction
-from django.core.exceptions import SuspiciousOperation
+from django.core.exceptions import SuspiciousOperation, ValidationError
 from . import sit
 #from treasuremap.fields import LatLongField
 
@@ -41,15 +41,15 @@ class EventManager(models.Manager):
     def invited(self, user):
         '''List the futur events to which the user is invited'''
         return Event.objects.filter( date__gte=timezone.now(), invited=user).exclude(attendees__members=user).order_by('creation_date')
-    
+
     def attending(self, user):
         '''List the futur events to which the user will attend'''
         return Event.objects.filter( date__gte=timezone.now(), attendees__members=user).order_by('time','date').order_by('date')
-    
+
     def past_invited(self, user):
         '''List the past events to which the user was invited'''
         return Event.objects.filter( date__lt=timezone.now(), invited=user).exclude(attendees__members=user).order_by('-date_end')
-    
+
     def past_attending(self, user):
         '''List the past events to which the user has attend'''
         return Event.objects.filter( date__lt=timezone.now(), attendees__members=user).order_by('-date_end')
@@ -58,7 +58,7 @@ class EventManager(models.Manager):
         '''List the past events to which the user was invited or has attended'''
         return Event.objects.filter( date__lt=timezone.now(), invited=user).order_by('-date_end')
 
-    
+
 class Event(models.Model):
     '''An event is created by a person, and has a group of person attending it.
     If the subsequent group is deleted (which should not happen unless the event is being deleted),
@@ -68,7 +68,7 @@ class Event(models.Model):
     If the creator is deleted, the event remains and the creator is set to NULL.'''
 
     objects = EventManager()
-    
+
     name = models.CharField(max_length=100)
     creation_date = models.DateTimeField(default=timezone.now)
     description = models.CharField(blank=True, max_length=1000)
@@ -116,6 +116,11 @@ class Event(models.Model):
         Also used in the admin interface'''
         return '%s (%s)' % (self.name, str(self.date))
 
+    def clean(self):
+        # don't allow begin_date greater than end_date
+        if self.date_time() > self.date_time_end():
+            raise ValidationError("Event can't end before it has begun")
+
     def is_over(self):
         return self.date_time_end()<timezone.now()
     def has_begun(self):
@@ -138,10 +143,10 @@ class Event(models.Model):
             self.attendees.members.remove(user)
         else: raise SuspiciousOperation
 
-        
+
 class Sitting(models.Model):
     event = models.OneToOneField(Event, primary_key=True, on_delete=models.CASCADE)
-    
+
     @classmethod
     def set_new(self,event, tables):
         try :
@@ -164,12 +169,12 @@ class Sitting(models.Model):
             for user, i in optimal_s.items():
                 tables_obj[i].members.add(user)
         return True
-            
+
 class Table(models.Model):
     sitting = models.ForeignKey(Sitting, unique=False, on_delete=models.CASCADE)
     members = models.ManyToManyField(User, blank=True)
-    
-        
+
+
 # class TransactionForEvent(Transaction):
 #     '''A transaction that was made for a certain event'''
 #     def validate_transac_event(self, event):
