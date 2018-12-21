@@ -56,8 +56,9 @@
           <input type="hidden" name="redirect_url" value="{{ request.get_full_path }}">
           <input type="hidden" name="user_to_mark" value="{{ user.id }}">
 
-          Choose secret mark
-          <input type="number" name="mark" min="-10" max="10" placeholder="10 to -10" pattern="[-]?[0-9]+" required="required">
+            <label for="formControlRange">Choose secret mark</label>
+            <input type="number" name="mark" id="markId" min="-10" max="10" placeholder="Mark" pattern="[-]?[0-9]+" required="required" onchange="markRangeId.value = markId.value">
+            <input type="range" id="markRangeId" min="-10" max="10" class="form-control-range" id="formControlRange"  onchange="markId.value = markRangeId.value">
 
           <input type="button" class="btn btn-primary" value="Back" onclick="history.back()">
           <input type="submit" class="btn btn-primary" value="Save">
