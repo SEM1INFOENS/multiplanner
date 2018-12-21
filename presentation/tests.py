@@ -2,14 +2,13 @@ from django.test import TestCase
 from presentation.models import *
 from .functions import *
 from friendship.models import Friend, FriendshipRequest
+
+#import coverage
 # Create your tests here.
 
 def set_inclus(l1,l2):
     for x in l1:
-        if x not in l2:
-            print(x)
-            return False
-    return True
+        assert x in l2
 
 class FunctionsTestCase(TestCase):
     print("\n\n - running tests for the presentation app:\n")
@@ -42,33 +41,37 @@ class FunctionsTestCase(TestCase):
             i += 1
             L2 = n_random_friends(a,n)
             if i <= n :
-                assert( set_inclus(L2 , L[:i]) and set_inclus(L[:i], L2) )
+                set_inclus(L2 , L[:i]) and set_inclus(L[:i], L2)
             else:
-                assert( set_inclus(L2 , L) and len(L2)==n )
+                set_inclus(L2 , L) and len(L2)==n
 
     def test_latest_transactions(self):
+        import time
 
         A = User.objects.create_user(username='A')
         B = User.objects.create_user(username='B')
         C = User.objects.create_user(username='C')
 
         trAB = Transaction.create_new(payer=A, amount=10, beneficiaries=[A, B], motive='1')
+        time.sleep(.001)
         trAC = Transaction.create_new(payer=A, amount=10, beneficiaries=[A, C], motive='2')
+        time.sleep(.001)
         trABC = Transaction.create_new(payer=A, amount=10, beneficiaries=[A, B, C], motive='3')
 
         groupAB = Group.create_new(name='AB', members=[A, B], transactions=[trAB])
         groupAC = Group.create_new(name='AC', members=[A, C], transactions=[trAC])
         groupABC = Group.create_new(name='ABC', members=[A, B, C], transactions=[trABC])
 
-        assert set(n_transactions_of_user(A, 1)) == {trABC}
-        assert set(n_transactions_of_user(A, 2)) == {trABC, trAC}
-        assert set(n_transactions_of_user(A, 3)) == {trABC, trAC, trAB}
-        assert set(n_transactions_of_user(B, 1)) == {trABC}
-        assert set(n_transactions_of_user(B, 2)) == {trABC, trAB}
-        assert set(n_transactions_of_user(C, 1)) == {trABC}
-        assert set(n_transactions_of_user(C, 2)) == {trABC, trAC}
+        n_tr = lambda u,n : [tr for (tr,info1,info2,info3) in n_transactions_of_user(u,n)]
+        assert set(n_tr(A, 1)) == {trABC}
+        assert set(n_tr(A, 2)) == {trABC, trAC}
+        assert set(n_tr(A, 3)) == {trABC, trAC, trAB}
+        assert set(n_tr(B, 1)) == {trABC}
+        assert set(n_tr(B, 2)) == {trABC, trAB}
+        assert set(n_tr(C, 1)) == {trABC}
+        assert set(n_tr(C, 2)) == {trABC, trAC}
 
-    def test_latest_transactions(self):
+    def test_balance_of_user(self):
 
         A = User.objects.create_user(username='A')
         B = User.objects.create_user(username='B')

@@ -45,8 +45,10 @@ class Transaction(models.Model):
         return self.beneficiaries.all()
 
     @classmethod
-    def create_new(cls, payer, amount, beneficiaries, motive='', date=timezone.now()):
+    def create_new(cls, payer, amount, beneficiaries, motive='', date=None):
         '''Default method for creating transaction given a list of beneficiaries'''
+        if date==None:
+            date = timezone.now()
         transaction = cls(motive=motive, date=date, payer=payer, amount=amount)
         transaction.save()
         transaction.beneficiaries.add(*beneficiaries)
@@ -57,7 +59,7 @@ class Transaction(models.Model):
         '''Enables to display a Transaction in a convenient way'''
         return "motive : {}, date : {}, payer : {}, amount : {}, beneficiaries : {}" \
         .format(self.motive, self.date, self.payer, self.amount, self.beneficiaries)
- 
+
     def __str__(self):
         if self.beneficiaries.all().count() <= 3:
             ben = [b.username for b in self.beneficiaries.all()]

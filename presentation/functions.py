@@ -25,7 +25,7 @@ def amount_payed(tr, user):
                 return -round(tr.amount/benef.count(), 2)
             else:
                 return 0
-    
+
 def n_random_friends(user, n):
     '''Returns a random list of six friends of the User user'''
 
@@ -65,8 +65,8 @@ def n_transactions_of_user(u, n):
 
     # all_transactions = sorted(all_transactions, key=lambda transaction: transaction.date)
     # return all_transactions[-n:]
-    
-    transactions = Transaction.objects.filter(Q(payer=u) | Q(beneficiaries=u)).distinct().order_by('date')[:n]
+
+    transactions = Transaction.objects.filter(Q(payer=u) | Q(beneficiaries=u)).distinct().order_by('-date')[:n]
     transactions_plus = [transaction_infos(tr,u) for tr in transactions]
     return transactions_plus
 
