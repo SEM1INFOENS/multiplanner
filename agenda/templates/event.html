@@ -1,6 +1,6 @@
 {%extends "base_template_agenda.html" %}
 
-{% block content %}  
+{% block content %}
 
 
 {% if is_admin %}
@@ -71,15 +71,17 @@
   {% csrf_token %}
   {% if can_accept_invite %}
   You are invited to this event
-  <button type="submit" class="btn btn-primary"  name="accept_invite">
+  <button type="submit" class="btn btn-success"  name="accept_invite">
     Accept invite <i class="far fa-calendar-check"></i></button>
-  {% endif %}
-  
+  <button type="submit" class="btn btn-warning"  name="decline_invite">
+    Decline invite <i class="far fa-calendar-times"></i></button>
+    {% endif %}
+
   {% if can_cancel_acceptance %}
   You are enlisted to this event
   <button type="submit" class="btn btn-danger"  name="cancel_acceptance">
     Cancel <i class="fas fa-times-circle"></i></button>
-  {% endif %} 
+  {% endif %}
 </form>
 
 
@@ -167,7 +169,7 @@
       </div>
     </div>
     {% endfor %}
-  
+
 </div>
 {% endif %}
 

@@ -74,9 +74,9 @@ def edit_event(request, ide):
             form = EventForm(request.POST, creator_user=event.creator, new=False, instance=event)
             if form.is_valid():
                 event = form.save(commit=False)
-                event.save() 
+                event.save()
 
-                success = messages.success(request, 'Event successfully modified')                
+                success = messages.success(request, 'Event successfully modified')
                 return redirect('event', ide=event.id)
         else:
             form = EventForm(creator_user=event.creator, new=False, instance=event)
@@ -84,7 +84,7 @@ def edit_event(request, ide):
         return render(request, 'edit_event.html', context)
     else:
         raise PermissionDenied
-    
+
 
 @login_required
 def agenda(request):
@@ -106,11 +106,11 @@ def event(request, ide):
     group = event.attendees
     user = request.user
 
-   
+
 
     if request.method == 'POST':
         form = TransactionForm(request.POST, current_group=group)
-        
+
         if form.is_valid():
             transaction = form.save()
             success = messages.success(request, 'Transaction successfully created')
@@ -120,7 +120,7 @@ def event(request, ide):
 
     invited = event.invited.all()
     attendees = event.attendees.members.all()
-    invited_attendees = [(u, (u in attendees)) for u in invited] 
+    invited_attendees = [(u, (u in attendees)) for u in invited]
     admin_l = event.administrators.all()
     last_transactions = event.attendees.transactions.all().order_by('-date')
     try :
@@ -132,7 +132,7 @@ def event(request, ide):
     balance = resolution.balance_in_floats(group)
     balance1 = [b for b in balance]
     res = resolution.resolution_tuple(group,balance1)
-    
+
     list_context =[]
     members = [m for m in group.members.all()]
     for i in range(len(balance)):
@@ -188,6 +188,8 @@ def invitation_answer(request):
     event = Event.objects.get(pk=request.POST.get('event'))
     if "accept_invite" in request.POST:
         event.accept_invite(user)
+    if "decline_invite" in request.POST:
+        event.decline_invite(user)
     if "cancel_acceptance" in request.POST:
         event.cancel_acceptance(user)
 

@@ -134,6 +134,10 @@ class Event(models.Model):
         if self.can_accept_invite(user):
             self.attendees.members.add(user)
         else: raise SuspiciousOperation
+    def decline_invite(self, user):
+        if self.can_accept_invite(user):
+            self.invited.remove(user)
+        else: raise SuspiciousOperation
 
     def can_cancel_acceptance(self, user):
         ''' to cancel the comming to an event, the event must not have begun'''
