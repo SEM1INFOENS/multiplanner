@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from friendship.models import Friend, FriendshipRequest
 from django.contrib import messages
-
+from django.core.exceptions import SuspiciousOperation
 
 def friendship_context(user, user_page):
     '''returns a context that specifies which friendship operations are possible or not'''
@@ -31,29 +31,29 @@ def friendship_update(request, user_page):
     assert request.method == 'POST'
     try:
         if "add" in request.POST:
-            assert context['can_add']
+            if not context['can_add']: raise SuspiciousOperation('context changed')
             Friend.objects.add_friend(user, user_page)
             messages.info(request, "friendship request sent to {}".format(user_page))
         if "cancel" in request.POST:
-            assert context['can_cancel']
+            if not context['can_cancel']: raise SuspiciousOperation('context changed')
             fr = FriendshipRequest.objects.get(to_user=user_page, from_user=user)
             fr.cancel()
             messages.info(request, "friendship request to {} canceled".format(user_page))
         if "accept" in request.POST:
-            assert context['can_accept_decline']
+            if not context['can_accept_decline']: raise SuspiciousOperation('context changed')
             fr = FriendshipRequest.objects.get(to_user=user, from_user=user_page)
             fr.accept()
             messages.success(request, "you are now friend with {}".format(user_page))
         if "decline" in request.POST:
-            assert context['can_accept_decline']
+            if not context['can_accept_decline']: raise SuspiciousOperation('context changed')
             fr = FriendshipRequest.objects.get(to_user=user, from_user=user_page)
             fr.reject()
             messages.info(request, "you refused {}'s friendship request".format(user_page))
         if "remove" in request.POST:
-            assert context['can_remove']
+            if not context['can_remove']: raise SuspiciousOperation('context changed')
             Friend.objects.remove_friend(user, user_page)
             messages.info(request, "you are not any more friend with {}".format(user_page))
         return True
-    except AssertionError:
+    except SuspiciousOperation:
         messages.warning(request, "something changed between page load and click")
         return False
