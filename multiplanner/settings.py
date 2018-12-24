@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admindocs',
     'friendship',
+    'guardian',
     #'django_extensions',
 ]
 
@@ -124,6 +125,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# for django-guuardion (objects permissions)
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
