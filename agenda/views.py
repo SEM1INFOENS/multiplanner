@@ -6,6 +6,7 @@ from django.core.exceptions import PermissionDenied
 from django.template import Context, loader
 from django.urls import reverse
 from .forms import *
+from accounting.forms import TransactionForm
 from django.utils import timezone
 import datetime
 from django.forms.formsets import formset_factory
@@ -109,14 +110,14 @@ def event(request, ide):
 
 
     if request.method == 'POST':
-        form = TransactionForm(request.POST, current_group=group)
+        form = TransactionForm(request.POST, current_group=group, between_members=False)
 
         if form.is_valid():
             transaction = form.save()
             success = messages.success(request, 'Transaction successfully created')
             return redirect('event', ide=event.id)
     else:
-        form = TransactionForm(current_group=group)
+        form = TransactionForm(current_group=group, between_members=False)
 
     invited = event.invited.all()
     attendees = event.attendees.members.all()

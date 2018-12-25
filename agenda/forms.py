@@ -52,28 +52,3 @@ class EventForm(ModelForm):
             inst.save()
             self.save_m2m()
         return inst
-
-class TransactionForm(ModelForm):
-
-    class Meta:
-        model = Transaction
-        fields = ['motive', 'date', 'payer', 'amount', 'beneficiaries']
-        widgets = {
-            'motive' : forms.Textarea,
-            'date' : forms.SelectDateWidget(),
-            'amoint' : forms.NumberInput
-        }
-
-    def __init__(self, *args, **kwargs):
-        self._group = kwargs.pop('current_group')
-        super(TransactionForm, self).__init__(*args, **kwargs)
-        
-        self.fields['payer'].queryset = self._group.members
-        self.fields['beneficiaries'].queryset = self._group.members
-
-    def save(self, commit=True):
-        inst = super(TransactionForm, self).save()
-        self._group.transactions.add(inst)
-        self._group.save()
-
-        return inst

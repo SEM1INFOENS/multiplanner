@@ -4,6 +4,7 @@ from django.template import context
 from django.contrib import messages
 
 from .forms import *
+from accounting.forms import TransactionForm
 from accounting import resolution
 from .models import Group
 
@@ -51,15 +52,15 @@ def group_number (request,ide):
     print("balance0:",resolution.balance_in_fractions(group))
     balance1 = [b for b in balance]
     res = resolution.resolution_tuple(group,balance1)
-	
+
     if request.method == 'POST':
-        form = TransactionForm(request.POST, current_group=group)
+        form = TransactionForm(request.POST, current_group=group, between_members=True)
         if form.is_valid():
             transaction = form.save()
             success = messages.success(request, 'Transaction successfully created')
             return redirect('groups:group-number', ide=group.id)
     else:
-        form = TransactionForm(current_group=group)
+        form = TransactionForm(current_group=group, between_members=True)
 
     list_context =[]
     members = [m for m in group.members.all()]
