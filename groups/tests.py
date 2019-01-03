@@ -20,12 +20,10 @@ class GroupTestCase(TestCase):
         c.save()
         self.users_list = [a, b, c]
 
-        g1 = Group(name='ab')
-        g1.save()
+        g1 = Group.create_new(name='ab')
         g1.members.add(*[a, b, c])
 
-        g2 = Group()
-        g2.save()
+        g2 = Group.create_new()
         g2.members.add(*[a, b])
 
         t1 = Transaction.create_new(
@@ -34,7 +32,6 @@ class GroupTestCase(TestCase):
             amount=2.2,
             beneficiaries=g1.members.all()
         )
-        t1.save()
         g1.transactions.add(t1)
 
         t2 = Transaction.create_new(
@@ -42,7 +39,6 @@ class GroupTestCase(TestCase):
             amount=1.,
             beneficiaries=g1.members.all()
         )
-        t2.save()
         g1.transactions.add(t2)
 
         #self.users_list[0].username='test_othername'
@@ -72,12 +68,12 @@ class GroupTestCase(TestCase):
             print("\nGroup: %i (%s)" %(g.id, g.name))
             assert (g in self.gt_links.keys())
 
-            
+
             for t in g.transactions.all():
                 print("transaction: %i (%s)" %(t.id, t.motive))
                 assert (t in self.gt_links[g])
             for t in self.gt_links[g]:
-                assert (t in g.transactions.all()) 
+                assert (t in g.transactions.all())
 
         for g in self.gt_links.keys():
             assert (g in groups)
@@ -89,8 +85,7 @@ class GroupTestCase(TestCase):
         c = User.objects.create_user(username='carlotta2')
         self.users_list = [a, b, c]
 
-        g1 = Group(name='ab')
-        g1.save()
+        g1 = Group.create_new(name='ab')
         g1.members.add(*[a, b, c])
 
         m1=SecretMark.create_new(a, b, 10)
@@ -99,7 +94,7 @@ class GroupTestCase(TestCase):
         m2.save()
 
         M,members = g1.relationship_matrix()
-        
+
         print("Here comes the relationship matrix")
         print(M)
 
@@ -112,4 +107,3 @@ class GroupTestCase(TestCase):
 
         M,members = g1.relationship_matrix()
         assert( M == [[0, 10, 0], [-10, 0, 9], [-10, 0, 0]])
-
