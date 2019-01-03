@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'notifications.apps.NotificationsConfig',
     'presentation.apps.PresentationConfig',
     'relationships.apps.RelationshipsConfig',
+    'permissions.apps.PermissionsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
