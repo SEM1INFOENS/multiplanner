@@ -8,6 +8,7 @@ from django.contrib import messages
 
 from accounting.models import Transaction
 from agenda.models import Event
+from groups.models import Group
 from .functions import *
 from relationships import functions as rel
 from relationships.models import SecretMark
@@ -17,7 +18,7 @@ def index(request):
     nb_of_friends = 6
     nb_of_transactions = 5
     user = request.user
-    groups = user.group_set.all()
+    groups = Group.objects.containsUser(user)
     spent, due = balance_of_user(user)
     context = {
         'loggedin_user' : user,
@@ -54,7 +55,7 @@ def set_secret_mark(request):
     mark = request.POST.get('mark')
     m = SecretMark.create_new(request.user,user_to_mark,mark)
     m.save()
-    return redirect(redirect_url)	
+    return redirect(redirect_url)
 
 def signup(request):
     if request.method == 'POST':
