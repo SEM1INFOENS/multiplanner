@@ -13,6 +13,8 @@ from django.forms.formsets import formset_factory
 from django.utils import timezone
 from .models import *
 from accounting import resolution
+from guardian.decorators import permission_required_or_403
+from permissions.utils import get_default_permission_name
 from permissions.forms import PermGroupForm
 
 
@@ -66,7 +68,10 @@ def create_event(request):
     context.update({'form': form, 'admins_form': admins_form, 'invited_form': invited_form})
     return render(request, 'edit_event.html', context)
 
+
+change_perm = get_default_permission_name(Event, 'change')
 @login_required
+@permission_required_or_403(change_perm, (Event, 'pk', 'ide'))
 def edit_event(request, ide):
     context = {'new' : False}
     event = get_object_or_404(Event, pk=ide)
@@ -108,8 +113,9 @@ def agenda(request):
     return render(request, 'agenda.html', context)
 
 
-#we should check if the user is allowed to see the event
+view_perm = get_default_permission_name(Event, 'view')
 @login_required
+@permission_required_or_403(view_perm, (Event, 'pk', 'ide'))
 def event(request, ide):
     event = get_object_or_404(Event, pk=ide)
     group = event.attendees
