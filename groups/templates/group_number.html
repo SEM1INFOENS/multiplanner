@@ -1,6 +1,6 @@
 {%extends "base_template_groups.html" %}
 
-{% block content %}  
+{% block content %}
 
 {% if not group.name%}<h1> NoName</h1>
 {% else %}
@@ -44,6 +44,13 @@
     </li>
     {% endfor %}
   </ul>
+</p>
+
+<p>
+  <h3>Admins</h3>
+  {% for user in group.admins.all %}
+  <a href="{% url 'users:page' user.username %}">{{ user }}</a>
+  {% endfor %}
 </p>
 
 {% if transactions%}
