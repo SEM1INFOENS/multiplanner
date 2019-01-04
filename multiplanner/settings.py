@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     'accounting.apps.AccountingConfig',
     'agenda.apps.AgendaConfig',
     'groups.apps.GroupsConfig',
-    'notifications.apps.NotificationsConfig',
+    #'notifications.apps.NotificationsConfig',
     'presentation.apps.PresentationConfig',
     'relationships.apps.RelationshipsConfig',
     'django.contrib.admin',
@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admindocs',
     'friendship',
+    'notify',
     #'django_extensions',
 ]
 
