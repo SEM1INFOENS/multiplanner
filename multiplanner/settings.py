@@ -34,7 +34,7 @@ INSTALLED_APPS = [
     'accounting.apps.AccountingConfig',
     'agenda.apps.AgendaConfig',
     'groups.apps.GroupsConfig',
-    'notifications.apps.NotificationsConfig',
+    #'notifications.apps.NotificationsConfig',
     'presentation.apps.PresentationConfig',
     'relationships.apps.RelationshipsConfig',
     'permissions.apps.PermissionsConfig',
@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'djmoney',
     'guardian',
     'jsonify',
+    'notify',
     #'django_extensions',
 ]
 
