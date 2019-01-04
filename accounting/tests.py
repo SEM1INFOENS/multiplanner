@@ -43,11 +43,15 @@ class TransactionTestCase(TestCase):
         bravo.save()
 
         now = timezone.now()
-        transaction = Transaction.create_new(tango, 20, [tango, bravo], motive='testing', date=now)
+        self.benef = [tango, bravo]
+        transaction = Transaction.create_new(tango, 20, self.benef, motive='testing', date=now)
+        self.tr = transaction
+
 
     def test(self):
-        assert True
-
+        print('transac test')
+        assert set(self.tr.get_beneficiaries()) == set(self.benef)
+        print('transac test ok !!!')
 
 
 ''' Test set for the resolution app '''
