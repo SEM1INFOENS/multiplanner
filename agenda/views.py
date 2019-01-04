@@ -13,6 +13,8 @@ from django.forms.formsets import formset_factory
 from django.utils import timezone
 from .models import *
 from accounting import resolution
+from permissions.forms import PermGroupForm
+
 
 def date_format_ics(date, time):
     '''Converts date to date in ICS format'''
@@ -42,18 +44,15 @@ def create_event(request):
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = EventForm(request.POST, creator_user=request.user, new=True)
+        admins_form = PermGroupForm(request.POST)
+        invited_form = PermGroupForm(request.POST)
         # check whether it's valid:
-        if form.is_valid():
+        if form.is_valid() and admins_form.is_valid() and invited_form.is_valid():
             # process the data in form.cleaned_data as required
+            form.instance.admins = admins_form.save()
+            form.instance.invited = invited_form.save()
             event = form.save()
             success = messages.success(request, 'Event successfully created')
-            #warn = messages.warning(request, 'Event created')
-            #error = messages.error(request, 'Event created')
-            #info = messages.info(request, 'Event created')
-            #debug = messages.debug(request, 'Event created')
-            #all_m = [success, warn, info, error]
-
-            #url_e = reverse('event', event.id)
             # redirect to a new URL:
             return redirect('event', ide=event.id)
             #return HttpResponseRedirect('/user/')
@@ -61,8 +60,10 @@ def create_event(request):
     # if a GET (or any other method) we'll create a blank form
     else:
         form = EventForm(creator_user=request.user, new=True)
+        admins_form = PermGroupForm(label='admins')
+        invited_form = PermGroupForm(label='invited')
 
-    context.update({'form': form})
+    context.update({'form': form, 'admins_form': admins_form, 'invited_form': invited_form})
     return render(request, 'edit_event.html', context)
 
 @login_required
@@ -70,10 +71,14 @@ def edit_event(request, ide):
     context = {'new' : False}
     event = get_object_or_404(Event, pk=ide)
     user = request.user
-    if user in event.administrators.all() : #user can only edit events of which he is admin
+    if user in event.admins.all() : #user can only edit events of which he is admin
         if request.method == "POST":
             form = EventForm(request.POST, creator_user=event.creator, new=False, instance=event)
-            if form.is_valid():
+            admins_form = PermGroupForm(request.POST, instance=event.admins, prefix='admins')
+            invited_form = PermGroupForm(request.POST, instance=event.invited)
+            if form.is_valid() and admins_form.is_valid() and invited_form.is_valid():
+                admins_form.save()
+                invited_form.save()
                 event = form.save(commit=False)
                 event.save()
 
@@ -81,7 +86,10 @@ def edit_event(request, ide):
                 return redirect('event', ide=event.id)
         else:
             form = EventForm(creator_user=event.creator, new=False, instance=event)
-        context.update({'form': form, 'ide':event.id})
+            admins_form = PermGroupForm(label='admins', instance=event.admins, prefix='admins')
+            invited_form = PermGroupForm(label='invited', instance=event.invited)
+        context.update({'form': form, 'ide':event.id,
+         'admins_form': admins_form, 'invited_form': invited_form})
         return render(request, 'edit_event.html', context)
     else:
         raise PermissionDenied
@@ -91,7 +99,7 @@ def edit_event(request, ide):
 def agenda(request):
     user = request.user
     context = {
-        'events_admin': Event.objects.filter(administrators=user),
+        'events_admin': Event.objects.filter(admins__members=user),
         'events_invited': Event.objects.invited(user),
         'events_attendees': Event.objects.attending(user),
         'events_past': Event.objects.past(user),
@@ -122,7 +130,7 @@ def event(request, ide):
     invited = event.invited.all()
     attendees = event.attendees.members.all()
     invited_attendees = [(u, (u in attendees)) for u in invited]
-    admin_l = event.administrators.all()
+    admin_l = event.admins.all()
     last_transactions = event.attendees.transactions.all().order_by('-date')
     try :
         sitting_arrangement = event.sitting#.table__set.all()

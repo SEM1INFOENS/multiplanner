@@ -5,6 +5,7 @@ from django.contrib.admin import widgets
 #from treasuremap import widgets as tmw
 from .models import *
 from groups.models import Group
+#from permissions.forms import PermGroupFormField
 
 # Form : to create a form
 # ModelForm : to automaticaly create a form from a model
@@ -15,10 +16,10 @@ class EventForm(ModelForm):
     #place = LatLongField()
     # I was not able to make it work...
     # https://github.com/silentsokolov/django-treasuremap
-    
+
     class Meta:
         model = Event
-        fields = ['name', 'description', 'date', 'time', 'date_end', 'time_end', 'place', 'administrators', 'invited']
+        fields = ['name', 'description', 'date', 'time', 'date_end', 'time_end', 'place']
         widgets = {
             'description' : forms.Textarea,
             'time' : forms.TimeInput(format='%H:%M'),
@@ -42,13 +43,11 @@ class EventForm(ModelForm):
     def save(self, commit=True):
         inst = super(EventForm, self).save(commit=False)
         inst.creator = self.creator_user
-        
+
         if self.new:
-            att =  Group(inEvent=True)
-            att.save()
+            att =  Group.create_for_event()
             inst.attendees = att
-        
+
         if commit:
             inst.save()
-            self.save_m2m()
         return inst
