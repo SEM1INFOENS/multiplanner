@@ -37,28 +37,32 @@ class Transaction(models.Model):
     payer = models.ForeignKey(User, on_delete=models.PROTECT,
                               related_name='%(class)s_payer')
     # related_name used to fix the 'reverse accessor' problem
-    amount = models.FloatField(validators=[validate_amount])
-    beneficiaries = models.ManyToManyField(User)
+    # -> not needed any more (because no more beneficiaries field)
 
     def get_beneficiaries(self):
         '''Returns all the beneficiaries of the transaction'''
-        return self.beneficiaries.all()
+        return self.transaction_part_set.all().values('beneficary')
 
     @classmethod
     def create_new(cls, payer, amount, beneficiaries, motive='', date=None):
-        '''Default method for creating transaction given a list of beneficiaries'''
+        '''Default method for creating transaction and itès TransactionPart
+        given a list of beneficiaries
+        where every beneficiaries pay the same share
+        this method is just to simplify testing'''
         if date==None:
             date = timezone.now()
-        transaction = cls(motive=motive, date=date, payer=payer, amount=amount)
+        transaction = cls(motive=motive, date=date, payer=payer)
         transaction.save()
-        transaction.beneficiaries.add(*beneficiaries)
+        share = amount/len(beneficiaries)
+        for b in beneficiaries:
+            TransactionPart(transaction=transaction, beneficiary=b, amount=share)
         return transaction
 
 
     def __repr__(self):
         '''Enables to display a Transaction in a convenient way'''
         return "motive : {}, date : {}, payer : {}, amount : {}, beneficiaries : {}" \
-        .format(self.motive, self.date, self.payer, self.amount, self.beneficiaries)
+        .format(self.motive, self.date, self.payer, self.amount, self.tarnsactionpart_set__beneficiary)
 
     def __str__(self):
         if self.beneficiaries.all().count() <= 3:
@@ -66,6 +70,11 @@ class Transaction(models.Model):
             return "{} ({} payed for {})".format(self.motive, self.payer.username, ", ".join(ben))
         else:
             return "{} ({} payed)".format(self.motive, self.payer.username)
+
+class TransactionPart(models.Model):
+    transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
+    beneficiary = models.ForeignKey(User, on_delete=models.PROTECT)
+    amount = models.FloatField(validators=[validate_amount])
 
 
 class SharedAccount(models.Model):
