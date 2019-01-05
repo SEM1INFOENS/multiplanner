@@ -11,15 +11,17 @@ def balance_in_fractions (group):
 	totalMoney = 0
 	for i in transactions :
 		# beneficiaries cannot be empty list
-		beneficiaries = [b for b in i.beneficiaries.all()]
 
-		amount = fractions.Fraction(str(i.amount))
+		# amount = fractions.Fraction(str(i.total_amount()))
+		amount = i.transactionpart_set.all().values_list('amount', flat=True)
+		amount = [fractions.Fraction(str(a)) for a in amount]
+		amount = sum(amount)
 		index = members.index(i.payer)
 		balance[index] += amount
 
-		for j in beneficiaries :
-			index = members.index(j)
-			balance[index] -= fractions.Fraction(amount,len(beneficiaries))
+		for trp in i.transactionpart_set.all() :
+			index = members.index(trp.beneficiary)
+			balance[index] -= fractions.Fraction(str(trp.amount))
 
 	return members,balance
 
@@ -52,7 +54,6 @@ def balance_in_floats (group):
 			moneyPutOnTable -= i
 
 	if moneyTakenFromTable == moneyPutOnTable:
-                print("case1!!!!!!")
                 #transform centimes to euros
                 for i in range(len(balance2)):
                         balance2[i] /=100
