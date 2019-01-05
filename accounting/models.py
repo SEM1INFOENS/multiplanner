@@ -59,6 +59,14 @@ class Transaction(models.Model):
         return transaction
 
 
+    def amount_payed(self, user):
+        if user == self.payer:
+            amounts = self.transactionpart_set.all().exclude(beneficiary=user).values_list('amount', flat=True)
+            return sum(amounts)
+        else:
+            amounts = self.transactionpart_set.filter(beneficiary=user).values_list('amount', flat=True)
+            return -sum(amounts)
+
     def __repr__(self):
         '''Enables to display a Transaction in a convenient way'''
         return "motive : {}, date : {}, payer : {}, amount : {}, beneficiaries : {}" \

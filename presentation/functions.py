@@ -13,18 +13,19 @@ def queryset_to_list(Q):
         L.append(q)
     return L
 
-def amount_payed(tr, user):
-        benef = tr.beneficiaries.all()
-        if user == tr.payer:
-            if user in benef:
-                return round(tr.amount*(1-1/benef.count()), 2)
-            else:
-                return tr.amount
-        else:
-            if user in benef:
-                return -round(tr.amount/benef.count(), 2)
-            else:
-                return 0
+# new method in the Transaction model
+# def amount_payed(tr, user):
+#         benef = tr.beneficiaries.all()
+#         if user == tr.payer:
+#             if user in benef:
+#                 return round(tr.amount*(1-1/benef.count()), 2)
+#             else:
+#                 return tr.amount
+#         else:
+#             if user in benef:
+#                 return -round(tr.amount/benef.count(), 2)
+#             else:
+#                 return 0
 
 def n_random_friends(user, n):
     '''Returns a random list of six friends of the User user'''
@@ -46,10 +47,10 @@ def friendship_requests(user):
     return Friend.objects.unrejected_requests(user=user)
 
 def transaction_infos(tr, user):
-    amount = amount_payed(tr, user)
+    amount = tr.amount_payed(user)
     type_, entity = acc_functions.related_entity(tr)
     return (tr, amount, type_,entity)
-    
+
 def n_transactions_of_user(u, n):
     """Returns the last n transactions implying an event or group u belongs to,
     sorted in chronological time"""
@@ -95,7 +96,7 @@ def balance_of_user(u):
     due = 0
 
     for tr in Transaction.objects.filter(Q(payer=u) | Q(beneficiaries=u)).distinct():
-        payed = amount_payed(tr, u)
+        payed = tr.amount_payed(u)
         if payed > 0:
             spent += payed
         elif payed < 0 :
