@@ -13,6 +13,9 @@ from .functions import *
 from relationships import functions as rel
 from relationships.models import SecretMark
 
+from notify.signals import notify
+
+
 @login_required
 def index(request):
     nb_of_friends = 6
@@ -32,6 +35,11 @@ def index(request):
         'balance_plus' : spent,
         'balance_minus' : -due,
     }
+
+    notify.send(request.user, recipient=user, actor=request.user, verb='followed you.', nf_type='followed_user')
+
+
+
     return render(request, 'users/index.html', context)
 
 @login_required
