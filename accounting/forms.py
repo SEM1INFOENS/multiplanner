@@ -8,7 +8,7 @@ class TransactionForm(ModelForm):
 
     class Meta:
         model = Transaction
-        fields = ['motive', 'date', 'payer', 'amount', 'beneficiaries']
+        fields = [] #'motive', 'date', 'payer', 'amount', 'beneficiaries']
         widgets = {
             'motive' : forms.Textarea,
             'date' : forms.SelectDateWidget(),
@@ -20,9 +20,9 @@ class TransactionForm(ModelForm):
         between_members = kwargs.pop('between_members')
         super(TransactionForm, self).__init__(*args, **kwargs)
 
-        if between_members:
-            self.fields['payer'].queryset = self._group.members
-            self.fields['beneficiaries'].queryset = self._group.members
+        # if between_members:
+        #     self.fields['payer'].queryset = self._group.members
+        #     self.fields['beneficiaries'].queryset = self._group.members
 
     def save(self, commit=True):
         inst = super(TransactionForm, self).save()
