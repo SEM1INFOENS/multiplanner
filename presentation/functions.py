@@ -67,7 +67,7 @@ def n_transactions_of_user(u, n):
     # all_transactions = sorted(all_transactions, key=lambda transaction: transaction.date)
     # return all_transactions[-n:]
 
-    transactions = Transaction.objects.filter(Q(payer=u) | Q(beneficiaries=u)).distinct().order_by('-date')[:n]
+    transactions = Transaction.objects.with_user(u).order_by('-date')[:n]
     transactions_plus = [transaction_infos(tr,u) for tr in transactions]
     return transactions_plus
 
@@ -95,7 +95,7 @@ def balance_of_user(u):
     spent = 0
     due = 0
 
-    for tr in Transaction.objects.filter(Q(payer=u) | Q(beneficiaries=u)).distinct():
+    for tr in Transaction.objects.with_user(u):
         payed = tr.amount_payed(u)
         if payed > 0:
             spent += payed
