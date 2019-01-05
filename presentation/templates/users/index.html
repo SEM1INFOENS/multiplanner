@@ -1,11 +1,17 @@
 {%extends "base_template.html" %}
 {% load static %}
+{% load staticfiles %}
+{% load notification_tags %}
+
+
 
 {% block active_agenda %} active{% endblock %}
 {% block active_groups %} active{% endblock %}
 {% block active_friends %} active{% endblock %}
 
 {% block content %}
+
+
 
 
 <div class="container-fluid" style="margin-top: 0.97rem">
@@ -136,6 +142,7 @@
 
 
 
+
         <!--
     <ul class="list-group list-group-flush">
       <li class="list-group-item">You are invited to <a href=#>this event</a></li>
@@ -152,5 +159,7 @@
 </div>
 
 </div>
+
+
 
 {% endblock %}
