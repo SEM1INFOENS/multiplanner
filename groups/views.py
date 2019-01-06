@@ -48,8 +48,27 @@ def create_group (request):
 change_perm = get_default_permission_name(Group, 'change')
 @login_required
 @permission_required_or_403(change_perm, (Group, 'pk', 'ide'))
-def edit_group (request,ide):
-    return render(request, 'groups.html')
+def edit_group(request,ide):
+    context = {'new' : False}
+    group = get_object_or_404(Group, pk=ide)
+    if request.method == 'POST':
+        group_form = GroupForm(request.POST, creator_user=request.user, instance=group)
+        admins_form = PermGroupForm(request.POST, prefix='admins', instance=group.admins)
+        members_form = PermGroupForm(request.POST, instance=group.members)
+        if group_form.is_valid() and admins_form.is_valid() and members_form.is_valid():
+            admins_form.save()
+            members_form.save()
+            group = group_form.save()
+            group.save()
+            success = messages.success(request, 'Group successfully modified')
+            return redirect('groups:group-number', ide=group.id)
+    else :
+        group_form = GroupForm(creator_user=request.user, instance=group)
+        admins_form = PermGroupForm(label='admins', prefix='admins', instance=group.admins)
+        members_form = PermGroupForm(label='members', instance=group.members)
+
+    context.update({'ide': group.id, 'group_form': group_form, 'admins_form': admins_form, 'members_form': members_form})
+    return render(request, 'edit_group.html', context)
 
 
 view_perm = get_default_permission_name(Group, 'view')
@@ -76,9 +95,12 @@ def group_number(request,ide):
     members = [m for m in group.members.all()]
     for i in range(len(balance)):
         list_context.append((members[i],balance[i]))
+    perm_name = get_default_permission_name(Group,'change')
+    can_edit = request.user.has_perm(perm_name) or request.user.has_perm(perm_name, group)
 
     context= {
 	'group' : group,
+    'can_edit' : can_edit,
 	'list_context' : list_context,
 	'resolution' : res ,
 	'transactions' :  group.transactions.all(),

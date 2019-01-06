@@ -121,8 +121,6 @@ def event(request, ide):
     group = event.attendees
     user = request.user
 
-
-
     if request.method == 'POST':
         form = TransactionForm(request.POST, current_group=group, between_members=False)
 
@@ -143,7 +141,6 @@ def event(request, ide):
     except Sitting.DoesNotExist:
         sitting_arrangement = None
 
-
     balance = resolution.balance_in_floats(group)
     balance1 = [b for b in balance]
     res = resolution.resolution_tuple(group,balance1)
@@ -152,14 +149,14 @@ def event(request, ide):
     members = [m for m in group.members.all()]
     for i in range(len(balance)):
         list_context.append((members[i],balance[i]))
-
-
+    perm_name = get_default_permission_name(Event,'change')
+    can_edit = request.user.has_perm(perm_name) or request.user.has_perm(perm_name, event)
 
     context = {
         'event': event,
         'invited' : invited_attendees,
         'admin' : admin_l,
-        'is_admin' : (request.user in admin_l),
+        'can_edit' : can_edit,
         'can_accept_invite' : event.can_accept_invite(user),
         'can_cancel_acceptance' : event.can_cancel_acceptance(user),
         'last_transactions' : last_transactions,

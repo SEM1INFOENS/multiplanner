@@ -2,6 +2,10 @@
 
 {% block content %}
 
+{% if can_edit %}
+<a class="btn btn-primary" href="{% url 'groups:edit-group' ide=group.id %}">edit <i class="fas fa-edit"></i></a>
+{% endif %}
+
 {% if not group.name%}<h1> NoName</h1>
 {% else %}
 <h1>{{group.name}}</h1>
