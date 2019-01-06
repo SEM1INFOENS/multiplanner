@@ -6,6 +6,20 @@
 
 <h1>{{ user.username }}</h1>
 
+<form action="{% url 'permissions:manage_app_admins' %}" method="post">
+  <input type="hidden" name="redirect_url" value="{{ request.get_full_path }}">
+  <input type="hidden" name="user_page" value="{{ user.username }}">
+  {% csrf_token %}
+  {% if can_add_app_admin %}
+  <button type="submit" class="btn btn-success" name="add_app_admin">
+    Give app-admin rights <i class="fas fa-user-shield"></i></button>
+  {% endif %}
+  {% if can_remove_app_admin %}
+  <button type="submit" class="btn btn-danger" name="remove_app_admin">
+    Remove app-admin rights <i class="fas fa-minus-circle"></i></button>
+  {% endif %}
+</form>
+
 <form action="{% url 'friends:friendship_request' %}" method="post">
   <input type="hidden" name="redirect_url" value="{{ request.get_full_path }}">
   <input type="hidden" name="user_page" value="{{ user.username }}">
