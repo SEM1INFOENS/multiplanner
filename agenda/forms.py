@@ -19,7 +19,7 @@ class EventForm(ModelForm):
 
     class Meta:
         model = Event
-        fields = ['name', 'description', 'date', 'time', 'date_end', 'time_end', 'place']
+        fields = ['name', 'public', 'description', 'date', 'time', 'date_end', 'time_end', 'place']
         widgets = {
             'description' : forms.Textarea,
             'time' : forms.TimeInput(format='%H:%M'),

@@ -1,6 +1,22 @@
-from guardian.shortcuts import assign_perm
+from guardian.shortcuts import assign_perm, remove_perm
 from .models import PermGroup
 from .utils import get_default_permission_name
+
+
+def set_public(obj):
+   ''' set an obj as public (every user can view) '''
+   model = type(obj)
+   from .group import users
+   view_perm = get_default_permission_name(model, 'view')
+   assign_perm(view_perm, users, obj)
+
+def set_private(obj):
+   ''' set an obj as private (only admins and members can view) '''
+   model = type(obj)
+   from .group import users
+   view_perm = get_default_permission_name(model, 'view')
+   remove_perm(view_perm, users, obj)
+
 
 def set_admin_perm(obj, group):
     ''' give to a PermGroup (the group parameter)
@@ -12,7 +28,7 @@ def set_admin_perm(obj, group):
     assign_perm(change_perm, group.group, obj)
     assign_perm(view_perm, group.group, obj)
 
-def set_members_perm(obj, group, public=False, all_admin=False):
+def set_members_perm(obj, group, public=False):
     ''' give to a PermGroup (the group parameter)
     the members righs for the obj'''
     assert  type(group)==PermGroup
@@ -21,9 +37,6 @@ def set_members_perm(obj, group, public=False, all_admin=False):
     assign_perm(view_perm, group.group, obj)
 
     if public:
-        #assign_perm(obj, "the group with all users", view_perm)
-        assert False
-
-    if all_admin:
-        change_perm = get_default_permission_name(model, 'change')
-        assign_perm(obj, group.group, change_perm)
+        set_public(obj)
+    else:
+        set_private(obj)
