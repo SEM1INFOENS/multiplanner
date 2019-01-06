@@ -71,33 +71,29 @@ def create_event(request):
 
 change_perm = get_default_permission_name(Event, 'change')
 @login_required
-@permission_required_or_403(change_perm, (Event, 'pk', 'ide'))
+@permission_required_or_403(change_perm, (Event, 'pk', 'ide'), accept_global_perms=True)
 def edit_event(request, ide):
     context = {'new' : False}
     event = get_object_or_404(Event, pk=ide)
     user = request.user
-    if user in event.admins.all() : #user can only edit events of which he is admin
-        if request.method == "POST":
-            form = EventForm(request.POST, creator_user=event.creator, new=False, instance=event)
-            admins_form = PermGroupForm(request.POST, instance=event.admins, prefix='admins')
-            invited_form = PermGroupForm(request.POST, instance=event.invited)
-            if form.is_valid() and admins_form.is_valid() and invited_form.is_valid():
-                admins_form.save()
-                invited_form.save()
-                event = form.save(commit=False)
-                event.save()
-
-                success = messages.success(request, 'Event successfully modified')
-                return redirect('event', ide=event.id)
-        else:
-            form = EventForm(creator_user=event.creator, new=False, instance=event)
-            admins_form = PermGroupForm(label='admins', instance=event.admins, prefix='admins')
-            invited_form = PermGroupForm(label='invited', instance=event.invited)
-        context.update({'form': form, 'ide':event.id,
-         'admins_form': admins_form, 'invited_form': invited_form})
-        return render(request, 'edit_event.html', context)
+    if request.method == "POST":
+        form = EventForm(request.POST, creator_user=event.creator, new=False, instance=event)
+        admins_form = PermGroupForm(request.POST, instance=event.admins, prefix='admins')
+        invited_form = PermGroupForm(request.POST, instance=event.invited)
+        if form.is_valid() and admins_form.is_valid() and invited_form.is_valid():
+            admins_form.save()
+            invited_form.save()
+            event = form.save(commit=False)
+            event.save()
+            success = messages.success(request, 'Event successfully modified')
+            return redirect('event', ide=event.id)
     else:
-        raise PermissionDenied
+        form = EventForm(creator_user=event.creator, new=False, instance=event)
+        admins_form = PermGroupForm(label='admins', instance=event.admins, prefix='admins')
+        invited_form = PermGroupForm(label='invited', instance=event.invited)
+    context.update({'form': form, 'ide':event.id,
+    'admins_form': admins_form, 'invited_form': invited_form})
+    return render(request, 'edit_event.html', context)
 
 
 @login_required
@@ -115,7 +111,7 @@ def agenda(request):
 
 view_perm = get_default_permission_name(Event, 'view')
 @login_required
-@permission_required_or_403(view_perm, (Event, 'pk', 'ide'))
+@permission_required_or_403(view_perm, (Event, 'pk', 'ide'), accept_global_perms=True)
 def event(request, ide):
     event = get_object_or_404(Event, pk=ide)
     group = event.attendees

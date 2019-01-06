@@ -47,7 +47,7 @@ def create_group (request):
 
 change_perm = get_default_permission_name(Group, 'change')
 @login_required
-@permission_required_or_403(change_perm, (Group, 'pk', 'ide'))
+@permission_required_or_403(change_perm, (Group, 'pk', 'ide'), accept_global_perms=True)
 def edit_group(request,ide):
     context = {'new' : False}
     group = get_object_or_404(Group, pk=ide)
@@ -73,7 +73,7 @@ def edit_group(request,ide):
 
 view_perm = get_default_permission_name(Group, 'view')
 @login_required
-@permission_required_or_403(view_perm, (Group, 'pk', 'ide'))
+@permission_required_or_403(view_perm, (Group, 'pk', 'ide'), accept_global_perms=True)
 def group_number(request,ide):
     group = get_object_or_404(Group, pk=ide)
     # For the moment calculate the balance each time we click on the group
