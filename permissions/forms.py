@@ -17,6 +17,8 @@ class PermGroupForm(forms.ModelForm):
     )
 
     def __init__(self, *args, **kwargs):
+        required = kwargs.pop('required', True)
+        self.base_fields.get('members_field').required = required
         if 'label' in kwargs:
             label = kwargs.pop('label')
             self.base_fields.get('members_field').label = label
