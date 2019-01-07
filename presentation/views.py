@@ -40,7 +40,7 @@ def page(request, username):
     user_page = User.objects.get(username=username)
     user = request.user
     context = {
-        'user' : user_page,
+        'user_page' : user_page,
         'transactions': Transaction.objects.filter(payer=user_page),
     }
     rel_context = rel.friendship_context(user, user_page)
