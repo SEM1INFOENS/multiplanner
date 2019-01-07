@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admindocs',
     'friendship',
+    'djmoney'
     #'django_extensions',
 ]
 
@@ -161,3 +162,6 @@ except ImportError:
     found = False
 #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 #ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
+
+
+CURRENCIES = ('USD', 'EUR', 'RUB')

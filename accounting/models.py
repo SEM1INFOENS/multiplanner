@@ -3,6 +3,7 @@
 from django.db import models
 from django.forms import ValidationError
 from django.contrib.auth.models import User
+from djmoney.models.fields import MoneyField
 from django.utils import timezone
 from django.db.models import Q
 
@@ -44,6 +45,7 @@ class Transaction(models.Model):
     date = models.DateTimeField(default=timezone.now)
     payer = models.ForeignKey(User, on_delete=models.PROTECT,
                               related_name='%(class)s_payer')
+    amount = MoneyField(max_digits=14, decimal_places=2, default_currency='EUR')
     # related_name used to fix the 'reverse accessor' problem
     # -> not needed any more (because no more beneficiaries field)
 
@@ -85,16 +87,16 @@ class Transaction(models.Model):
         .format(self.motive, self.date, self.payer, self.total_amount(), self.get_beneficiaries())
 
     def __str__(self):
-        if self.beneficiaries.all().count() <= 3:
-            ben = [b.username for b in self.beneficiaries.all()]
-            return "{} ({} payed for {})".format(self.motive, self.payer.username, ", ".join(ben))
+        if len(self.get_beneficiaries()) <= 3:
+            ben = [b.username for b in self.get_beneficiaries()]
+            return "{} ({} payed {} for {})".format(self.motive, self.payer.username, self.amount, ", ".join(ben))
         else:
             return "{} ({} payed)".format(self.motive, self.payer.username)
 
 class TransactionPart(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
     beneficiary = models.ForeignKey(User, on_delete=models.PROTECT)
-    amount = models.FloatField(validators=[validate_amount])
+    amount = MoneyField(max_digits=14, decimal_places=2, default_currency='EUR')
 
 
 class SharedAccount(models.Model):
