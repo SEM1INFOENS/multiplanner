@@ -1,9 +1,9 @@
 import django.contrib.auth.models as auth
 from guardian.shortcuts import assign_perm
 from django.contrib.contenttypes.models import ContentType
-from .utils import *
 from groups.models import Group
 from agenda.models import Event
+from .utils import get_default_permission_name
 
 
 manage_group_members_perm_name = 'manage_group_members'

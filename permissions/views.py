@@ -1,8 +1,8 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from guardian.decorators import permission_required_or_403
-from django.core.exceptions import SuspiciousOperation
+#from guardian.decorators import permission_required_or_403
+#from django.core.exceptions import SuspiciousOperation
 from django.http import HttpResponseForbidden
 from .group import admins, manage_group_members_perm_name
 
@@ -10,10 +10,12 @@ from .group import admins, manage_group_members_perm_name
 #@permission_required_or_403(manage_group_members_perm_name, admins, accept_global_perms=True)
 @login_required
 def manage_app_admins(request):
-    from .group import admins, manage_group_members_perm_name
+    ''' view to call when a 'add_app_admin'
+    or 'remove_app_admin' button is pressed'''
+    #from .group import admins, manage_group_members_perm_name
     user = request.user
-    if not (user.has_perm(manage_group_members_perm_name, admins or\
-        user.has_perm(manage_group_members_perm_name))):
+    if not user.has_perm(manage_group_members_perm_name, admins or\
+        user.has_perm(manage_group_members_perm_name)):
         return HttpResponseForbidden()
     assert request.method == 'POST'
     redirect_url = request.POST.get('redirect_url')
@@ -26,7 +28,9 @@ def manage_app_admins(request):
 
 
 def manage_app_admins_context(user, user_page):
-    from .group import manage_group_members_perm_name, admins
+    ''' returns a context that specifies
+    if a user is alowed to add or remove an app-admin'''
+    #from .group import manage_group_members_perm_name, admins
     can_manage = user.has_perm(manage_group_members_perm_name, admins) or\
         user.has_perm(manage_group_members_perm_name)
     context = {

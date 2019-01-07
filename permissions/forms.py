@@ -1,11 +1,13 @@
-from django.contrib.auth.models import User, Group
-from .models import PermGroup
+''' form about permissions '''
+from django.contrib.auth.models import User
 from django import forms
+from .models import PermGroup
 
 
 
 class PermGroupForm(forms.ModelForm):
-    class Meta :
+    ''' A form to fill a PermGroup object '''
+    class Meta:
         model = PermGroup
         fields = []
 
@@ -28,6 +30,5 @@ class PermGroupForm(forms.ModelForm):
         instance = super().save(*args, **kwargs)
         if instance.pk:
             instance.clear()
-            print("clear", self.cleaned_data['members_field'])
             instance.add(*self.cleaned_data['members_field'])
         return instance

@@ -1,57 +1,58 @@
 '''Models for the permission app'''
 
 from django.db import models
-import django.contrib.auth as auth
+import django.contrib.auth.models as auth
 from django.core.exceptions import ValidationError
-from guardian.shortcuts import assign_perm as g_assign_perm
 
 
 class NoNameGroup(models.Model):
     ''' to create auth Group without having to specify a name '''
 
     @classmethod
-    def create_new(self, commit=True):
-        obj = self()
+    def create_new(cls, commit=True):
+        ''' Create a new instance of auth.group
+        without having to specify a name '''
+        obj = cls()
         obj.save()
         ide = str(obj.id)
         g_name = 'PermGroup_{}'.format(ide)
-        g = auth.models.Group(name=g_name)
+        g = auth.Group(name=g_name)
         if commit:
             g.save()
         return g
 
 
 class PermGroup(models.Model):
-    ''' PermGroup has the same goal as auth.models.Group
+    ''' PermGroup has the same goal as auth.Group
     but with the possibility to get the members of the group without reverse match
     also it is simpler to instanciate
     ! please don't use self.members.add or self.group.user_set.add
     ! -> same for remove, clear, all and set '''
 
-    members = models.ManyToManyField(auth.models.User, blank=True)
-    group = models.OneToOneField(auth.models.Group, on_delete=models.CASCADE)
+    members = models.ManyToManyField(auth.User, blank=True)
+    group = models.OneToOneField(auth.Group, on_delete=models.CASCADE)
 
     @classmethod
-    def create_new(self, members=[], commit=True):
-        if not commit and members !=[]:
+    def create_new(cls, members=[], commit=True):
+        if not commit and members != []:
             raise ValueError('PermGroup.create_new : commit==False incompatible with members!=[]')
-        pg = PermGroup()
+        pg = cls()
         g = NoNameGroup.create_new(commit=False)
         pg.group = g
         if commit:
             pg.save()
-        if members!=[]:
+        if members != []:
             pg.add(*members)
         return pg
 
-    def save(self):
+    def save(self, *args, **kwargs):
         self.group.save()
         self.group = self.group
-        super().save()
+        super().save(*args, **kwargs)
         return self
 
     def clean(self):
-        if self.pk: #the obj has to be saved to test the members field
+        if self.id: #the obj has to be saved to test the members field
             if set(self.members.all()) != set(self.group.user_set.all()):
                 raise ValidationError("PermGroup : members inconsistant with group")
 
@@ -76,7 +77,5 @@ class PermGroup(models.Model):
         self.group.user_set.set(objs)
 
     def all(self):
+        ''' returns all the members of the PermGroup '''
         return self.members.all()
-
-    def assign_perm(self, perm, instance):
-        assert False
