@@ -13,6 +13,10 @@ from django.forms.formsets import formset_factory
 from django.utils import timezone
 from .models import *
 from accounting import resolution
+from guardian.decorators import permission_required_or_403
+from permissions.utils import get_default_permission_name
+from permissions.forms import PermGroupForm
+
 
 def date_format_ics(date, time):
     '''Converts date to date in ICS format'''
@@ -42,18 +46,15 @@ def create_event(request):
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = EventForm(request.POST, creator_user=request.user, new=True)
+        admins_form = PermGroupForm(request.POST)
+        invited_form = PermGroupForm(request.POST)
         # check whether it's valid:
-        if form.is_valid():
+        if form.is_valid() and admins_form.is_valid() and invited_form.is_valid():
             # process the data in form.cleaned_data as required
+            form.instance.admins = admins_form.save()
+            form.instance.invited = invited_form.save()
             event = form.save()
             success = messages.success(request, 'Event successfully created')
-            #warn = messages.warning(request, 'Event created')
-            #error = messages.error(request, 'Event created')
-            #info = messages.info(request, 'Event created')
-            #debug = messages.debug(request, 'Event created')
-            #all_m = [success, warn, info, error]
-
-            #url_e = reverse('event', event.id)
             # redirect to a new URL:
             return redirect('event', ide=event.id)
             #return HttpResponseRedirect('/user/')
@@ -61,37 +62,45 @@ def create_event(request):
     # if a GET (or any other method) we'll create a blank form
     else:
         form = EventForm(creator_user=request.user, new=True)
+        admins_form = PermGroupForm(label='admins', initial=[request.user])
+        invited_form = PermGroupForm(label='invited')
 
-    context.update({'form': form})
+    context.update({'form': form, 'admins_form': admins_form, 'invited_form': invited_form})
     return render(request, 'edit_event.html', context)
 
+
+change_perm = get_default_permission_name(Event, 'change')
 @login_required
+@permission_required_or_403(change_perm, (Event, 'pk', 'ide'), accept_global_perms=True)
 def edit_event(request, ide):
     context = {'new' : False}
     event = get_object_or_404(Event, pk=ide)
     user = request.user
-    if user in event.administrators.all() : #user can only edit events of which he is admin
-        if request.method == "POST":
-            form = EventForm(request.POST, creator_user=event.creator, new=False, instance=event)
-            if form.is_valid():
-                event = form.save(commit=False)
-                event.save()
-
-                success = messages.success(request, 'Event successfully modified')
-                return redirect('event', ide=event.id)
-        else:
-            form = EventForm(creator_user=event.creator, new=False, instance=event)
-        context.update({'form': form, 'ide':event.id})
-        return render(request, 'edit_event.html', context)
+    if request.method == "POST":
+        form = EventForm(request.POST, creator_user=event.creator, new=False, instance=event)
+        admins_form = PermGroupForm(request.POST, instance=event.admins, prefix='admins')
+        invited_form = PermGroupForm(request.POST, instance=event.invited)
+        if form.is_valid() and admins_form.is_valid() and invited_form.is_valid():
+            admins_form.save()
+            invited_form.save()
+            event = form.save(commit=False)
+            event.save()
+            success = messages.success(request, 'Event successfully modified')
+            return redirect('event', ide=event.id)
     else:
-        raise PermissionDenied
+        form = EventForm(creator_user=event.creator, new=False, instance=event)
+        admins_form = PermGroupForm(label='admins', instance=event.admins, prefix='admins')
+        invited_form = PermGroupForm(label='invited', instance=event.invited)
+    context.update({'form': form, 'ide':event.id,
+    'admins_form': admins_form, 'invited_form': invited_form})
+    return render(request, 'edit_event.html', context)
 
 
 @login_required
 def agenda(request):
     user = request.user
     context = {
-        'events_admin': Event.objects.filter(administrators=user),
+        'events_admin': Event.objects.filter(admins__members=user),
         'events_invited': Event.objects.invited(user),
         'events_attendees': Event.objects.attending(user),
         'events_past': Event.objects.past(user),
@@ -100,14 +109,13 @@ def agenda(request):
     return render(request, 'agenda.html', context)
 
 
-#we should check if the user is allowed to see the event
+view_perm = get_default_permission_name(Event, 'view')
 @login_required
+@permission_required_or_403(view_perm, (Event, 'pk', 'ide'), accept_global_perms=True)
 def event(request, ide):
     event = get_object_or_404(Event, pk=ide)
     group = event.attendees
     user = request.user
-
-
 
     if request.method == 'POST':
         form = TransactionForm(request.POST, current_group=group, between_members=False)
@@ -122,13 +130,12 @@ def event(request, ide):
     invited = event.invited.all()
     attendees = event.attendees.members.all()
     invited_attendees = [(u, (u in attendees)) for u in invited]
-    admin_l = event.administrators.all()
+    admin_l = event.admins.all()
     last_transactions = event.attendees.transactions.all().order_by('-date')
     try :
         sitting_arrangement = event.sitting#.table__set.all()
     except Sitting.DoesNotExist:
         sitting_arrangement = None
-
 
     balance = resolution.balance_in_floats(group)
     balance1 = [b for b in balance]
@@ -138,14 +145,14 @@ def event(request, ide):
     members = [m for m in group.members.all()]
     for i in range(len(balance)):
         list_context.append((members[i],balance[i]))
-
-
+    perm_name = get_default_permission_name(Event,'change')
+    can_edit = request.user.has_perm(perm_name) or request.user.has_perm(perm_name, event)
 
     context = {
         'event': event,
         'invited' : invited_attendees,
         'admin' : admin_l,
-        'is_admin' : (request.user in admin_l),
+        'can_edit' : can_edit,
         'can_accept_invite' : event.can_accept_invite(user),
         'can_cancel_acceptance' : event.can_cancel_acceptance(user),
         'last_transactions' : last_transactions,

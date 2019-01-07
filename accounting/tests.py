@@ -64,8 +64,7 @@ class ResolutionTestCase(TestCase) :
             name = 'Person '+ str(i)
             self.people.append(User.objects.create_user(username= name))
 
-        self.group.append(Group(name = 'test0'))
-        self.group[0].save()
+        self.group.append(Group.create_new(name = 'test0'))
         self.group[0].members.add(*self.people)
 
         for i in range(10):
@@ -80,8 +79,7 @@ class ResolutionTestCase(TestCase) :
             self.transaction.append(t)
 
         #group: 1 euro transaction, 3 people
-        self.group.append(Group(name = 'test1'))
-        self.group[1].save()
+        self.group.append(Group.create_new(name = 'test1'))
         self.group[1].members.add(*[self.people[0],self.people[1],self.people[2]])
         t = Transaction.create_new(
                 motive = "Transaction Supplementaire",

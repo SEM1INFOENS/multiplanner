@@ -20,6 +20,21 @@
   <!-- Nav Bar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="{% url 'users:index' %}">Multiplanner</a>
+
+    <div class="d-flex flex-row navbar-right order-lg-12">
+      <ul class="navbar-nav flex-row">
+        <li class="nav-item">
+          {% load permissions_filters %}
+          <a class="nav-link" href="{% url 'users:page' user.username %}">
+            {{user.username }}
+            {% if user|is_app_admin %}
+            <i class="fas fa-shield-alt"></i>
+            {% endif %}
+          </a>
+        </li>
+      </ul>
+    </div>
+
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>

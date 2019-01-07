@@ -4,12 +4,11 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 import datetime as datetime_module
-#from django.core.exceptions import ValidationError
 from groups.models import Group
 from accounting.models import Transaction
 from django.core.exceptions import SuspiciousOperation, ValidationError
 from . import sit
-#from treasuremap.fields import LatLongField
+from permissions.shortcuts import *
 
 
 
@@ -38,25 +37,30 @@ def combine(date, time, default_time):
 
 
 class EventManager(models.Manager):
+    @classmethod
     def invited(self, user):
         '''List the futur events to which the user is invited'''
-        return Event.objects.filter( date__gte=timezone.now(), invited=user).exclude(attendees__members=user).order_by('creation_date')
+        return Event.objects.filter( date__gte=timezone.now(), invited__members=user).exclude(attendees__members__members=user).order_by('creation_date')
 
+    @classmethod
     def attending(self, user):
         '''List the futur events to which the user will attend'''
-        return Event.objects.filter( date__gte=timezone.now(), attendees__members=user).order_by('time','date').order_by('date')
+        return Event.objects.filter( date__gte=timezone.now(), attendees__members__members=user).order_by('time','date').order_by('date')
 
+    @classmethod
     def past_invited(self, user):
         '''List the past events to which the user was invited'''
-        return Event.objects.filter( date__lt=timezone.now(), invited=user).exclude(attendees__members=user).order_by('-date_end')
+        return Event.objects.filter( date__lt=timezone.now(), invited__members=user).exclude(attendees__members__members=user).order_by('-date_end')
 
+    @classmethod
     def past_attending(self, user):
         '''List the past events to which the user has attend'''
-        return Event.objects.filter( date__lt=timezone.now(), attendees__members=user).order_by('-date_end')
+        return Event.objects.filter( date__lt=timezone.now(), attendees__members__members=user).order_by('-date_end')
 
+    @classmethod
     def past(self, user):
         '''List the past events to which the user was invited or has attended'''
-        return Event.objects.filter( date__lt=timezone.now(), invited=user).order_by('-date_end')
+        return Event.objects.filter( date__lt=timezone.now(), invited__members=user).order_by('-date_end')
 
 
 class Event(models.Model):
@@ -82,34 +86,46 @@ class Event(models.Model):
     default_time_end = (19,)
     def date_time_end(self): return combine(self.date_end, self.time_end, self.default_time_end)
 
-    #place = LatLongField(blank=True, null=True)
     place = models.CharField(max_length=500, blank=True)
     creator = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)
-    administrators = models.ManyToManyField(User, related_name='+')
+    invited = models.OneToOneField(PermGroup, on_delete=models.CASCADE, related_name='+')
+    admins = models.OneToOneField(PermGroup, on_delete=models.CASCADE, related_name='+')
     attendees = models.OneToOneField(Group, on_delete=models.CASCADE)
-    invited = models.ManyToManyField(User, related_name='+')
+    public = models.BooleanField(default=False)
     # why is attendees a group and invited a ManyToManyField...? Because attendees will do things
     # together, it makes sense to consider them as a group.
     # transactions = models.ManyToManyField(Transaction) => use the transactions field of the Group instead
 
-
     @classmethod
-    def create_new(cls, date, time, date_end, time_end, place, creator, administrators, invited):
-        '''Default method for creating an event'''
+    def create_new(cls, date, time, date_end, time_end, creator, place='',\
+     admins=[], invited=[], attendees=None, public=False, commit=True):
+        '''Default method for creating an event
+        if public=True, then everyone can see the event
+        otherwise only members and invited
+        if commit=False then the returnd object is not saved in the db'''
         event = cls(date=date, time=time, date_end=date_end, time_end=time_end, place=place, \
-            creator=creator)
-        event.attendees = Group(inEvent=True).save()
-        event.save()
-        event.administrators.add(*administrators)
-        event.invited.add(*invited)
+            creator=creator, public=public)
+        if attendees==None:
+            event.attendees = Group.create_for_event()
+        else:
+            event.attendees = attendees
+        event.admins = PermGroup.create_new(admins)
+        event.invited = PermGroup.create_new(invited)
+        if commit:
+            event.save()
         return event
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+        # the instance has to be save to set permissions :
+        set_admin_perm(self, self.admins)
+        set_members_perm(self, self.invited, public=self.public)
 
     def __repr__(self):
         '''Enables to display an event in a convenient way.'''
-
-        return "date : {}, place : {}, creator : {}, administrators : {}, attendees : {}, \
+        return "date : {}, place : {}, creator : {}, admins : {}, attendees : {}, \
         invited : {}".format(self.date, self.place, self.creator, \
-            self.administrators, self.attendees, self.invited)
+            self.admins, self.attendees, self.invited)
 
     def __str__(self):
         '''Function used when str(object) is called.
@@ -117,7 +133,7 @@ class Event(models.Model):
         return '%s (%s)' % (self.name, str(self.date))
 
     def clean(self):
-        # don't allow begin_date greater than end_date
+        ''' don't allow begin_date greater than end_date '''
         if self.date_time() > self.date_time_end():
             raise ValidationError("Event can't end before it has begun")
 
@@ -179,23 +195,6 @@ class Table(models.Model):
     members = models.ManyToManyField(User, blank=True)
 
 
-# class TransactionForEvent(Transaction):
-#     '''A transaction that was made for a certain event'''
-#     def validate_transac_event(self, event):
-#         '''Checks that all the beneficiaries of the transaction did attend the event.'''
-#         try:
-#             att = event.attendees.members.all()
-#             ben = self.beneficiaries.all()
-#             for beneficiary in ben:
-#                 assert beneficiary in att
-#             return event
-#         except:
-#             message = "Some beneficiaries of a TransactionForEvent don't attend the event."
-#             raise ValidationError(message)
-#     event = models.ForeignKey(Event, on_delete=models.PROTECT, \
-#         validators=[validate_transac_event])
-
-
 class MeetingRules(models.Model):
     '''A set of rules which creates events.
     They are created by a person, set to NULL if this person should be deleted.
@@ -219,10 +218,8 @@ class MeetingRules(models.Model):
         meeting.possible_time_ranges.add(*possible_time_ranges)
         return meeting
 
-
     def __repr__(self):
         '''Enables to display meeting rules in a convenient way.'''
-
         return "minimum_delay : {}, maximum_delay : {}, duration : {}, possible_time_ranges : {}, \
         creator : {}, administrators : {}".format(self.minimum_delay, self.maximum_delay, \
             self.duration, self.possible_time_ranges, self.creator, self.administrators)
