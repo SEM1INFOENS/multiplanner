@@ -62,7 +62,7 @@ def create_event(request):
     # if a GET (or any other method) we'll create a blank form
     else:
         form = EventForm(creator_user=request.user, new=True)
-        admins_form = PermGroupForm(label='admins')
+        admins_form = PermGroupForm(label='admins', initial=[request.user])
         invited_form = PermGroupForm(label='invited')
 
     context.update({'form': form, 'admins_form': admins_form, 'invited_form': invited_form})

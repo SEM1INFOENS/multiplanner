@@ -22,10 +22,16 @@ class PermGroupForm(forms.ModelForm):
         if 'label' in kwargs:
             label = kwargs.pop('label')
             self.base_fields.get('members_field').label = label
+        if 'initial' in kwargs:
+            initial_param = kwargs.pop('initial')
+        else:
+            initial_param = None
         super().__init__(*args, **kwargs)
         if self.instance.pk:
             self.initial['members_field'] = self.instance.all().values_list('pk', flat=True)
         else:
+            if initial_param:
+                self.initial['members_field'] = initial_param #[u.pk for u in initial]
             self.instance = PermGroup.create_new(commit=False)
 
     def save(self, *args, **kwargs):

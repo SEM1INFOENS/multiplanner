@@ -38,7 +38,7 @@ def create_group (request):
             return redirect('groups:group-number', ide=group.id)
     else :
         group_form = GroupForm(creator_user=request.user)
-        admins_form = PermGroupForm(label='admins', prefix='admins')
+        admins_form = PermGroupForm(label='admins', prefix='admins', initial=[request.user])
         members_form = PermGroupForm(label='members')
 
     context.update({'group_form': group_form, 'admins_form': admins_form, 'members_form': members_form})
