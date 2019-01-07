@@ -98,3 +98,73 @@ class AgendaTestCase(TestCase):
         assert(assi(1) != assi(0))
         assert(assi(1) == assi(3))
         assert(assi(3) == assi(5))
+
+
+
+class EventPermissionsTestCase(TestCase):
+
+    def setUp(self):
+        aa = User.objects.create_user('app_admin')
+        a = User.objects.create_user('admin')
+        m = User.objects.create_user('member')
+        u = User.objects.create_user('user')
+
+        # The users should have been added to the folowing groups
+        # by the signup view
+        from permissions.group import admins, users
+        admins.user_set.add(aa)
+        users.user_set.add(a, m, u)
+
+        from django.utils import timezone
+        t = timezone.now()
+        Event.create_new(t, t, t, t, a, invited=[a,m], admins=[a], public=False)
+
+    def test(self):
+        from permissions.utils import get_default_permission_name
+        has_perm = lambda u, p, i : (u.has_perm(p,i) or u.has_perm(p))
+        gp = Event.objects.get(pk=1)
+        view_perm = get_default_permission_name(Event, 'view')
+        change_perm = get_default_permission_name(Event, 'change')
+
+        aa = User.objects.get(username='app_admin')
+        a = User.objects.get(username='admin')
+        m = User.objects.get(username='member')
+        u = User.objects.get(username='user')
+        assert has_perm(aa, view_perm, gp)
+        assert has_perm(a, view_perm, gp)
+        assert has_perm(m, view_perm, gp)
+        assert not has_perm(u, view_perm, gp)
+        assert has_perm(aa, change_perm, gp)
+        assert has_perm(a, change_perm, gp)
+        assert not has_perm(m, change_perm, gp)
+        assert not has_perm(u, change_perm, gp)
+
+        gp.public = True
+        gp.save()
+        aa = User.objects.get(username='app_admin')
+        a = User.objects.get(username='admin')
+        m = User.objects.get(username='member')
+        u = User.objects.get(username='user')
+        assert has_perm(aa, view_perm, gp)
+        assert has_perm(a, view_perm, gp)
+        assert has_perm(m, view_perm, gp)
+        assert has_perm(u, view_perm, gp)
+        assert has_perm(aa, change_perm, gp)
+        assert has_perm(a, change_perm, gp)
+        assert not has_perm(m, change_perm, gp)
+        assert not has_perm(u, change_perm, gp)
+
+        gp.public = False
+        gp.save()
+        aa = User.objects.get(username='app_admin')
+        a = User.objects.get(username='admin')
+        m = User.objects.get(username='member')
+        u = User.objects.get(username='user')
+        assert has_perm(aa, view_perm, gp)
+        assert has_perm(a, view_perm, gp)
+        assert has_perm(m, view_perm, gp)
+        assert not has_perm(u, view_perm, gp)
+        assert has_perm(aa, change_perm, gp)
+        assert has_perm(a, change_perm, gp)
+        assert not has_perm(m, change_perm, gp)
+        assert not has_perm(u, change_perm, gp)

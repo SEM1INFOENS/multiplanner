@@ -138,7 +138,7 @@ class GroupPermissionsTestCase(TestCase):
         assert has_perm(aa, view_perm, gp)
         assert has_perm(a, view_perm, gp)
         assert has_perm(m, view_perm, gp)
-        assert (not has_perm(u, view_perm, gp))
+        assert not has_perm(u, view_perm, gp)
         assert has_perm(aa, change_perm, gp)
         assert has_perm(a, change_perm, gp)
         assert not has_perm(m, change_perm, gp)
