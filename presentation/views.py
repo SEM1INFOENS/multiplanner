@@ -68,6 +68,7 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             from permissions.group import users
+            users = users()
             users.user_set.add(user)
             auth_login(request, user)
             return redirect('users:index')
