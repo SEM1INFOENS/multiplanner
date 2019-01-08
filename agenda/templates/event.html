@@ -3,7 +3,7 @@
 {% block content %}
 
 
-{% if is_admin %}
+{% if can_edit %}
 <a class="btn btn-primary" href="{% url 'edit-event' ide=event.id %}">edit <i class="fas fa-edit"></i></a>
 <!-- <span class="glyphicon glyphicon-pencil"></span> -->
 {% endif %}

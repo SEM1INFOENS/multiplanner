@@ -58,9 +58,9 @@ class FunctionsTestCase(TestCase):
         time.sleep(.001)
         trABC = Transaction.create_new(payer=A, amount=10, beneficiaries=[A, B, C], motive='3')
 
-        groupAB = Group.create_new(name='AB', members=[A, B], transactions=[trAB])
-        groupAC = Group.create_new(name='AC', members=[A, C], transactions=[trAC])
-        groupABC = Group.create_new(name='ABC', members=[A, B, C], transactions=[trABC])
+        groupAB = Group.create_new(name='AB', members=[A, B], transactions=[trAB], admins=[])
+        groupAC = Group.create_new(name='AC', members=[A, C], transactions=[trAC], admins=[])
+        groupABC = Group.create_new(name='ABC', members=[A, B, C], transactions=[trABC], admins=[])
 
         n_tr = lambda u,n : [tr for (tr,info1,info2,info3) in n_transactions_of_user(u,n)]
         assert set(n_tr(A, 1)) == {trABC}
@@ -81,9 +81,9 @@ class FunctionsTestCase(TestCase):
         trAC = Transaction.create_new(payer=C, amount=10, beneficiaries=[A, C], motive='2')
         trABC = Transaction.create_new(payer=B, amount=60, beneficiaries=[A, B, C], motive='3')
 
-        groupAB = Group.create_new(name='AB', members=[A, B], transactions=[trAB])
-        groupAC = Group.create_new(name='AC', members=[A, C], transactions=[trAC])
-        groupABC = Group.create_new(name='ABC', members=[A, B, C], transactions=[trABC])
+        groupAB = Group.create_new(name='AB', members=[A, B], transactions=[trAB], admins=[])
+        groupAC = Group.create_new(name='AC', members=[A, C], transactions=[trAC], admins=[])
+        groupABC = Group.create_new(name='ABC', members=[A, B, C], transactions=[trABC], admins=[])
 
         assert balance_of_user(A) == (5, 25)
         # paid 10/2=5 for B ; C paid 10/2=5 and B paid 60/3=20 for A

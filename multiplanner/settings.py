@@ -37,6 +37,7 @@ INSTALLED_APPS = [
     'notifications.apps.NotificationsConfig',
     'presentation.apps.PresentationConfig',
     'relationships.apps.RelationshipsConfig',
+    'permissions.apps.PermissionsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -46,6 +47,7 @@ INSTALLED_APPS = [
     'django.contrib.admindocs',
     'friendship',
     'djmoney'
+    'guardian',
     #'django_extensions',
 ]
 
@@ -125,6 +127,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
+# for django-guuardion (objects permissions)
+AUTHENTICATION_BACKENDS = (
+    'django.contrib.auth.backends.ModelBackend', # this is default
+    'guardian.backends.ObjectPermissionBackend',
+)
 
 # Internationalization
 # https://docs.djangoproject.com/en/2.1/topics/i18n/
