@@ -3,6 +3,7 @@
 {% load accounting_filters %}
 {% load presentation_filters %}
 {% load groups_filters %}
+{% load agenda_filters %}
 
 {% block active_agenda %} active{% endblock %}
 {% block active_groups %} active{% endblock %}
@@ -90,9 +91,7 @@
                   {% endif %}
                   {{ tr|display_transaction }}
                   {% if type == 'event' %}
-                  for <a href="{% url 'event' entity.id %}">
-                    <i class="far fa-calendar-alt"></i> {{ entity }}
-                  </a>
+                  for {{ entity|display_event_logo }}
                   {% elif type == 'group' %}
                   for {{ entity|display_group_logo }}
                   {% endif %}
@@ -112,7 +111,7 @@
         <h4>Events invitations</h4>
         <ul class="list-group list-group-flush">
           {% for event in events_invitations %}
-          <li class="list-group-item"><a href={% url 'event' event.id %}>{{ event }}</a></li>
+          <li class="list-group-item">{{ event|display_event_logo }}</li>
           {% endfor %}
         </ul>
         {% endif %}
@@ -121,7 +120,7 @@
         <h4>Upcoming events</h4>
         <ul class="list-group list-group-flush">
           {% for event in events_will_attend %}
-          <li class="list-group-item"><a href={% url 'event' event.id %}>{{ event }}</a></li>
+          <li class="list-group-item">{{ event|display_event_logo }}</li>
           {% endfor %}
         </ul>
         {% endif %}

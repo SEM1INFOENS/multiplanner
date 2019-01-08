@@ -1,5 +1,6 @@
 {%extends base_template %}
 {% load presentation_filters %}
+{% load agenda_filters %}
 {% load groups_filters %}
 
 {% block content %}
@@ -34,8 +35,7 @@
 <p>
   {% if type == "event" %}
   This transaction was made for the event 
-  <i class="far fa-calendar-alt"></i>
-  <a href="{% url 'event' entity.id %}">{{ entity }}</a>
+  {{ entity|display_event_logo }}
   {% elif type == "group" %}
   This transaction was made for the group
   {{ entity|display_group_logo }}

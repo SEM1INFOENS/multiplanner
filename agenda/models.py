@@ -3,6 +3,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.urls import reverse
 import datetime as datetime_module
 from groups.models import Group
 from accounting.models import Transaction
@@ -131,6 +132,9 @@ class Event(models.Model):
         '''Function used when str(object) is called.
         Also used in the admin interface'''
         return '%s (%s)' % (self.name, str(self.date))
+
+    def get_absolute_url(self):
+        return reverse('event', args=(str(self.id),))
 
     def clean(self):
         ''' don't allow begin_date greater than end_date '''
