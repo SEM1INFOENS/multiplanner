@@ -4,8 +4,6 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from .models import *
 from .utils import *
-#from TransactionTestCase import assertQuerysetEqual
-#https://docs.djangoproject.com/en/2.1/topics/testing/tools/#django.test.TransactionTestCase.assertQuerysetEqual
 from guardian.shortcuts import assign_perm, remove_perm
 
 class PermGroupTestcase(TestCase):

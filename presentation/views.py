@@ -12,7 +12,6 @@ from groups.models import Group
 from .functions import *
 from relationships import functions as rel
 from relationships.models import SecretMark
-from permissions.views import manage_app_admins_context
 
 @login_required
 def index(request):
@@ -45,6 +44,7 @@ def page(request, username):
     }
     rel_context = rel.friendship_context(user, user_page)
     context.update(rel_context)
+    from permissions.views import manage_app_admins_context
     admin_context = manage_app_admins_context(user, user_page)
     context.update(admin_context)
     return render(request, 'users/page.html', context)
@@ -68,6 +68,7 @@ def signup(request):
             raw_password = form.cleaned_data.get('password1')
             user = authenticate(username=username, password=raw_password)
             from permissions.group import users
+            users = users()
             users.user_set.add(user)
             auth_login(request, user)
             return redirect('users:index')

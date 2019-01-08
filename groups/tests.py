@@ -119,6 +119,8 @@ class GroupPermissionsTestCase(TestCase):
         # The users should have been added to the folowing groups
         # by the signup view
         from permissions.group import admins, users
+        admins = admins()
+        users = users()
         admins.user_set.add(aa)
         users.user_set.add(a, m, u)
 

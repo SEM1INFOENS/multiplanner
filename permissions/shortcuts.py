@@ -7,6 +7,7 @@ def set_public(obj):
     ''' set an obj as public (every user can view) '''
     model = type(obj)
     from .group import users
+    users = users()
     view_perm = get_default_permission_name(model, 'view')
     assign_perm(view_perm, users, obj)
 
@@ -14,6 +15,7 @@ def set_private(obj):
     ''' set an obj as private (only admins and members can view) '''
     model = type(obj)
     from .group import users
+    users = users()
     view_perm = get_default_permission_name(model, 'view')
     remove_perm(view_perm, users, obj)
 
