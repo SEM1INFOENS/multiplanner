@@ -2,6 +2,7 @@
 {% load static %}
 {% load accounting_filters %}
 {% load presentation_filters %}
+{% load groups_filters %}
 
 {% block active_agenda %} active{% endblock %}
 {% block active_groups %} active{% endblock %}
@@ -93,9 +94,7 @@
                     <i class="far fa-calendar-alt"></i> {{ entity }}
                   </a>
                   {% elif type == 'group' %}
-                  for <a href="{% url 'groups:group-number' entity.id %}">
-                    <i class="fas fa-users"></i> {{ entity }}
-                  </a>
+                  for {{ entity|display_group_logo }}
                   {% endif %}
                 </li>
                 {% endfor %}

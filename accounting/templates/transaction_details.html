@@ -1,7 +1,8 @@
 {%extends base_template %}
 {% load presentation_filters %}
+{% load groups_filters %}
 
-{% block content %}  
+{% block content %}
 
 
 
@@ -37,8 +38,7 @@
   <a href="{% url 'event' entity.id %}">{{ entity }}</a>
   {% elif type == "group" %}
   This transaction was made for the group
-  <i class="fas fa-users"></i>
-  <a href="{% url 'groups:group-number' entity.id %}">{{ entity }}</a>
+  {{ entity|display_group_logo }}
   {% else %}
   {% endif %}
 </p>
