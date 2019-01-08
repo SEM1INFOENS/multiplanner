@@ -82,6 +82,7 @@ class ResolutionTestCase(TestCase) :
         t = Transaction(
                 motive = "Transaction Supplementaire",
                 payer = self.people[0],
+                amount = 1
         )
         t.save()
         TransactionPart(transaction=t, amount=0.33, beneficiary=self.people[0]).save()
