@@ -1,5 +1,6 @@
 {%extends "base_template.html" %}
 {% load static %}
+{% load accounting_filters %}
 {% load presentation_filters %}
 
 {% block active_agenda %} active{% endblock %}
@@ -86,7 +87,7 @@
                   {% else %}
                   <span class="text-danger">{{ amount }}€</span>
                   {% endif %}
-                  <a href="{% url 'transaction_details' tr.id %}">{{ tr }}</a>
+                  {{ tr|display_transaction }}
                   {% if type == 'event' %}
                   for <a href="{% url 'event' entity.id %}">
                     <i class="far fa-calendar-alt"></i> {{ entity }}

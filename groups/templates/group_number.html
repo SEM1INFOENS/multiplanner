@@ -1,5 +1,6 @@
 {%extends "base_template_groups.html" %}
 {% load presentation_filters %}
+{% load accounting_filters %}
 
 {% block content %}
 
@@ -81,7 +82,7 @@
   <h3> Transactions made in this group </h3>
   <ul>
     {% for t in transactions %}
-    <li>{{ forloop.counter }} {{ t }} </li>
+    <li>{{ forloop.counter }} {{ t|display_transaction }} </li>
     {% endfor %}
   </ul>
 </p>

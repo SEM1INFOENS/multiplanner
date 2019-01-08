@@ -4,6 +4,7 @@ from django.db import models
 from django.forms import ValidationError
 from django.contrib.auth.models import User
 from django.utils import timezone
+from django.urls import reverse
 
 def validate_amount(value):
     '''Checks that the amount is positive and has less than two
@@ -66,6 +67,9 @@ class Transaction(models.Model):
             return "{} ({} payed for {})".format(self.motive, self.payer.username, ", ".join(ben))
         else:
             return "{} ({} payed)".format(self.motive, self.payer.username)
+
+    def get_absolute_url(self):
+        return reverse('transaction_details', args=(str(self.id),))
 
 
 class SharedAccount(models.Model):
