@@ -46,7 +46,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.admindocs',
     'friendship',
-    'djmoney'
+    'djmoney',
     'guardian',
     #'django_extensions',
 ]
