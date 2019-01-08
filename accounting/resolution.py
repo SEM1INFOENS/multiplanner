@@ -21,7 +21,7 @@ def balance_in_fractions (group):
 
 		for trp in i.transactionpart_set.all() :
 			index = members.index(trp.beneficiary)
-			balance[index] -= fractions.Fraction(str(trp.amount))
+			balance[index] -= fractions.Fraction(str(trp.amount.amount))
 
 	return members,balance
 

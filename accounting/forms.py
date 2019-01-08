@@ -1,6 +1,8 @@
 from django import forms
 from django.forms import ModelForm
+from django.forms import BaseModelFormSet
 from djmoney.utils import Money
+from djmoney.forms.fields import MoneyField
 from .models import *
 from math import ceil
 
@@ -44,3 +46,21 @@ class TransactionForm(ModelForm):
             tr.save()
 
         return inst
+
+class TransactionPartForm(ModelForm):
+    class Meta:
+        model = TransactionPart
+        fields = ['amount']
+
+class EditTransactionFormSet(BaseModelFormSet):
+    
+    def __init__(self, *args, **kwargs):
+      self.total_amount = kwargs.pop('amount') 
+      super(EditTransactionFormSet, self).__init__(*args, **kwargs)
+
+    def clean(self):
+        if any(self.errors):
+            return
+
+        if self.total_amount != (sum([ f['amount'] for f in self.cleaned_data])):
+            raise forms.ValidationError("Sum should be equal to total amount")

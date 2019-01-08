@@ -58,7 +58,7 @@ def group_number (request,ide):
         if form.is_valid():
             transaction = form.save()
             success = messages.success(request, 'Transaction successfully created')
-            return redirect('groups:group-number', ide=group.id)
+            return redirect('accounting:transaction-details', ide=transaction.id)
     else:
         form = TransactionForm(current_group=group, between_members=True)
 
