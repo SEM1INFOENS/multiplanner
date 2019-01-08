@@ -1,5 +1,6 @@
 {%extends "base_template.html" %}
 {% load static %}
+{% load presentation_filters %}
 
 {% block active_agenda %} active{% endblock %}
 {% block active_groups %} active{% endblock %}
@@ -129,7 +130,7 @@
         <h4>Pending friendship requests <i class="fas fa-user-plus"></i></h4>
         <ul class="list-group list-group-flush">
           {% for req in friendship_requests %}
-          <li class="list-group-item"><a href={% url 'users:page' req.from_user %}>{{ req.from_user }}</a></li>
+          <li class="list-group-item">{{ req.from_user|display_user }}</li>
           {% endfor %}
         </ul>
         {% endif %}

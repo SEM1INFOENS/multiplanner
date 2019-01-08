@@ -1,4 +1,5 @@
 {%extends base_template %}
+{% load presentation_filters %}
 
 {% block content %}  
 
@@ -16,14 +17,14 @@
 
 <p>
   <b>payer : </b>
-  <a href="{% url 'users:page' user.username %}">{{ transaction.payer }}</a>
+  {{ transaction.payer|display_user }}
 </p>
 <p>
   <b>beneficiaries</b>
   <ul>
     {% for user in beneficiaries %}
     <li>
-      <a href="{% url 'users:page' user.username %}">{{ user }}</a>
+      {{ user|display_user }}
     </li>
     {% endfor %}
   </ul>
