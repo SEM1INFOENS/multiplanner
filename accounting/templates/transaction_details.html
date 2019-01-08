@@ -18,16 +18,26 @@
   <b>payer : </b>
   <a href="{% url 'users:page' user.username %}">{{ transaction.payer }}</a>
 </p>
-<p>
-  <b>beneficiaries</b>
+
+{% if form.non_form_errors %}
+      <div class="alert alert-danger">{{form.non_form_errors}}</div>
+    {% endif %}
+
+<form action="{% url 'accounting:transaction-details' id  %}" , method="POST">
+
+  {% csrf_token %}
+  {{form.management_form}}
   <ul>
-    {% for user in beneficiaries %}
-    <li>
-      <a href="{% url 'users:page' user.username %}">{{ user }}</a>
+    {% for user, form in transactions_forms %}
+    <li><a href="{% url 'users:page' user.username %}">{{ user }}</a> 
+      {% for field in form %}
+       {{ field }}
+      {% endfor %}
     </li>
     {% endfor %}
   </ul>
-</p>
+  <input type="submit" class="btn btn-primary" value="Save">
+</form>
 
 <p>
   {% if type == "event" %}

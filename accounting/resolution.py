@@ -11,9 +11,9 @@ def balance_in_fractions(group):
     balance = [0]*len(members)
     for i in transactions:
         # beneficiaries cannot be an empty list
-        beneficiaries = [b for b in i.beneficiaries.all()]
+        beneficiaries = [b for b in i.get_beneficiaries()]
 
-        amount = fractions.Fraction(str(i.amount))
+        amount = fractions.Fraction(str(i.amount.amount))
         index = members.index(i.payer)
         balance[index] += amount
 

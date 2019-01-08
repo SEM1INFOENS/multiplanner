@@ -46,9 +46,7 @@ class TransactionTestCase(TestCase):
 
 
     def test(self):
-        print('transac test')
         assert set(self.tr.get_beneficiaries()) == set(self.benef)
-        print('transac test ok !!!')
 
 
 ''' Test set for the resolution app '''
@@ -81,20 +79,30 @@ class ResolutionTestCase(TestCase) :
         #group: 1 euro transaction, 3 people
         self.group.append(Group.create_new(name = 'test1'))
         self.group[1].members.add(*[self.people[0],self.people[1],self.people[2]])
-        t = Transaction.create_new(
+        t = Transaction(
                 motive = "Transaction Supplementaire",
                 payer = self.people[0],
-                amount = 1,
-                beneficiaries = self.group[1].members.all()
+                amount = 1
         )
         t.save()
+        TransactionPart(transaction=t, amount=0.33, beneficiary=self.people[0]).save()
+        TransactionPart(transaction=t, amount=0.33, beneficiary=self.people[1]).save()
+        TransactionPart(transaction=t, amount=0.34, beneficiary=self.people[2]).save()
+        # now the splitting will be done in the form
+        # so this test is a bit useless now...
+        # t = Transaction.create_new(
+        #         motive = "Transaction Supplementaire",
+        #         payer = self.people[0],
+        #         amount = 1,
+        #         beneficiaries = self.group[1].members.all()
+        # )
         self.group[1].transactions.add(t)
 
     def test_initialisation (self):
         print (self.group)
         for i in range(len(self.transaction)):
-            b = [u.id for u in self.transaction[i].beneficiaries.all()]
-            print (self.transaction[i].payer,'|', self.transaction[i].amount,'|',b)
+            b = [u.id for u in self.transaction[i].get_beneficiaries()]
+            print (self.transaction[i].payer,'|',b)
 
 
     def test_balance_in_fractions (self):
@@ -113,6 +121,7 @@ class ResolutionTestCase(TestCase) :
 
     def test_balance_in_floats (self) :
         balance = balance_in_floats(self.group[1])
+        print('\n\n\n----------------------------', balance[0])
         assert (balance[0] == 0.67)
         assert (balance[1] == -0.34 or balance[2] == -0.34)
         assert (balance[1] == -0.33 or balance[2] == -0.33)
