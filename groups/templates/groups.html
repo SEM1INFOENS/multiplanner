@@ -1,12 +1,13 @@
 {%extends "base_template_groups.html" %}
+{% load groups_filters %}
 
-{% block content %}  
+{% block content %}
 
 
 <h2>Your Groups</h2>
 
 
-<a href="{% url 'groups:new-group' %}">create a new group <i class="far fa-calendar-plus"></i></a>
+<a href="{% url 'groups:new-group' %}">create a new group <i class="fas fa-users"></i></a>
 
 {% if not groups %}
 <p><i>You belong to 0 groups Mouahahahahah</i></p>
@@ -15,7 +16,7 @@
 <h3>Groups you belong to</h3>
 <ul>
   {% for group in groups %}
-  <a href="{% url 'groups:group-number' group.id %}"><li>{{ group.name }} </li></a>
+  <li>{{ group|display_group }} </li>
   {% endfor %}
 </ul>
 {% endif %}

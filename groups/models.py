@@ -8,6 +8,7 @@ from accounting.models import Transaction
 from permissions.models import PermGroup
 from relationships.models import SecretMark
 from permissions.shortcuts import *
+from django.urls import reverse
 
 class GroupManager(models.Manager):
 
@@ -77,6 +78,9 @@ class Group(models.Model):
         members = '|'.join([m.username for m in self.members.all()])
         if members == "": members = "empty"
         return "{}:{} [{}]".format(self.id, self.name, members)
+
+    def get_absolute_url(self):
+        return reverse('groups:group-number', args=(str(self.id),))
 
     def relationship_matrix(self):
         '''Returns M matrix of size n*n with n the number of attendees

@@ -5,6 +5,7 @@ from django.forms import ValidationError
 from django.contrib.auth.models import User
 from djmoney.models.fields import MoneyField
 from django.utils import timezone
+from django.urls import reverse
 from django.db.models import Q
 
 def validate_amount(value):
@@ -93,10 +94,15 @@ class Transaction(models.Model):
         else:
             return "{} ({} payed)".format(self.motive, self.payer.username)
 
+
+    def get_absolute_url(self):
+        return reverse('transaction_details', args=(str(self.id),))
+
 class TransactionPart(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
     beneficiary = models.ForeignKey(User, on_delete=models.PROTECT)
     amount = MoneyField(max_digits=14, decimal_places=2, default_currency='EUR')
+
 
 
 class SharedAccount(models.Model):
