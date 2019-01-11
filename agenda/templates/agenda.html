@@ -17,45 +17,101 @@ To suscribe, go in your calendar manager and choose to suscribe to the URL <a hr
 
 <a href="{% url 'new-event' %}">create a new event <i class="far fa-calendar-plus"></i></a>
 
-{% if not events_admin and not events_attendees and not events_invited and not events_past %}
-<p><i>Your agenda is empty</i></p>
-{% else %}
-{% if events_admin %}
-<h3>Events you manage</h3>
-<ul class="list-group list-group-flush">
-  {% for event in events_admin %}
-  <li class="list-group-item">{{ event|display_event_logo }}</li>
-  {% endfor %}
-</ul>
-{% endif %}
 
-{% if events_invited %}
-<h3>Events you are invited to</h3>
-<ul class="list-group list-group-flush">
-  {% for event in events_invited %}
-  <li class="list-group-item">{{ event|display_event_logo }}</li>
-  {% endfor %}
-</ul>
-{% endif %}
+<div id="viewBtnContainer">
+  <button class="btn active" onclick="gridView()"><i class="far fa-calendar-alt"></i> Grid</button>
+  <button class="btn" onclick="listView()"><i class="fa fa-bars"></i> List</button>
+  <style>
+    #viewBtnContainer {
+      /* Style the buttons */
+      .btn {
+        background-color: #f1f1f1;
+        cursor: pointer;
+      }
 
-{% if events_attendees %}
-<h3>Events you will attend</h3>
-<ul class="list-group list-group-flush">
-  {% for event in events_attendees %}
-  <li class="list-group-item">{{ event|display_event_logo }}</li>
-  {% endfor %}
-</ul>
-{% endif %}
+      /* Style the active class, and buttons on mouse-over */
+      .active, .btn:hover {
+        background-color: #666;
+        color: white;
+      }
+    }
+  </style>
+</div>
+<br>
 
-{% if events_past %}
-<h3>Passed events</h3>
-<ul class="list-group list-group-flush">
-  {% for event in events_past %}
-  <li class="list-group-item">{{ event|display_event_logo }}</li>
-  {% endfor %}
-</ul>
-{% endif %}
-{% endif %}
 
+<div id="listContainer">
+  {% if not events_admin and not events_attendees and not events_invited and not events_past %}
+  <p><i>Your agenda is empty</i></p>
+  {% else %}
+  {% if events_admin %}
+  <h3>Events you manage</h3>
+  <ul class="list-group list-group-flush">
+    {% for event in events_admin %}
+    <li class="list-group-item">{{ event|display_event_logo }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if events_invited %}
+  <h3>Events you are invited to</h3>
+  <ul class="list-group list-group-flush">
+    {% for event in events_invited %}
+    <li class="list-group-item">{{ event|display_event_logo }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if events_attendees %}
+  <h3>Events you will attend</h3>
+  <ul class="list-group list-group-flush">
+    {% for event in events_attendees %}
+    <li class="list-group-item">{{ event|display_event_logo }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+
+  {% if events_past %}
+  <h3>Passed events</h3>
+  <ul class="list-group list-group-flush">
+    {% for event in events_past %}
+    <li class="list-group-item">{{ event|display_event_logo }}</li>
+    {% endfor %}
+  </ul>
+  {% endif %}
+  {% endif %}
+</div>
+
+<div id="gridContainer">
+</div>
+
+<script>
+  var list = document.getElementById("listContainer");
+  var grid = document.getElementById("gridContainer");
+  window.onload = gridView;
+
+  // List View
+  function listView() {
+    $(grid).hide();
+    $(list).show();
+  }
+
+  // Grid View
+  function gridView() {
+    $(list).hide();
+    $(grid).show();
+  }
+
+  /* Optional: Add active class to the current button (highlight it) */
+  var container = document.getElementById("viewBtnContainer");
+  var btns = container.getElementsByClassName("btn");
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].addEventListener("click", function() {
+      var current = document.getElementsByClassName("active");
+      current[0].className = current[0].className.replace(" active", "");
+      this.className += " active";
+    });
+  }
+</script>
 
 {% endblock %}
