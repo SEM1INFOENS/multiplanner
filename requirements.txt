@@ -34,3 +34,9 @@ django-jsonify==0.3.0
 #To scrape the web
 beautifulsoup4==4.7.1
 lxml==4.3.0
+
+selenium
+<<<<<<< HEAD
+
+=======
+>>>>>>> 324e2de... res
