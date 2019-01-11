@@ -113,7 +113,7 @@
       <ul>
 	{% for user,come in invited %}
 	<li><a href="{% url 'users:page' user.username %}">{{ user }}</a>
-	  {% if come %}<i> - is comming</i> {% endif %}
+	  {% if come %}<i> - is coming</i> {% endif %}
 	</li>
 	{% endfor %}
       </ul>
