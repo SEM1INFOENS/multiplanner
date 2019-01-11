@@ -96,7 +96,7 @@ class Transaction(models.Model):
 
 
     def get_absolute_url(self):
-        return reverse('transaction_details', args=(str(self.id),))
+        return reverse('accounting:transaction-details', args=(str(self.id),))
 
 class TransactionPart(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
