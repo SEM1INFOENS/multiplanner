@@ -29,8 +29,8 @@ class TransactionForm(ModelForm):
     def save(self, commit=True):
         inst = super(TransactionForm, self).save()
         self._group.transactions.add(inst)
-        self._group.save()
-        
+        #self._group.save()
+
         base = Money(ceil(inst.amount/len(self._group.members.all())*100)/100, inst.amount.currency)
 
         parts = [base for _ in self._group.members.all()]
@@ -53,9 +53,9 @@ class TransactionPartForm(ModelForm):
         fields = ['amount']
 
 class EditTransactionFormSet(BaseModelFormSet):
-    
+
     def __init__(self, *args, **kwargs):
-      self.total_amount = kwargs.pop('amount') 
+      self.total_amount = kwargs.pop('amount')
       super(EditTransactionFormSet, self).__init__(*args, **kwargs)
 
     def clean(self):

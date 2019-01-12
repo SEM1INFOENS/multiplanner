@@ -104,7 +104,7 @@ def event(request, ide):
             success = messages.success(request, 'Transaction successfully created')
             return redirect('event', ide=event.id)
     else:
-        form = TransactionForm(current_group=group, between_members=False)
+        form = TransactionForm(current_group=group, between_members=True)
 
     invited = event.invited.all()
     attendees = event.attendees.members.all()
