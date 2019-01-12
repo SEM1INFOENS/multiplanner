@@ -7,7 +7,7 @@
 <h3>Pending invitations</h3>
 <ul class="list-group">
   {% for user in p_invites %}
-  <li class="list-group-item"> <i> class="fas fa-user-plus"></i> {{ user|display_user }}</li>
+  <li class="list-group-item"> <i class="fas fa-user-plus"></i> {{ user|display_user }}</li>
   {% endfor %}
 </ul>
 {% endif %}
