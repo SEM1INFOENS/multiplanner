@@ -7,7 +7,6 @@ from django.template import Context, loader
 from django.urls import reverse
 from .forms import *
 from accounting.forms import TransactionForm
-from django.utils import timezone
 import datetime
 from django.forms.formsets import formset_factory
 from django.utils import timezone
@@ -79,11 +78,12 @@ def edit_event(request, ide):
 def agenda(request):
     user = request.user
     context = {
-        'events_admin': Event.objects.filter(admins__members=user),
-        'events_invited': Event.objects.invited(user),
-        'events_attendees': Event.objects.attending(user),
-        'events_past': Event.objects.past(user),
+        #'events_admin': Event.objects.filter(admins__members=user),
+        #'events_invited': Event.objects.invited(user),
+        #'events_attendees': Event.objects.attending(user),
+        #'events_past': Event.objects.past(user),
         'username' : user.username,
+        'events' : Event.objects.json_list(user),
     }
     return render(request, 'agenda.html', context)
 
