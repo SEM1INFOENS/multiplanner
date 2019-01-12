@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'friendship',
     'djmoney',
     'guardian',
+    'jsonify',
     #'django_extensions',
 ]
 
