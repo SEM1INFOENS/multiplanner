@@ -151,7 +151,7 @@ def generate_calendar(request):
     if request.method == 'GET':
         username = request.GET.get('username')
         user = User.objects.get(username=username)
-        list_event = Event.objects.filter(attendees__members=user)
+        list_event = Event.objects.attending_all(user)
 
         for event in list_event:
             event.date_start_ics = date_format_ics(event.date, event.time)
