@@ -75,9 +75,10 @@ class Group(models.Model):
         format(self.name, self.members.members, self.transactions)
 
     def __str__(self):
-        members = '|'.join([m.username for m in self.members.all()])
-        if members == "": members = "empty"
-        return "{}:{} [{}]".format(self.id, self.name, members)
+        if self.name:
+            return self.name
+        else:
+            return "Group{}".format(self.id)
 
     def get_absolute_url(self):
         return reverse('groups:group-number', args=(str(self.id),))
