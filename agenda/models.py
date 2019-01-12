@@ -4,12 +4,14 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.utils import timezone
 from django.urls import reverse
+from django.db.models import Q
 import datetime as datetime_module
 from groups.models import Group
 from accounting.models import Transaction
 from django.core.exceptions import SuspiciousOperation, ValidationError
 from . import sit
 from permissions.shortcuts import *
+from .functions import date_format_ics, date_format_moment, color_complement, color_format_css
 
 
 
@@ -63,6 +65,11 @@ class EventManager(models.Manager):
         '''List the past events to which the user was invited or has attended'''
         return Event.objects.filter( date__lt=timezone.now(), invited__members=user).order_by('-date_end')
 
+    @classmethod
+    def json_list(self, user):
+        '''Needed to display events with FullCalandar'''
+        events = Event.objects.filter(Q(invited__members=user) | Q(admins__members=user)).distinct()
+        return [e.to_json(user) for e in events]
 
 class Event(models.Model):
     '''An event is created by a person, and has a group of person attending it.
@@ -135,6 +142,40 @@ class Event(models.Model):
 
     def get_absolute_url(self):
         return reverse('event', args=(str(self.id),))
+
+    def color(self, user):
+        ''' returns a primaty color and a secondary color (if there is text to display)
+        according to the permissions the user has on the event (admin, inviteed..)'''
+        def choose():
+            if user in self.admins.all():
+                if user in self.attendees.members.all():
+                    return (102, 255, 51), (0, 0, 0)
+                else:
+                    return (255, 255, 0), (0,0,0)
+            if user in self.attendees.members.all():
+                return (20, 173, 255), (0, 0, 0)
+            if user in self.invited.all():
+                return (255, 204, 0), (0, 0, 0)
+            #else, the user is not concerned by the event
+            return (242, 242, 242), (0, 0, 0)
+        a,b = choose()
+        return color_format_css(*a), color_format_css(*b)
+
+    def to_json(self, user):
+        '''Needed to display events with FullCalandar'''
+        color, comp = self.color(user)
+        e = {
+            'id': self.id,
+            'title': self.name,
+            'description': self.description,
+            'start': date_format_moment(self.date, self.time),
+            'end': date_format_moment(self.date_end, self.time_end),
+            'url': self.get_absolute_url(),
+            'backgroundColor': color,
+            'borderColor': comp,
+            'textColor': comp,
+        }
+        return e
 
     def clean(self):
         ''' don't allow begin_date greater than end_date '''

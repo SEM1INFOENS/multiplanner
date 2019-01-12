@@ -27,3 +27,6 @@ django-money
 
 #for objects permissions
 django-guardian==1.4.9
+
+#to use context variables as java script parameters
+django-jsonify==0.3.0
