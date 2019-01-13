@@ -28,7 +28,7 @@ def index(request):
         'events_will_attend' : Event.objects.attending(user),
         'friendship_requests' : friendship_requests(user),
         'friends' : n_random_friends(user, nb_of_friends),
-        'balance' : spent - due,
+        'balance' : (spent*100 - due*100)/100,
         'balance_plus' : spent,
         'balance_minus' : -due,
     }

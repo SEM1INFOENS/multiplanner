@@ -85,6 +85,7 @@ class Event(models.Model):
     If the creator is deleted, the event remains and the creator is set to NULL.'''
 
     objects = EventManager()
+    _choices = (('USD','US Dollar'),('EUR','Euro'),('RUB','Russian Ruble'))
 
     name = models.CharField(max_length=100)
     creation_date = models.DateTimeField(default=timezone.now)
@@ -92,6 +93,8 @@ class Event(models.Model):
     date = models.DateField()
     time = models.TimeField(blank=True, null=True)
     default_time = (8,)
+    currency =models.CharField(max_length=20, choices=_choices) 
+    
     def date_time(self): return combine(self.date, self.time, self.default_time)
 
     date_end = models.DateField()

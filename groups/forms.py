@@ -9,7 +9,7 @@ class GroupForm (ModelForm):
 
     class Meta :
         model = Group
-        fields = ['name', 'public']
+        fields = ['name', 'public','currency']
 
     def __init__(self, *args, **kwargs):
         self._user =  kwargs.pop('creator_user')

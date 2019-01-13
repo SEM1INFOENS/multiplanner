@@ -2,6 +2,8 @@
 
 import fractions
 import numpy as np
+from .webScraping import get_currency_equivalence
+from accounting.models import Transaction
 
 def balance_in_fractions(group):
     '''Computes the balance of a group in the fraction format'''
@@ -11,16 +13,21 @@ def balance_in_fractions(group):
     balance = [0]*len(members)
     for i in transactions:
         # beneficiaries cannot be an empty list
-        beneficiaries = [b for b in i.get_beneficiaries()]
-
-        amount = fractions.Fraction(str(i.amount.amount))
+        amount = fractions.Fraction(i.amount.amount)
+        if i.amount.currency != group.currency:
+            rate = get_currency_equivalence(i.amount.currency.code, group.currency, 1)
+            rate = fractions.Fraction(rate)
+            amount = rate * amount 
         index = members.index(i.payer)
         balance[index] += amount
 
-        for j in beneficiaries:
-            index = members.index(j)
-            balance[index] -= fractions.Fraction(amount, len(beneficiaries))
-
+        part_transactions = Transaction.objects.get_transaction_part_with_transaction(i)
+        for j in part_transactions:
+            index = members.index(j.beneficiary)
+            amount = fractions.Fraction(j.amount.amount)
+            if i.amount.currency != group.currency:
+                amount = amount*rate
+            balance[index] -= fractions.Fraction(amount)
     return members, balance
 
 def get_decimals(balance2):

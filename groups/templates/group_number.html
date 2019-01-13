@@ -8,10 +8,7 @@
 <a class="btn btn-primary" href="{% url 'groups:edit-group' ide=group.id %}">edit <i class="fas fa-edit"></i></a>
 {% endif %}
 
-{% if not group.name%}<h1> NoName</h1>
-{% else %}
 <h1>{{group.name}}</h1>
-{% endif %}
 <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal">
   Add transaction
 </button>
@@ -64,7 +61,7 @@
   <h3> The balances for this group's members are: </h3>
   <ul>
     {% for user,b in list_context %}
-    <li>{{ user|display_user }} has a balance of {{ b }}€ </li>
+    <li>{{ user|display_user }} has a balance of {{ b }} {{ group.currency }} </li>
     {% endfor %}
   </ul>
 </p>
@@ -73,7 +70,7 @@
   <h3> The resolutions of this group's members are: </h3>
   <ul>
     {% for a,b,amount in resolution %}
-    <li>{{ a|display_user }} has to pay {{ amount }}€ to {{ b|display_user }} </li>
+    <li>{{ a|display_user }} has to pay {{ amount }} {{ group.currency }} to {{ b|display_user }} </li>
     {% endfor %}
   </ul>
 </p>
