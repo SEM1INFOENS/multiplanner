@@ -29,10 +29,10 @@ class AgendaTestCase(TestCase):
         d.save()
         self.users_list = [a,b,c,d,e,f,]
 
-        g1 = Group.create_for_event()
+        g1 = Group.create_for_event('EUR')
         g1.members.add(*[a,b,c,d,])
 
-        g2 = Group.create_for_event()
+        g2 = Group.create_for_event('RUB')
         g2.members.add(*[a,b,c,d,e,f,])
 
         m1 = SecretMark.create_new(a, b, -10)
@@ -52,6 +52,7 @@ class AgendaTestCase(TestCase):
             #place="ici",
             creator=a,
             attendees=g1,
+            currency = 'EUR',
         )
         e1.invited.add(*[a,b,c,d])
         e1.admins.add(a)
@@ -64,6 +65,7 @@ class AgendaTestCase(TestCase):
             # place="ici",
             creator=a,
             attendees=g2,
+            currency = 'RUB',
         )
         e2.save()
         e2.invited.add(*[a, b, c, d,e ,f ,])
@@ -119,7 +121,7 @@ class EventPermissionsTestCase(TestCase):
 
         from django.utils import timezone
         t = timezone.now()
-        Event.create_new(t, t, t, t, a, invited=[a,m], admins=[a], public=False)
+        Event.create_new(t, t, t, t, a, invited=[a,m], admins=[a], public=False,currency='EUR')
 
     def test(self):
         from permissions.utils import get_default_permission_name

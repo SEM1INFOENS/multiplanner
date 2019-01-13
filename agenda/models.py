@@ -113,16 +113,16 @@ class Event(models.Model):
     # transactions = models.ManyToManyField(Transaction) => use the transactions field of the Group instead
 
     @classmethod
-    def create_new(cls, date, time, date_end, time_end, creator, place='',\
+    def create_new(cls, date, time, date_end, time_end, creator, currency, place='',\
      admins=[], invited=[], attendees=None, public=False, commit=True):
         '''Default method for creating an event
         if public=True, then everyone can see the event
         otherwise only members and invited
         if commit=False then the returnd object is not saved in the db'''
         event = cls(date=date, time=time, date_end=date_end, time_end=time_end, place=place, \
-            creator=creator, public=public)
+            creator=creator, public=public, currency=currency)
         if attendees==None:
-            event.attendees = Group.create_for_event()
+            event.attendees = Group.create_for_event(currency)
         else:
             event.attendees = attendees
         event.admins = PermGroup.create_new(admins)
