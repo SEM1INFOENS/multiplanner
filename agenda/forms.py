@@ -45,7 +45,7 @@ class EventForm(ModelForm):
         inst.creator = self.creator_user
 
         if self.new:
-            att =  Group.create_for_event()
+            att =  Group.create_for_event(inst.currency)
             inst.attendees = att
 
         if commit:

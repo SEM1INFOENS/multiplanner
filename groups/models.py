@@ -53,13 +53,14 @@ class Group(models.Model):
         return group
 
     @classmethod
-    def create_for_event(cls):
+    def create_for_event(cls,currency):
         '''Default method for creating a group for an event
         the group is invisible to the users, so nobody has perm to view, edit...'''
         members_gp = PermGroup.create_new()
         group = cls(members=members_gp)
         group.public = False
         group.inEvent = True
+        group.currency = currency 
         group.save(set_perms=False)
         return group
 
