@@ -28,6 +28,7 @@ def transaction_details(request, ide):
         
         if formset.is_valid():
             formset.save()
+            return redirect('groups:group-number', ide=entity.id)
     else:
         formset = TransactionFormSet(queryset=tr.transactionpart_set.all(), amount=tr.amount)
         

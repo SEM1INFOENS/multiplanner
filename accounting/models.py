@@ -34,6 +34,9 @@ class TransactionManager(models.Manager):
     @classmethod
     def with_user(self, user):
         return Transaction.objects.filter(Q(payer=user) | Q(transactionpart__beneficiary=user)).distinct()
+    def get_transaction_part_with_transaction (self,transaction):
+        return TransactionPart.objects.filter(transaction = transaction)
+
 
 class Transaction(models.Model):
     '''One person gives money to one or more members of a group.
