@@ -12,10 +12,13 @@ from django.forms.formsets import formset_factory
 from django.utils import timezone
 from .models import *
 from accounting import resolution
+
 from guardian.decorators import permission_required_or_403
 from permissions.utils import get_default_permission_name
 from permissions.forms import PermGroupForm
 from .functions import date_format_ics
+
+from notify.signals import notify
 
 @login_required
 def create_event(request):
@@ -32,10 +35,16 @@ def create_event(request):
             form.instance.admins = admins_form.save()
             form.instance.invited = invited_form.save()
             event = form.save()
-           
 
-            
             success = messages.success(request, 'Event successfully created')
+            #warn = messages.warning(request, 'Event created')
+            #error = messages.error(request, 'Event created')
+            #info = messages.info(request, 'Event created')
+            #debug = messages.debug(request, 'Event created')
+            #all_m = [success, warn, info, error]
+            for u in event.invited.iterator():
+                notify.send(request.user, recipient = u, actor=request.user, verb = 'has invited you to an event.', nf_type = 'invited_to_event')
+            #url_e = reverse('event', event.id)
             # redirect to a new URL:
             return redirect('event', ide=event.id)
             #return HttpResponseRedirect('/user/')
