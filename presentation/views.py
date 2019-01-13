@@ -35,10 +35,6 @@ def index(request):
         'balance_minus' : -due,
     }
 
-    notify.send(request.user, recipient=user, actor=request.user, verb='followed you.', nf_type='followed_user')
-
-
-
     return render(request, 'users/index.html', context)
 
 @login_required
