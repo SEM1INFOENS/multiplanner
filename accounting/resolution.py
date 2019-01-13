@@ -4,31 +4,44 @@ import fractions
 import numpy as np
 from .webScraping import get_currency_equivalence
 from accounting.models import Transaction
+from groups.models import Balance
+from djmoney.money import Money
+
 
 def balance_in_fractions(group):
     '''Computes the balance of a group in the fraction format'''
+    calculated = True
     members = [m for m in group.members.all()]
     transactions = group.transactions.all()
-
-    balance = [0]*len(members)
-    for i in transactions:
-        # beneficiaries cannot be an empty list
-        amount = fractions.Fraction(i.amount.amount)
-        if i.amount.currency != group.currency:
-            rate = get_currency_equivalence(i.amount.currency.code, group.currency, 1)
-            rate = fractions.Fraction(rate)
-            amount = rate * amount 
-        index = members.index(i.payer)
-        balance[index] += amount
-
-        part_transactions = Transaction.objects.get_transaction_part_with_transaction(i)
-        for j in part_transactions:
-            index = members.index(j.beneficiary)
-            amount = fractions.Fraction(j.amount.amount)
+    # check if transaction are already calculated
+    for t in transactions:
+        if t.calculated == False:
+            calculated = False
+            t.calculated = True
+            t.save()
+    #if not calculated, recalculate all the balance and update transactions
+    if calculated == False:
+        balance = [0]*len(members)
+        for i in transactions:
+            # beneficiaries cannot be an empty list
+            amount = fractions.Fraction(i.amount.amount)
             if i.amount.currency != group.currency:
-                amount = amount*rate
-            balance[index] -= fractions.Fraction(amount)
-    return members, balance
+                rate = get_currency_equivalence(i.amount.currency.code, group.currency, 1)
+                rate = fractions.Fraction(rate)
+                amount = rate * amount 
+            index = members.index(i.payer)
+            balance[index] += amount
+
+            part_transactions = Transaction.objects.get_transaction_part_with_transaction(i)
+            for j in part_transactions:
+                index = members.index(j.beneficiary)
+                amount = fractions.Fraction(j.amount.amount)
+                if i.amount.currency != group.currency:
+                    amount = amount*rate
+                balance[index] -= fractions.Fraction(amount)
+    else :
+        balance = []
+    return members, balance, calculated
 
 def get_decimals(balance2):
     ''' Gets the decimal part in a float '''
@@ -43,53 +56,69 @@ def get_decimals(balance2):
 
 def balance_in_floats(group):
     ''' Calculates the balance of a group in the float format '''
-    members, balance1 = balance_in_fractions(group)
-    balance2 = []
+    members, balance1, calculated = balance_in_fractions(group)
+    #Get the balances from the database
 
-    # transform the euros fractions into centimes floats
-    for i in range(len(balance1)):
-        # multiply by 100 to avoid float non-precision with operations
-        balance1[i] = float(100*balance1[i])
-        balance2.append(np.floor(balance1[i]))
+    if calculated == False:
+        #calculate all the balance and update balance database
+        balance2 = []
+        currency = group.currency
 
-    moneyPutOnTable = 0
-    moneyTakenFromTable = 0
+        # transform the euros fractions into centimes floats
+        for i in range(len(balance1)):
+            # multiply by 100 to avoid float non-precision with operations
+            balance1[i] = float(100*balance1[i])
+            balance2.append(np.floor(balance1[i]))
 
-    for i in balance2:
-        if i > 0:
-            moneyTakenFromTable += i
-        else:
-            moneyPutOnTable -= i
+        moneyPutOnTable = 0
+        moneyTakenFromTable = 0
 
-    if moneyTakenFromTable == moneyPutOnTable:
+        for i in balance2:
+            if i > 0:
+                moneyTakenFromTable += i
+            else:
+                moneyPutOnTable -= i
+
+        if moneyTakenFromTable == moneyPutOnTable:
+            for i in range(len(balance2)):
+                #transform centimes to euros
+                balance2[i] /= 100
+                #update the database
+                Balance.objects.balanceOfUserInGroup(members[i], group) \
+                .update(amount= Money(balance2[i],currency))
+            return balance2
+
+        exceedingMoneyOnTable = moneyPutOnTable - moneyTakenFromTable
+        decimals = get_decimals(balance1)
+        # redistributing the money
+        # chosing the people who spent the most in the exceeding operation
+        i1 = np.argmax(decimals)
+        i2 = np.argmin(decimals)
+        while exceedingMoneyOnTable > 0:
+            exceedingMoneyOnTable -= 1
+            if decimals[i1] > 1 + decimals[i2]:
+                balance2[i1] += 1
+                decimals[i1] = 0
+                i1 = np.argmax(decimals)
+            else:
+
+                balance2[i2] += 1
+                decimals[i2] = 0
+                i2 = np.argmin(decimals)
+
+
+
         for i in range(len(balance2)):
-            #transform centimes to euros
+            #transform an integer to a two decimal float
             balance2[i] /= 100
-        return balance2
-
-    exceedingMoneyOnTable = moneyPutOnTable - moneyTakenFromTable
-    decimals = get_decimals(balance1)
-
-    # redistributing the money
-    # chosing the people who spent the most in the exceeding operation
-    i1 = np.argmax(decimals)
-    i2 = np.argmin(decimals)
-    while exceedingMoneyOnTable > 0:
-        exceedingMoneyOnTable -= 1
-        if decimals[i1] > 1 + decimals[i2]:
-            balance2[i1] += 1
-            decimals[i1] = 0
-            i1 = np.argmax(decimals)
-        else:
-
-            balance2[i2] += 1
-            decimals[i2] = 0
-            i2 = np.argmin(decimals)
+            #update the database
+            Balance.objects.balanceOfUserInGroup(members[i], group) \
+            .update(amount= Money(balance2[i],currency))
 
 
-    #transform an integer to a two decimal float to  (100 centimes is 1.00 euros)
-    for i in range(len(balance2)):
-        balance2[i] /= 100
+    else:
+        balances = Balance.objects.balancesOfGroup(group)
+        balance2 = [a.amount.amount for a in balances]
     return balance2
 
 def resolution_tuple(group, balance):

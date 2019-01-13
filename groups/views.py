@@ -9,8 +9,8 @@ from permissions.forms import PermGroupForm
 from .forms import *
 from accounting.forms import TransactionForm
 from accounting import resolution
-from .models import Group
-
+from .models import Group, Balance
+from djmoney.money import Money
 
 @login_required
 def showGroups (request):
@@ -35,12 +35,14 @@ def create_group (request):
             group = group_form.save()
             group.save()
             success = messages.success(request, 'Group has been successfully created')
+            for m in group.members.all():
+                b = Balance (user=m,group = group,amount = Money(0,group.currency))
+                b.save()
             return redirect('groups:group-number', ide=group.id)
     else :
         group_form = GroupForm(creator_user=request.user)
         admins_form = PermGroupForm(label='admins', prefix='admins', initial=[request.user])
         members_form = PermGroupForm(label='members')
-
     context.update({'group_form': group_form, 'admins_form': admins_form, 'members_form': members_form})
     return render(request, 'edit_group.html', context)
 
@@ -51,15 +53,30 @@ change_perm = get_default_permission_name(Group, 'change')
 def edit_group(request,ide):
     context = {'new' : False}
     group = get_object_or_404(Group, pk=ide)
+    
     if request.method == 'POST':
         group_form = GroupForm(request.POST, creator_user=request.user, instance=group)
         admins_form = PermGroupForm(request.POST, prefix='admins', instance=group.admins)
         members_form = PermGroupForm(request.POST, instance=group.members)
         if group_form.is_valid() and admins_form.is_valid() and members_form.is_valid():
+            balances = Balance.objects.balancesOfGroup(group)     
             admins_form.save()
             members_form.save()
             group = group_form.save()
             group.save()
+            
+            # If the number of members changes then update balances in group
+            u = []
+            for b in balances:
+                if b.user not in group.members.all():
+                    b.delete()
+                else:
+                    u.append(b.user)
+            for m in group.members.all():
+                if m not in u:
+                    b = Balance(user=m,group = group,amount = Money(0,group.currency))
+                    b.save()
+
             success = messages.success(request, 'Group successfully modified')
             return redirect('groups:group-number', ide=group.id)
     else :
@@ -78,7 +95,6 @@ def group_number(request,ide):
     group = get_object_or_404(Group, pk=ide)
     # For the moment calculate the balance each time we click on the group
     balance = resolution.balance_in_floats(group)
-    print("balance0:",resolution.balance_in_fractions(group))
     balance1 = [b for b in balance]
     res = resolution.resolution_tuple(group,balance1)
 

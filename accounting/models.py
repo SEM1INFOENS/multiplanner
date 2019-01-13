@@ -20,15 +20,6 @@ def validate_amount(value):
         raise ValidationError('{} is neither a positive integer nor a float  number'.format(value))
 
 
-# def to_choices(l):
-#     '''Checks that every element is a string and [x, y, ...] returns [(x, x), (y,y), ...] to be
-#     in adequation with choices's requirements'''
-#     out = []
-#     for s in l:
-#         assert isinstance(s, str)
-#         out.append((s, s))
-#     return out
-
 class TransactionManager(models.Manager):
 
     @classmethod
@@ -50,8 +41,7 @@ class Transaction(models.Model):
     payer = models.ForeignKey(User, on_delete=models.PROTECT,
                               related_name='%(class)s_payer')
     amount = MoneyField(max_digits=14, decimal_places=2, default_currency='EUR')
-    # related_name used to fix the 'reverse accessor' problem
-    # -> not needed any more (because no more beneficiaries field)
+    calculated =  models.BooleanField(default=False)
 
     @classmethod
     def create_new(cls, payer, amount, beneficiaries, motive='', date=None):
