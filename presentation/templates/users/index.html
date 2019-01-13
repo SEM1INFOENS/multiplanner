@@ -23,14 +23,14 @@
             <a href="{% url 'users:page' loggedin_user.username %}">
               <div>
                 <img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
-                <h3 class=""> {{username|default:"Me"}} </h3>
+                <h3 class=""> {{username|default:""}} {{ user }} </h3>
               </div>
             </a>
           </div>
 
           <div class="col">
-            <h3>Your current balance is:</h2>
-              <h2>
+            <h3>Your current balance cannot be displayed currently.</h2>
+            <!--    <h2>
                 {% if balance >= 0 %}
                 <span class="text-success">+{{ balance }}€</span>
                 {% else %}
@@ -44,6 +44,7 @@
                   <a href=#>details</a>
                 </sub>
               </h2>
+          -->
           </div>
         </div>
       </div>
@@ -84,11 +85,11 @@
               <ul class="list-group list-group-flush">
                 {% for tr,amount,type,entity in last_transactions %}
                 <li class="list-group-item">
-                  {% if amount >= 0 %}
+              <!--    {% if amount >= 0 %}
                   <span class="text-success">+{{ amount }}€</span>
                   {% else %}
                   <span class="text-danger">{{ amount }}€</span>
-                  {% endif %}
+                  {% endif %} -->
                   {{ tr|display_transaction }}
                   {% if type == 'event' %}
                   for {{ entity|display_event_logo }}
