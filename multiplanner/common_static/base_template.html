@@ -90,16 +90,21 @@
 
   <div class="container" id="content">
     {% block content %}{% endblock %}
+    
+    <hr>
+    <button class="mark-all-notifications" data-mark-action="read">Mark all as read</button>
+    <button class="mark-all-notifications" data-mark-action="unread">Mark all as unread</button>
+    <ul class="notifications list-group">
+    {% render_notifications using request.user.notifications.active for box %}
+    </ul>
   </div>
+
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
 
-  {% include_notify_js_variables %}
-  <script src="{% static "notify/notifyX.min.js" %}"></script>
-  {% render_notifications using request.user.notifications.active for box %}
-  
+
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
     crossorigin="anonymous"></script>
@@ -109,7 +114,10 @@
     crossorigin="anonymous"></script>
 
 
-
+  {% load notification_tags %}
+  {% include_notify_js_variables %}
+  <script src="{% static 'notify/notifyX.js' %}"></script>
+  
 
 </body>
 
