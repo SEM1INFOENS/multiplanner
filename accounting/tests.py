@@ -118,16 +118,3 @@ class ResolutionTestCase(TestCase) :
         print (members)
         assert (sum(balance)==0)
 
-
-    def test_balance_in_floats (self) :
-        balance = balance_in_floats(self.group[1])
-        print('\n\n\n----------------------------', balance[0])
-        assert (balance[0] == 0.67)
-        assert (balance[1] == -0.34 or balance[2] == -0.34)
-        assert (balance[1] == -0.33 or balance[2] == -0.33)
-
-    def test_resolution (self) :
-        balance = balance_in_floats(self.group[1])
-        res = resolution_tuple(self.group[1],balance)
-        for i in res:
-            print (i[0], "should give", i[1], "an amount of", i[2])
