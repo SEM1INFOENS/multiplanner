@@ -25,8 +25,8 @@ class Group(models.Model):
     '''A group of people, inside which transactions can be made.
     To make transactions in an event, people will make transactions in the subsequent group.
     '''
-
     objects = GroupManager()
+    _choices = (('USD','US Dollar'),('EUR','Euro'),('RUB','Russian Ruble'))
 
     name = models.CharField(max_length=200, blank=True)
     members = models.OneToOneField(PermGroup, on_delete=models.CASCADE, related_name='+')
@@ -34,6 +34,7 @@ class Group(models.Model):
     transactions = models.ManyToManyField(Transaction, blank=True)
     inEvent = models.BooleanField(default=False)
     public = models.BooleanField(default=False)
+    currency =models.CharField(max_length=20, choices=_choices) 
 
     @classmethod
     def create_new(cls, name='', members=[], admins=[], transactions=[], public=False, commit=True):
