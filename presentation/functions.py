@@ -80,15 +80,16 @@ def balance_of_user(user):
     they owe and the total amount that is owed to them"""
     spent = 0
     due = 0
+    user_profile = UserProfile.get_or_create(user)
     balancesOfUser = Balance.objects.balancesOfUser(user)
     for b in balancesOfUser:
-        amount = b.amount.amount 
+        amount = b.amount.amount
         if  amount > 0:
-            if b.amount.currency != user.currency:
-               amount = get_currency_equivalence(b.amount.currency,user.currency,amount)
+            if b.amount.currency != user_profile.default_currency:
+               amount = get_currency_equivalence(b.amount.currency,user_profile.default_currency,amount)
             spent += amount*1000000
         elif amount < 0:
-            if b.amount.currency != user.currency:
-               amount = get_currency_equivalence(b.amount.currency,user.currency,amount)
+            if b.amount.currency != user_profile.default_currency:
+               amount = get_currency_equivalence(b.amount.currency,user_profile.default_currency,amount)
             due += amount*1000000
-    return round(spent/10000000,2), round(due/10000000,2)
+    return Money(round(spent/10000000,2), user_profile.default_currency), Money(round(due/10000000,2), user_profile.default_currency)
