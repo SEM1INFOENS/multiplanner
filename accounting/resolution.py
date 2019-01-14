@@ -51,13 +51,25 @@ def get_decimals(balance2):
         decimals.append(np.modf(i)[0])
     return decimals
 
-
-
+def sort (members,balances):
+    balances2 = []
+    for i in range(len(members)):
+        boolean = True
+        j = -1
+        while boolean == True:
+            j += 1
+            if balances[j].user == members[i]:
+                boolean = False
+        balances2.append(balances[j])
+    return balances2
 
 def balance_in_floats(group):
     ''' Calculates the balance of a group in the float format '''
     members, balance1, calculated = balance_in_fractions(group)
-    #Get the balances from the database
+    #get the balances from the database
+    balances = Balance.objects.balancesOfGroup(group)
+    #sort the balances in the order of the members in the group
+    balances = sort(members,balances)
 
     if calculated == False:
         #calculate all the balance and update balance database
@@ -84,8 +96,8 @@ def balance_in_floats(group):
                 #transform centimes to euros
                 balance2[i] /= 100
                 #update the database
-                Balance.objects.balanceOfUserInGroup(members[i], group) \
-                .update(amount= Money(balance2[i],currency))
+                balances[i].amount = amount= Money(balance2[i],currency)
+                balances[i].save()
             return balance2
 
         exceedingMoneyOnTable = moneyPutOnTable - moneyTakenFromTable
@@ -107,18 +119,16 @@ def balance_in_floats(group):
                 i2 = np.argmin(decimals)
 
 
-
+            balances = sort(members,balances)
         for i in range(len(balance2)):
             #transform an integer to a two decimal float
             balance2[i] /= 100
             #update the database
-            Balance.objects.balanceOfUserInGroup(members[i], group) \
-            .update(amount= Money(balance2[i],currency))
-
-
+            balances[i].amount = amount= Money(balance2[i],currency)
+            balances[i].save()
     else:
-        balances = Balance.objects.balancesOfGroup(group)
-        balance2 = [a.amount.amount for a in balances]
+        balance2 = [b.amount.amount for b in balances]
+
     return balance2
 
 def resolution_tuple(group, balance):
