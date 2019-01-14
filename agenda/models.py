@@ -6,12 +6,13 @@ from django.utils import timezone
 from django.urls import reverse
 from django.db.models import Q
 import datetime as datetime_module
-from groups.models import Group
+from groups.models import Group, Balance
 from accounting.models import Transaction
 from django.core.exceptions import SuspiciousOperation, ValidationError
 from . import sit
 from permissions.shortcuts import *
 from .functions import date_format_ics, date_format_moment, color_complement, color_format_css
+from djmoney.money import Money
 
 
 
@@ -202,6 +203,8 @@ class Event(models.Model):
     def accept_invite(self, user):
         if self.can_accept_invite(user):
             self.attendees.members.add(user)
+            b = Balance(user=user,group = self.attendees,amount = Money(0,self.currency))
+            b.save()
         else: raise SuspiciousOperation
     def decline_invite(self, user):
         if self.can_accept_invite(user):

@@ -106,15 +106,17 @@ class ResolutionTestCase(TestCase) :
 
 
     def test_balance_in_fractions (self):
-        members,balanceFrac = balance_in_fractions (self.group[0])
+        members,balanceFrac, calculated = balance_in_fractions (self.group[0])
         print (balanceFrac)
         print (members)
         assert (sum(balanceFrac)==0)
-        balanceFloat = balance_in_floats(self.group[0])
-        assert(balanceFloat[i] == balanceFrac[i] for i in range(len(balanceFloat)))
+    #    balanceFloat = balance_in_floats(self.group[0])
+    #    assert(balanceFloat[i] == balanceFrac[i] for i in range(len(balanceFloat)))
 
-        members,balance = balance_in_fractions (self.group[1])
+        members,balance, calculated = balance_in_fractions (self.group[1])
         print (balance)
         print (members)
         assert (sum(balance)==0)
 
+# to test balance_in_floats we should create Balances for the people 
+# in the database then save them and apply balance_in_floats

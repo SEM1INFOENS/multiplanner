@@ -32,6 +32,9 @@ def create_event(request):
             form.instance.admins = admins_form.save()
             form.instance.invited = invited_form.save()
             event = form.save()
+           
+
+            
             success = messages.success(request, 'Event successfully created')
             # redirect to a new URL:
             return redirect('event', ide=event.id)
@@ -63,6 +66,21 @@ def edit_event(request, ide):
             invited_form.save()
             event = form.save(commit=False)
             event.save()
+            
+            group = event.attendees
+            # If the number of members changes then update balances in event
+            balances = Balance.objects.balancesOfGroup(group)     
+            u = []
+            for b in balances:
+                if b.user not in group.members.all():
+                    b.delete()
+                else:
+                    u.append(b.user)
+            for m in group.members.all():
+                if m not in u:
+                    b = Balance(user=m,group = group,amount = Money(0,group.currency))
+                    b.save()
+
             success = messages.success(request, 'Event successfully modified')
             return redirect('event', ide=event.id)
     else:
@@ -115,7 +133,7 @@ def event(request, ide):
         sitting_arrangement = event.sitting#.table__set.all()
     except Sitting.DoesNotExist:
         sitting_arrangement = None
-
+        
     balance = resolution.balance_in_floats(group)
     balance1 = [b for b in balance]
     res = resolution.resolution_tuple(group,balance1)

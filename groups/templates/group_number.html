@@ -9,6 +9,7 @@
 {% endif %}
 
 <h1>{{group.name}}</h1>
+<h2>The currency of this group is {{group.get_currency_display}} </h2>
 <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal">
   Add transaction
 </button>

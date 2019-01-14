@@ -9,6 +9,8 @@ from permissions.models import PermGroup
 from relationships.models import SecretMark
 from permissions.shortcuts import *
 from django.urls import reverse
+from djmoney.models.fields import MoneyField
+
 
 class GroupManager(models.Manager):
 
@@ -103,3 +105,32 @@ class Group(models.Model):
                 except SecretMark.DoesNotExist:
                     ()
         return M, list_mem
+
+class BalanceManager(models.Manager):
+    @classmethod
+    def balancesOfGroup(self, group):
+        return Balance.objects.filter(group = group)
+
+    @classmethod
+    def balancesOfUser(self, user):
+        return Balance.objects.filter(user=user)
+    @classmethod
+    def balanceOfUserInGroup (self, user, group):
+        return Balance.objects.filter(group = group, user=user)
+
+class Balance (models.Model):
+    ''' A balance is related to a person in a group 
+    This class is made to prevent from calculating the balance
+    each time we click on the group number'''
+    objects = BalanceManager()
+
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
+    group = models.ForeignKey(Group,on_delete=models.CASCADE)
+    amount = MoneyField(max_digits=14, decimal_places=2, default_currency='EUR')
+    
+    @classmethod
+    def create_new(cls, user, group, amount):
+        '''Default method for creating a balance'''
+        balance = cls(user=user,group=group,amount=amount)
+        balance.save()
+        return balance
