@@ -5,7 +5,6 @@ from django.contrib.auth.models import User
 from djmoney.models.fields import CurrencyField
 from djmoney.settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
 
-
 class UserProfile(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.CASCADE)
