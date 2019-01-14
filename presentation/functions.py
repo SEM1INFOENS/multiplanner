@@ -1,3 +1,4 @@
+
 from random import shuffle
 from friendship.models import Friend
 from django.utils import timezone
@@ -79,13 +80,15 @@ def balance_of_user(user):
     they owe and the total amount that is owed to them"""
     spent = 0
     due = 0
-    u = user
-
-    for tr in Transaction.objects.with_user(u):
-        payed = tr.amount_payed(u)
-        if payed > 0:
-            spent += payed
-        elif payed < 0 :
-            due += -payed
-    return spent, due
-
+    balancesOfUser = Balance.objects.balancesOfUser(user)
+    for b in balancesOfUser:
+        amount = b.amount.amount 
+        if  amount > 0:
+            if b.amount.currency != user.currency:
+               amount = get_currency_equivalence(b.amount.currency,user.currency,amount)
+            spent += amount*1000000
+        elif amount < 0:
+            if b.amount.currency != user.currency:
+               amount = get_currency_equivalence(b.amount.currency,user.currency,amount)
+            due += amount*1000000
+    return round(spent/10000000,2), round(due/10000000,2)
