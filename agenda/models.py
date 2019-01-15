@@ -111,6 +111,8 @@ class Event(models.Model):
     admins = models.OneToOneField(PermGroup, on_delete=models.CASCADE, related_name='+')
     attendees = models.OneToOneField(Group, on_delete=models.CASCADE)
     public = models.BooleanField(default=False)
+
+    notifications_sent = models.IntegerField(default=0)
     # why is attendees a group and invited a ManyToManyField...? Because attendees will do things
     # together, it makes sense to consider them as a group.
     # transactions = models.ManyToManyField(Transaction) => use the transactions field of the Group instead
