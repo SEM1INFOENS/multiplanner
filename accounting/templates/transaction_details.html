@@ -1,12 +1,15 @@
 {%extends base_template %}
+{% load presentation_filters %}
+{% load agenda_filters %}
+{% load groups_filters %}
 
-{% block content %}  
+{% block content %}
 
 
 
 <h2>{{ transaction.motive }}</h2>
 
-<h3>{{ transaction.amount }}€</h3>
+<h3>{{ transaction.amount }}</h3>
 
 <p>
   <b>
@@ -16,28 +19,36 @@
 
 <p>
   <b>payer : </b>
-  <a href="{% url 'users:page' user.username %}">{{ transaction.payer }}</a>
+  {{ transaction.payer|display_user }}
 </p>
-<p>
-  <b>beneficiaries</b>
+
+{% if form.non_form_errors %}
+      <div class="alert alert-danger">{{form.non_form_errors}}</div>
+    {% endif %}
+
+<form action="{% url 'accounting:transaction-details' id  %}" , method="POST">
+
+  {% csrf_token %}
+  {{form.management_form}}
   <ul>
-    {% for user in beneficiaries %}
-    <li>
-      <a href="{% url 'users:page' user.username %}">{{ user }}</a>
+    {% for user, form in transactions_forms %}
+    <li>{{ user|display_user }}
+      {% for field in form %}
+       {{ field }}
+      {% endfor %}
     </li>
     {% endfor %}
   </ul>
-</p>
+  <input type="submit" class="btn btn-primary" value="Save">
+</form>
 
 <p>
   {% if type == "event" %}
   This transaction was made for the event 
-  <i class="far fa-calendar-alt"></i>
-  <a href="{% url 'event' entity.id %}">{{ entity }}</a>
+  {{ entity|display_event_logo }}
   {% elif type == "group" %}
   This transaction was made for the group
-  <i class="fas fa-users"></i>
-  <a href="{% url 'groups:group-number' entity.id %}">{{ entity }}</a>
+  {{ entity|display_group_logo }}
   {% else %}
   {% endif %}
 </p>

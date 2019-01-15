@@ -20,9 +20,27 @@
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
     crossorigin="anonymous">
 
+  <!-- It also has to be loaded in every templates where it is used -->
+  {% load presentation_filters %}
+
   <!-- Nav Bar -->
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="{% url 'users:index' %}">Multiplanner</a>
+
+    <div class="d-flex flex-row navbar-right order-lg-12">
+      <ul class="navbar-nav flex-row">
+        <li class="nav-item">
+          {% load permissions_filters %}
+          <a class="nav-link" href="{% url 'users:page' user.username %}">
+            {{user.username }}
+            {% if user|is_app_admin %}
+            <i class="fas fa-shield-alt"></i>
+            {% endif %}
+          </a>
+        </li>
+      </ul>
+    </div>
+
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -39,6 +57,10 @@
 
         <li class="nav-item{% block active_friends %}{% endblock %}">
           <a class="nav-link" href="{% url 'friends:friends' %}">Friends</a>
+        </li>
+
+        <li class="nav-item{% block active_settings %}{% endblock %}">
+          <a class="nav-link" href="{% url 'users:settings' %}">Settings</a>
         </li>
       </ul>
 
@@ -63,6 +85,11 @@
             <a class="btn btn-primary" href="{% url 'users:logout'%}"> Logout <i class="fas fa-sign-out-alt"></i></a>
 	  </form>
 	</li>
+  <li class="nav-item">
+    <form>
+      <a class="btn btn-light" href="{% url 'users:settings'%}"><i class="fas fa-cog"></i></a>
+    </form>
+  </li>
       </ul>
     </div>
   </nav>
@@ -84,25 +111,38 @@
   </ul>
   {% endif %}
 
+  {% load static %}
+  <link href="{% static 'fullcalendar/fullcalendar.css' %}" rel='stylesheet' />
+  <link href="{% static 'fullcalendar/fullcalendar.print.min.css' %}" rel='stylesheet' media='print' />
+  <script src="{% static 'lib/jquery.min.js' %}"></script>
+  <script src="{% static 'lib/moment.min.js' %}"></script>
+  <script src="{% static 'fullcalendar/fullcalendar.js' %}"></script>
+
+
 </head>
 
 <body>
 
   <div class="container" id="content">
     {% block content %}{% endblock %}
-    
+
     <hr>
     <button class="mark-all-notifications" data-mark-action="read">Mark all as read</button>
     <button class="mark-all-notifications" data-mark-action="unread">Mark all as unread</button>
     <ul class="notifications list-group">
     {% render_notifications using request.user.notifications.active for box %}
     </ul>
+
+
   </div>
 
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
+  <script src="{% static 'lib/jquery.min.js' %}"></script>
+  <script src="{% static 'lib/moment.min.js' %}"></script>
+  <script src="{% static 'fullcalendar/fullcalendar.js' %}"></script>
 
 
 
@@ -117,7 +157,7 @@
   {% load notification_tags %}
   {% include_notify_js_variables %}
   <script src="{% static 'notify/notifyX.js' %}"></script>
-  
+
 
 </body>
 

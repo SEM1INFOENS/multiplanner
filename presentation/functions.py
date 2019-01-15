@@ -1,11 +1,14 @@
-from groups.models import Group
-from agenda.models import Event
 from random import shuffle
 from friendship.models import Friend
 from django.utils import timezone
 from django.db.models import Q
+from djmoney.money import Money
+from groups.models import Group, Balance
+from agenda.models import Event
 from accounting.models import Transaction
 from accounting import functions as acc_functions
+from accounting.webScraping import get_currency_equivalence
+from presentation.models import UserProfile
 
 def queryset_to_list(Q):
     L = []
@@ -13,18 +16,19 @@ def queryset_to_list(Q):
         L.append(q)
     return L
 
-def amount_payed(tr, user):
-        benef = tr.beneficiaries.all()
-        if user == tr.payer:
-            if user in benef:
-                return round(tr.amount*(1-1/benef.count()), 2)
-            else:
-                return tr.amount
-        else:
-            if user in benef:
-                return -round(tr.amount/benef.count(), 2)
-            else:
-                return 0
+# new method in the Transaction model
+# def amount_payed(tr, user):
+#         benef = tr.beneficiaries.all()
+#         if user == tr.payer:
+#             if user in benef:
+#                 return round(tr.amount*(1-1/benef.count()), 2)
+#             else:
+#                 return tr.amount
+#         else:
+#             if user in benef:
+#                 return -round(tr.amount/benef.count(), 2)
+#             else:
+#                 return 0
 
 def n_random_friends(user, n):
     '''Returns a random list of six friends of the User user'''
@@ -46,10 +50,10 @@ def friendship_requests(user):
     return Friend.objects.unrejected_requests(user=user)
 
 def transaction_infos(tr, user):
-    amount = amount_payed(tr, user)
+    amount = tr.amount_payed(user)
     type_, entity = acc_functions.related_entity(tr)
     return (tr, amount, type_,entity)
-    
+
 def n_transactions_of_user(u, n):
     """Returns the last n transactions implying an event or group u belongs to,
     sorted in chronological time"""
@@ -66,38 +70,25 @@ def n_transactions_of_user(u, n):
     # all_transactions = sorted(all_transactions, key=lambda transaction: transaction.date)
     # return all_transactions[-n:]
 
-    transactions = Transaction.objects.filter(Q(payer=u) | Q(beneficiaries=u)).distinct().order_by('-date')[:n]
+    transactions = Transaction.objects.with_user(u).order_by('-date')[:n]
     transactions_plus = [transaction_infos(tr,u) for tr in transactions]
     return transactions_plus
 
-def balance_of_user(u):
-    """Returns the financial balance of user u, i.e. the total amount that
+def balance_of_user(user):
+    """Returns the financial balance of user, i.e. the total amount that
     they owe and the total amount that is owed to them"""
-    # groups_queryset = Group.objects.all()
-    # groups_of_u = []
-    # for g in queryset_to_list(groups_queryset):
-    #     if u in g.members.all():
-    #         groups_of_u.append(g)
-    # spent = 0
-    # due = 0
-    # for g in groups_of_u:
-    #     for tr in queryset_to_list(g.transactions.all()):
-    #         benef = queryset_to_list(tr.beneficiaries.all())
-    #         if tr.payer == u:
-    #             if u in benef:
-    #                 spent += round(tr.amount*(1-1/len(benef)), 2)
-    #             else:
-    #                 spent += tr.amount
-    #         elif u in benef:
-    #             due += round(tr.amount/len(benef), 2)
-    # return spent, due
     spent = 0
     due = 0
-
-    for tr in Transaction.objects.filter(Q(payer=u) | Q(beneficiaries=u)).distinct():
-        payed = amount_payed(tr, u)
-        if payed > 0:
-            spent += payed
-        elif payed < 0 :
-            due += -payed
-    return spent, due
+    user_profile = UserProfile.get_or_create(user)
+    balancesOfUser = Balance.objects.balancesOfUser(user)
+    for b in balancesOfUser:
+        amount = b.amount.amount
+        if  amount > 0:
+            if b.amount.currency != user_profile.default_currency:
+               amount = get_currency_equivalence(b.amount.currency,user_profile.default_currency,amount)
+            spent += amount*1000000
+        elif amount < 0:
+            if b.amount.currency != user_profile.default_currency:
+               amount = get_currency_equivalence(b.amount.currency,user_profile.default_currency,amount)
+            due += amount*1000000
+    return Money(round(spent/10000000,2), user_profile.default_currency), Money(round(due/10000000,2), user_profile.default_currency)

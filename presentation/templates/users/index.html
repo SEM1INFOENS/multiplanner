@@ -1,9 +1,11 @@
 {%extends "base_template.html" %}
 {% load static %}
-{% load staticfiles %}
-{% load notification_tags %}
 
 
+{% load accounting_filters %}
+{% load presentation_filters %}
+{% load groups_filters %}
+{% load agenda_filters %}
 
 {% block active_agenda %} active{% endblock %}
 {% block active_groups %} active{% endblock %}
@@ -25,27 +27,26 @@
             <a href="{% url 'users:page' loggedin_user.username %}">
               <div>
                 <img src={% static "avatar.jpg" %} class="rounded-circle img-fluid">
-                <h3 class=""> {{username|default:"Me"}} </h3>
+                <h3 class=""> {{username|default:""}} {{ user }} </h3>
               </div>
             </a>
           </div>
 
           <div class="col">
-            <h3>Your current balance is:</h2>
-              <h2>
-                {% if balance >= 0 %}
-                <span class="text-success">+{{ balance }}€</span>
-                {% else %}
-                <span class="text-danger">{{ balance }}€</span>
+            <h2>
+              {% if balance >= 0 %}
+              <span class="text-success">+{{ balance }}</span>
+              {% else %}
+              <span class="text-danger">{{ balance }}</span>
+              {% endif %}
+              <sub>
+                {% if balance_plus != 0 and balance_minus != 0 %}
+                ( <span class="text-success">+{{ balance_plus }}</span>
+                | <span class="text-danger">{{ balance_minus }}</span> )
                 {% endif %}
-                <sub>
-                  {% if balance_plus != 0 and balance_minus != 0 %}
-                  ( <span class="text-success">+{{ balance_plus }}€</span>
-                  | <span class="text-danger">{{ balance_minus }}€</span> )
-                  {% endif %}
-                  <a href=#>details</a>
-                </sub>
-              </h2>
+                <a href=#>details</a>
+              </sub>
+            </h2>
           </div>
         </div>
       </div>
@@ -86,20 +87,17 @@
               <ul class="list-group list-group-flush">
                 {% for tr,amount,type,entity in last_transactions %}
                 <li class="list-group-item">
-                  {% if amount >= 0 %}
+              <!-- Change here the code + add currency
+                 {% if amount >= 0 %}
                   <span class="text-success">+{{ amount }}€</span>
                   {% else %}
                   <span class="text-danger">{{ amount }}€</span>
-                  {% endif %}
-                  <a href="{% url 'transaction_details' tr.id %}">{{ tr }}</a>
+                  {% endif %} -->
+                  {{ tr|display_transaction }}
                   {% if type == 'event' %}
-                  for <a href="{% url 'event' entity.id %}">
-                    <i class="far fa-calendar-alt"></i> {{ entity }}
-                  </a>
+                  for {{ entity|display_event_logo }}
                   {% elif type == 'group' %}
-                  for <a href="{% url 'groups:group-number' entity.id %}">
-                    <i class="fas fa-users"></i> {{ entity }}
-                  </a>
+                  for {{ entity|display_group_logo }}
                   {% endif %}
                 </li>
                 {% endfor %}
@@ -117,7 +115,7 @@
         <h4>Events invitations</h4>
         <ul class="list-group list-group-flush">
           {% for event in events_invitations %}
-          <li class="list-group-item"><a href={% url 'event' event.id %}>{{ event }}</a></li>
+          <li class="list-group-item">{{ event|display_event_logo }}</li>
           {% endfor %}
         </ul>
         {% endif %}
@@ -126,7 +124,7 @@
         <h4>Upcoming events</h4>
         <ul class="list-group list-group-flush">
           {% for event in events_will_attend %}
-          <li class="list-group-item"><a href={% url 'event' event.id %}>{{ event }}</a></li>
+          <li class="list-group-item">{{ event|display_event_logo }}</li>
           {% endfor %}
         </ul>
         {% endif %}
@@ -135,7 +133,7 @@
         <h4>Pending friendship requests <i class="fas fa-user-plus"></i></h4>
         <ul class="list-group list-group-flush">
           {% for req in friendship_requests %}
-          <li class="list-group-item"><a href={% url 'users:page' req.from_user %}>{{ req.from_user }}</a></li>
+          <li class="list-group-item">{{ req.from_user|display_user }}</li>
           {% endfor %}
         </ul>
         {% endif %}

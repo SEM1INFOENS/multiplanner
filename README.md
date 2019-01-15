@@ -7,7 +7,7 @@ Here you could find a project dedicated to money and friendship.
 All required python packages are listed in `requirements.txt`.
 We currently use:
 - python 3.6.4
-- django 2.1.2
+- django 2.1.5
 - pytest 3.9.1
 
 ## Installation

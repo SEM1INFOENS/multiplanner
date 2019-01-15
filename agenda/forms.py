@@ -5,6 +5,7 @@ from django.contrib.admin import widgets
 #from treasuremap import widgets as tmw
 from .models import *
 from groups.models import Group
+#from permissions.forms import PermGroupFormField
 
 # Form : to create a form
 # ModelForm : to automaticaly create a form from a model
@@ -15,10 +16,10 @@ class EventForm(ModelForm):
     #place = LatLongField()
     # I was not able to make it work...
     # https://github.com/silentsokolov/django-treasuremap
-    
+
     class Meta:
         model = Event
-        fields = ['name', 'description', 'date', 'time', 'date_end', 'time_end', 'place', 'administrators', 'invited']
+        fields = ['name', 'public', 'description', 'date', 'time', 'date_end', 'time_end', 'place', 'currency']
         widgets = {
             'description' : forms.Textarea,
             'time' : forms.TimeInput(format='%H:%M'),
@@ -42,38 +43,11 @@ class EventForm(ModelForm):
     def save(self, commit=True):
         inst = super(EventForm, self).save(commit=False)
         inst.creator = self.creator_user
-        
+
         if self.new:
-            att =  Group(inEvent=True)
-            att.save()
+            att =  Group.create_for_event(inst.currency)
             inst.attendees = att
-        
+
         if commit:
             inst.save()
-            self.save_m2m()
-        return inst
-
-class TransactionForm(ModelForm):
-
-    class Meta:
-        model = Transaction
-        fields = ['motive', 'date', 'payer', 'amount', 'beneficiaries']
-        widgets = {
-            'motive' : forms.Textarea,
-            'date' : forms.SelectDateWidget(),
-            'amoint' : forms.NumberInput
-        }
-
-    def __init__(self, *args, **kwargs):
-        self._group = kwargs.pop('current_group')
-        super(TransactionForm, self).__init__(*args, **kwargs)
-        
-        self.fields['payer'].queryset = self._group.members
-        self.fields['beneficiaries'].queryset = self._group.members
-
-    def save(self, commit=True):
-        inst = super(TransactionForm, self).save()
-        self._group.transactions.add(inst)
-        self._group.save()
-
         return inst

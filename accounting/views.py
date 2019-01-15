@@ -6,7 +6,9 @@ from django.core.exceptions import PermissionDenied
 from django.template import Context, loader
 from django.urls import reverse
 from .functions import *
+from .forms import *
 
+from django.forms import modelformset_factory
 
 @login_required
 def transaction_details(request, ide):
@@ -18,11 +20,28 @@ def transaction_details(request, ide):
         base_template = "base_template_groups.html"
     else:
         base_template = "base_template_friends.html"
+
+    TransactionFormSet = modelformset_factory(TransactionPart, fields=['amount'], extra=0, formset=EditTransactionFormSet)
+    
+    if request.method == 'POST':
+        formset = TransactionFormSet(request.POST, queryset=tr.transactionpart_set.all(), amount=tr.amount)
+        
+        if formset.is_valid():
+            formset.save()
+            return redirect('groups:group-number', ide=entity.id)
+    else:
+        formset = TransactionFormSet(queryset=tr.transactionpart_set.all(), amount=tr.amount)
+        
+
     context = {
         'transaction' : tr,
+        'id' : ide,
+        'transactions': tr.transactionpart_set.all(),
+        'form' : formset,
+        'transactions_forms' : zip(tr.get_beneficiaries(), formset),
         'type' : type_,
         'entity' : entity,
-        'beneficiaries' : tr.beneficiaries.all(),
+        'beneficiaries' : tr.get_beneficiaries(),
         'base_template' : base_template,
     }
     return render(request, 'transaction_details.html', context)
