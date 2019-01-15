@@ -1,6 +1,8 @@
 {%extends "base_template_agenda.html" %}
+{% load agenda_filters %}
+{% load jsonify %}
 
-{% block content %}  
+{% block content %}
 
 
 <!-- "/agenda/event?v={{ event.id }}" -->
@@ -16,45 +18,41 @@ To suscribe, go in your calendar manager and choose to suscribe to the URL <a hr
 
 <a href="{% url 'new-event' %}">create a new event <i class="far fa-calendar-plus"></i></a>
 
-{% if not events_admin and not events_attendees and not events_invited and not events_past %}
-<p><i>Your agenda is empty</i></p>
-{% else %}
-{% if events_admin %}
-<h3>Events you manage</h3>
-<ul class="list-group list-group-flush">
-  {% for event in events_admin %}
-  <li class="list-group-item"><a href="{% url 'event' event.id %}">{{ event }} </a></li>
-  {% endfor %}
-</ul>
-{% endif %}
+<br>
 
-{% if events_invited %}
-<h3>Events you are invited to</h3>
-<ul class="list-group list-group-flush">
-  {% for event in events_invited %}
-  <li class="list-group-item"><a href="{% url 'event' event.id %}">{{ event }} </a></li>
-  {% endfor %}
-</ul>
-{% endif %}
 
-{% if events_attendees %}
-<h3>Events you will attend</h3>
-<ul class="list-group list-group-flush">
-  {% for event in events_attendees %}
-  <li class="list-group-item"><a href="{% url 'event' event.id %}">{{ event }} </a></li>
-  {% endfor %}
-</ul>
-{% endif %}
 
-{% if events_past %}
-<h3>Passed events</h3>
-<ul class="list-group list-group-flush">
-  {% for event in events_past %}
-  <li class="list-group-item"><a href="{% url 'event' event.id %}">{{ event }} </a></li>
-  {% endfor %}
-</ul>
-{% endif %}
-{% endif %}
+<div id="gridContainer"></div>
 
+<script>
+  $(document).ready(function() {
+    $('#gridContainer').fullCalendar({
+      editable: false,
+      eventLimit: true, // allow "more" link when too many events
+      header: {
+        left: 'listYear month,agendaWeek,agendaDay',
+        center: 'title',
+        right: 'prev,next today',
+      },
+      events: {{ events|jsonify }},
+      eventRender: function(eventObj, $el) {
+           $el.popover({
+             title: eventObj.title,
+             content: eventObj.description,
+             trigger: 'hover',
+             placement: 'top',
+             container: 'body'
+           });
+         },
+    });
+  });
+
+</script>
+
+<style>
+  #gridContainer {
+    margin: 0 auto;
+  }
+</style>
 
 {% endblock %}

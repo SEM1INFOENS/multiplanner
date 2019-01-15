@@ -1,4 +1,5 @@
 {%extends "base_template_friends.html" %}
+{% load presentation_filters %}
 
 {% block content %}
 
@@ -6,7 +7,7 @@
 <h3>Pending invitations</h3>
 <ul class="list-group">
   {% for user in p_invites %}
-  <li class="list-group-item"><a href="{% url 'users:page' user.username %}">{{ user.username }} <i class="fas fa-user-plus"></i></a></li>
+  <li class="list-group-item"> <i class="fas fa-user-plus"></i> {{ user|display_user }}</li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -15,7 +16,7 @@
 <h3>Friends</h3>
 <ul class="list-group">
   {% for user in friends %}
-  <li class="list-group-item"><a href="{% url 'users:page' user.username %}">{{ user.username }}</a></li>
+  <li class="list-group-item">{{ user|display_user }}</li>
   {% endfor %}
 </ul>
 {% endif %}
@@ -25,7 +26,7 @@
 <h3>Invited</h3>
 <ul class="list-group">
   {% for user in s_invites %}
-  <li class="list-group-item"><a href="{% url 'users:page' user.username %}">{{ user.username }} <i class="fas fa-user-clock"></i></a></li>
+  <li class="list-group-item"><i class="fas fa-user-clock"></i> {{ user|display_user }}</li>
   {% endfor %}
 </ul>
 {% endif %}

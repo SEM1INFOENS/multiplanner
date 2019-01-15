@@ -1,11 +1,15 @@
 {%extends "base_template_groups.html" %}
+{% load presentation_filters %}
+{% load accounting_filters %}
 
-{% block content %}  
+{% block content %}
 
-{% if not group.name%}<h1> NoName</h1>
-{% else %}
-<h1>{{group.name}}</h1>
+{% if can_edit %}
+<a class="btn btn-primary" href="{% url 'groups:edit-group' ide=group.id %}">edit <i class="fas fa-edit"></i></a>
 {% endif %}
+
+<h1>{{group.name}}</h1>
+<h2>The currency of this group is {{group.get_currency_display}} </h2>
 <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#exampleModal">
   Add transaction
 </button>
@@ -39,11 +43,18 @@
     {% for user in group.members.all %}
     <li>
       <b>
-	<a href="{% url 'users:page' user.username %}">{{ user }}</a>
+        {{ user|display_user }}
       </b>
     </li>
     {% endfor %}
   </ul>
+</p>
+
+<p>
+  <h3>Admins</h3>
+  {% for user in group.admins.all %}
+  {{ user|display_user }}
+  {% endfor %}
 </p>
 
 {% if transactions%}
@@ -51,7 +62,7 @@
   <h3> The balances for this group's members are: </h3>
   <ul>
     {% for user,b in list_context %}
-    <li>{{ user }} has a balance of {{ b }}€ </li>
+    <li>{{ user|display_user }} has a balance of {{ b }} {{ group.currency }} </li>
     {% endfor %}
   </ul>
 </p>
@@ -60,7 +71,7 @@
   <h3> The resolutions of this group's members are: </h3>
   <ul>
     {% for a,b,amount in resolution %}
-    <li>{{ a }} has to pay {{ amount }}€ to {{ b }} </li>
+    <li>{{ a|display_user }} has to pay {{ amount }} {{ group.currency }} to {{ b|display_user }} </li>
     {% endfor %}
   </ul>
 </p>
@@ -69,7 +80,7 @@
   <h3> Transactions made in this group </h3>
   <ul>
     {% for t in transactions %}
-    <li>{{ forloop.counter }} {{ t }} </li>
+    <li>{{ forloop.counter }} {{ t|display_transaction }} </li>
     {% endfor %}
   </ul>
 </p>

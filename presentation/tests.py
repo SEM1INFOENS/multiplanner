@@ -58,9 +58,9 @@ class FunctionsTestCase(TestCase):
         time.sleep(.001)
         trABC = Transaction.create_new(payer=A, amount=10, beneficiaries=[A, B, C], motive='3')
 
-        groupAB = Group.create_new(name='AB', members=[A, B], transactions=[trAB])
-        groupAC = Group.create_new(name='AC', members=[A, C], transactions=[trAC])
-        groupABC = Group.create_new(name='ABC', members=[A, B, C], transactions=[trABC])
+        groupAB = Group.create_new(name='AB', members=[A, B], transactions=[trAB], admins=[])
+        groupAC = Group.create_new(name='AC', members=[A, C], transactions=[trAC], admins=[])
+        groupABC = Group.create_new(name='ABC', members=[A, B, C], transactions=[trABC], admins=[])
 
         n_tr = lambda u,n : [tr for (tr,info1,info2,info3) in n_transactions_of_user(u,n)]
         assert set(n_tr(A, 1)) == {trABC}
@@ -72,7 +72,10 @@ class FunctionsTestCase(TestCase):
         assert set(n_tr(C, 2)) == {trABC, trAC}
 
     def test_balance_of_user(self):
+        from djmoney.settings import DEFAULT_CURRENCY
+        from djmoney.money import Money
 
+        m = lambda x : Money(x, DEFAULT_CURRENCY)
         A = User.objects.create_user(username='A')
         B = User.objects.create_user(username='B')
         C = User.objects.create_user(username='C')
@@ -81,13 +84,15 @@ class FunctionsTestCase(TestCase):
         trAC = Transaction.create_new(payer=C, amount=10, beneficiaries=[A, C], motive='2')
         trABC = Transaction.create_new(payer=B, amount=60, beneficiaries=[A, B, C], motive='3')
 
-        groupAB = Group.create_new(name='AB', members=[A, B], transactions=[trAB])
-        groupAC = Group.create_new(name='AC', members=[A, C], transactions=[trAC])
-        groupABC = Group.create_new(name='ABC', members=[A, B, C], transactions=[trABC])
+        groupAB = Group.create_new(name='AB', members=[A, B], transactions=[trAB], admins=[])
+        groupAC = Group.create_new(name='AC', members=[A, C], transactions=[trAC], admins=[])
+        groupABC = Group.create_new(name='ABC', members=[A, B, C], transactions=[trABC], admins=[])
 
-        assert balance_of_user(A) == (5, 25)
+        bal = balance_of_user(A)
+        print("\nbalance_of_user : ({}, {}) .. expected : ({}, {})\n".format(bal[0], bal[1], m(5), m(25)))
+        assert balance_of_user(A) == (m(5), m(25))
         # paid 10/2=5 for B ; C paid 10/2=5 and B paid 60/3=20 for A
-        assert balance_of_user(B) == (40, 5)
+        assert balance_of_user(B) == (m(40), m(5))
         # paid 60*2/3=40 for A and C ; A paid 10/2=5 for B
-        assert balance_of_user(C) == (5, 20)
+        assert balance_of_user(C) == (m(5), m(20))
         # paid 10/2=5 for A ; B paid 60/3=20 for C
