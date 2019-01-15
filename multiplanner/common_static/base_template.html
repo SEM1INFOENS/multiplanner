@@ -58,6 +58,10 @@
         <li class="nav-item{% block active_friends %}{% endblock %}">
           <a class="nav-link" href="{% url 'friends:friends' %}">Friends</a>
         </li>
+
+        <li class="nav-item{% block active_settings %}{% endblock %}">
+          <a class="nav-link" href="{% url 'users:settings' %}">Settings</a>
+        </li>
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
@@ -122,12 +126,15 @@
   <div class="container" id="content">
     {% block content %}{% endblock %}
 
+
     <hr>
     <button class="mark-all-notifications" data-mark-action="read">Mark all as read</button>
     <button class="mark-all-notifications" data-mark-action="unread">Mark all as unread</button>
     <ul class="notifications list-group">
     {% render_notifications using request.user.notifications.active for box %}
     </ul>
+
+    
   </div>
 
   <!-- Optional JavaScript -->
@@ -137,6 +144,9 @@
 
   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
+  <script src="{% static 'lib/jquery.min.js' %}"></script>
+  <script src="{% static 'lib/moment.min.js' %}"></script>
+  <script src="{% static 'fullcalendar/fullcalendar.js' %}"></script>
 
 
 
