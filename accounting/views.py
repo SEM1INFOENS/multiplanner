@@ -22,16 +22,20 @@ def transaction_details(request, ide):
         base_template = "base_template_friends.html"
 
     TransactionFormSet = modelformset_factory(TransactionPart, fields=['amount'], extra=0, formset=EditTransactionFormSet)
-    
+
     if request.method == 'POST':
         formset = TransactionFormSet(request.POST, queryset=tr.transactionpart_set.all(), amount=tr.amount)
-        
+
         if formset.is_valid():
             formset.save()
-            return redirect('groups:group-number', ide=entity.id)
+            if type_ == "group":
+                return redirect('groups:group-number', ide=entity.id)
+            else:
+                return redirect('event', ide=entity.id)
+
     else:
         formset = TransactionFormSet(queryset=tr.transactionpart_set.all(), amount=tr.amount)
-        
+
 
     context = {
         'transaction' : tr,
