@@ -77,7 +77,8 @@ def edit_event(request, ide):
             if form.is_valid():
                 event = form.save(commit=False)
                 event.save()
-
+                for u in event.invited.iterator():
+                    notify.send(request.user, recipient = u, actor=event, verb = ',an event you were invited to, has been modified.', nf_type = 'invited_to_event')
                 success = messages.success(request, 'Event successfully modified')
                 return redirect('event', ide=event.id)
         else:
