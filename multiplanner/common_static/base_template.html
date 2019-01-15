@@ -58,6 +58,10 @@
         <li class="nav-item{% block active_friends %}{% endblock %}">
           <a class="nav-link" href="{% url 'friends:friends' %}">Friends</a>
         </li>
+
+        <li class="nav-item{% block active_settings %}{% endblock %}">
+          <a class="nav-link" href="{% url 'users:settings' %}">Settings</a>
+        </li>
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
@@ -128,6 +132,8 @@
     <ul class="notifications list-group">
     {% render_notifications using request.user.notifications.active for box %}
     </ul>
+
+
   </div>
 
   <!-- Optional JavaScript -->
