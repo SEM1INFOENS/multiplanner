@@ -41,6 +41,18 @@ def index(request):
 
     return render(request, 'users/index.html', context)
 
+
+@login_required
+def settings(request):
+    user = request.user
+
+    context = {
+        'loggedin_user' : user,
+        }
+
+    return render(request, 'users/settings.html', context)
+
+
 @login_required
 def page(request, username):
     user_page = User.objects.get(username=username)
