@@ -22,6 +22,7 @@ class TransactionForm(ModelForm):
         between_members = kwargs.pop('between_members')
         super(TransactionForm, self).__init__(*args, **kwargs)
 
+        self.fields['amount'].initial = [0.,self._group.currency]
         if between_members:
             self.fields['payer'].queryset = self._group.members
             #self.fields['beneficiaries'].queryset = self._group.members
