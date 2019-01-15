@@ -4,6 +4,7 @@ from django.db import models
 from django.forms import ValidationError
 from django.contrib.auth.models import User
 from djmoney.models.fields import MoneyField
+from djmoney.settings import DEFAULT_CURRENCY
 from django.utils import timezone
 from django.urls import reverse
 from django.db.models import Q
@@ -94,7 +95,7 @@ class Transaction(models.Model):
 class TransactionPart(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
     beneficiary = models.ForeignKey(User, on_delete=models.PROTECT)
-    amount = MoneyField(max_digits=14, decimal_places=2, default_currency='EUR')
+    amount = MoneyField(max_digits=14, decimal_places=2, default_currency=DEFAULT_CURRENCY)
 
 
 

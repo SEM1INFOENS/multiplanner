@@ -81,6 +81,11 @@
             <a class="btn btn-primary" href="{% url 'users:logout'%}"> Logout <i class="fas fa-sign-out-alt"></i></a>
 	  </form>
 	</li>
+  <li class="nav-item">
+    <form>
+      <a class="btn btn-light" href="{% url 'users:settings'%}"><i class="fas fa-cog"></i></a>
+    </form>
+  </li>
       </ul>
     </div>
   </nav>
@@ -116,7 +121,7 @@
 
   <div class="container" id="content">
     {% block content %}{% endblock %}
-    
+
     <hr>
     <button class="mark-all-notifications" data-mark-action="read">Mark all as read</button>
     <button class="mark-all-notifications" data-mark-action="unread">Mark all as unread</button>
@@ -146,7 +151,7 @@
   {% load notification_tags %}
   {% include_notify_js_variables %}
   <script src="{% static 'notify/notifyX.js' %}"></script>
-  
+
 </body>
 
 </html>

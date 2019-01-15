@@ -1,0 +1,24 @@
+{%extends "base_template.html" %}
+{% load static %}
+{% load staticfiles %}
+
+
+{% block active_agenda %} active{% endblock %}
+{% block active_groups %} active{% endblock %}
+{% block active_friends %} active{% endblock %}
+
+
+
+{% block body_id %}notification-settings{% endblock %}
+
+
+{% block content %}
+
+<h1>Settings</h1>
+<form method="post" action=".">
+  {% csrf_token %}
+  {{ form.as_p }}
+  <input type="button" class="btn btn-primary" value="Back" onclick="history.back()">
+  <input type="submit" class="btn btn-primary" value="Save">
+</form>
+{% endblock %}

@@ -12,6 +12,9 @@ from groups.models import Group
 from .functions import *
 from relationships import functions as rel
 from relationships.models import SecretMark
+from presentation.models import UserProfile
+from presentation.forms import UserSettingsForm
+
 
 from notify.signals import notify
 
@@ -35,7 +38,14 @@ def index(request):
         'balance_plus' : spent,
         'balance_minus' : -due,
     }
-
+    
+    for e in Event.objects.attending(user):
+        nb_days = (e.date_time() - timezone.now()).days
+        nb_minutes = (e.date_time() - timezone.now()).seconds /60
+        nb_hours = nb_minutes/60
+        print(e.date_time() - timezone.now())
+        if (nb_days <= 0):
+            notify.send(user, recipient = user, actor=e, verb = 'is in %d hours and %d minutes from now.' % (nb_hours,nb_minutes%60), nf_type = 'upcoming_event')
     return render(request, 'users/index.html', context)
 
 @login_required
@@ -82,3 +92,15 @@ def signup(request):
 
 def login(request):
     return render(request, 'users/login.html', {})
+
+@login_required
+def settings(request):
+    user = request.user
+    user_profile = UserProfile.get_or_create(user)
+    if request.method == 'POST':
+        form = UserSettingsForm(request.POST, instance=user_profile)
+        if form.is_valid():
+            form.save()
+    else:
+        form = UserSettingsForm(instance=user_profile)
+    return render(request, 'users/settings.html', {'form': form})

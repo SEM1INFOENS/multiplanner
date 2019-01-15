@@ -85,6 +85,8 @@ class TransactionTestCase(TestCase):
 
 
 
+    def test(self):
+        assert set(self.tr.get_beneficiaries()) == set(self.benef)
 
 
 ''' Test set for the resolution app '''
@@ -156,5 +158,5 @@ class ResolutionTestCase(TestCase) :
         print (members)
         assert (sum(balance)==0)
 
-# to test balance_in_floats we should create Balances for the people
+# to test balance_in_floats we should create Balances for the people 
 # in the database then save them and apply balance_in_floats

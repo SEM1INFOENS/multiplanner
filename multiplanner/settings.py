@@ -50,6 +50,10 @@ INSTALLED_APPS = [
     'guardian',
     'jsonify',
     'notify',
+    'djmoney',
+    'guardian',
+    'jsonify',
+
     #'django_extensions',
 ]
 
@@ -140,7 +144,7 @@ AUTHENTICATION_BACKENDS = (
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Paris'
 
 USE_I18N = True
 
@@ -172,5 +176,3 @@ except ImportError:
 #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 #ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
 
-
-CURRENCIES = ('USD', 'EUR', 'RUB')

@@ -8,7 +8,12 @@ from django.db.models import Q
 import datetime as datetime_module
 from groups.models import Group, Balance
 from accounting.models import Transaction
+from djmoney.models.fields import CurrencyField
+from djmoney.settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
+from djmoney.money import Money
 from django.core.exceptions import SuspiciousOperation, ValidationError
+from groups.models import Group, Balance
+from accounting.models import Transaction
 from . import sit
 from permissions.shortcuts import *
 from .functions import date_format_ics, date_format_moment, color_complement, color_format_css
@@ -50,12 +55,11 @@ class EventManager(models.Manager):
     def attending(self, user):
         '''List the futur events to which the user will attend'''
         return Event.objects.filter( date__gte=timezone.now(), attendees__members__members=user).order_by('time','date').order_by('date')
-
     @classmethod
     def attending_all(self, user):
         '''List all events to which the user has or will attend'''
         return Event.objects.filter(attendees__members__members=user)
-        
+
     @classmethod
     def past_invited(self, user):
         '''List the past events to which the user was invited'''

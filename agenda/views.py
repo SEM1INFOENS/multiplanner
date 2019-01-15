@@ -5,6 +5,10 @@ from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.template import Context, loader
 from django.urls import reverse
+from guardian.decorators import permission_required_or_403
+from permissions.utils import get_default_permission_name
+from permissions.forms import PermGroupForm
+from .functions import date_format_ics
 from .forms import *
 from accounting.forms import TransactionForm
 import datetime
@@ -66,6 +70,7 @@ def edit_event(request, ide):
     context = {'new' : False}
     event = get_object_or_404(Event, pk=ide)
     user = request.user
+
     if request.method == "POST":
         form = EventForm(request.POST, creator_user=event.creator, new=False, instance=event)
         admins_form = PermGroupForm(request.POST, instance=event.admins, prefix='admins')
@@ -76,9 +81,13 @@ def edit_event(request, ide):
             event = form.save(commit=False)
             event.save()
             
+            for u in event.invited.iterator():
+                notify.send(request.user, recipient = u, actor=event, verb = ',an event you were invited to, has been modified.', nf_type = 'invited_to_event')
+
             group = event.attendees
             # If the number of members changes then update balances in event
             balances = Balance.objects.balancesOfGroup(group)     
+
             u = []
             for b in balances:
                 if b.user not in group.members.all():
@@ -142,7 +151,7 @@ def event(request, ide):
         sitting_arrangement = event.sitting#.table__set.all()
     except Sitting.DoesNotExist:
         sitting_arrangement = None
-        
+
     balance = resolution.balance_in_floats(group)
     balance1 = [b for b in balance]
     res = resolution.resolution_tuple(group,balance1)

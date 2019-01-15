@@ -28,4 +28,5 @@ urlpatterns = [
     path('accounting/', include('accounting.urls')),
     path('permissions/', include('permissions.urls')),
     url(r'^notifications/', include('notify.urls', 'notifications')),
+    path('permissions/', include('permissions.urls')),
 ]
