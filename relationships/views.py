@@ -12,6 +12,8 @@ from . import functions
 def filter_r(query_list, result):
     ''' Supposed to filter only the User in the QuerySet "render"
     which username match one of the strings in "query_list"'''
+
+
     if query_list == []:
         print("none")
         r = User.objects.none()
@@ -20,9 +22,9 @@ def filter_r(query_list, result):
         r = result.filter(
             functools.reduce(operator.and_,
                              (Q(username__icontains=q) for q in query_list))
-            #reduce(operator.and_,
-            #       (Q(content__icontains=q) for q in query_list))
         )
+
+
         print(result)
         print(r)
     return r
@@ -41,7 +43,19 @@ def user_search(request):
     user = request.user
     friends = qs_of_list(Friend.objects.friends(user), User)
     p_invites = qs_of_list([f.from_user for f in Friend.objects.requests(user=user)], User)
-    other_users = User.objects.all().difference(friends, p_invites)
+
+    no = friends.union(p_invites, qs_of_list([request.user], User))
+    l = []
+    for v in User.objects.all():
+        if v not in no:
+            l.append(v)
+
+    other_users = qs_of_list(l, User)
+    #the proper way to do that would be User.objects.all().difference(friends, p_invites, \
+    # qs_of_list([request.user], User))
+    # However, using difference breaks the code (filter_r does not manage to filter)
+
+
     context = {
         'query' : query,
         'p_invites' :   filter_r(query_list, p_invites),
