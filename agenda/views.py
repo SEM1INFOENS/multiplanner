@@ -12,6 +12,7 @@ from django.forms.formsets import formset_factory
 from django.utils import timezone
 from .models import *
 from accounting import resolution
+from notify.signals import notify
 
 def date_format_ics(date, time):
     '''Converts date to date in ICS format'''
@@ -51,7 +52,8 @@ def create_event(request):
             #info = messages.info(request, 'Event created')
             #debug = messages.debug(request, 'Event created')
             #all_m = [success, warn, info, error]
-
+            for u in event.invited.iterator():
+                notify.send(request.user, recipient = u, actor=request.user, verb = 'has invited you to an event.', nf_type = 'invited_to_event')
             #url_e = reverse('event', event.id)
             # redirect to a new URL:
             return redirect('event', ide=event.id)
