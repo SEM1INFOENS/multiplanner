@@ -6,18 +6,23 @@ from django.utils import timezone
 from django.urls import reverse
 from django.db.models import Q
 import datetime as datetime_module
-from groups.models import Group, Balance
-from accounting.models import Transaction
 from djmoney.models.fields import CurrencyField
 from djmoney.settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
 from djmoney.money import Money
 from django.core.exceptions import SuspiciousOperation, ValidationError
 from groups.models import Group, Balance
 from accounting.models import Transaction
+
+from djmoney.models.fields import CurrencyField
+from djmoney.settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
+from djmoney.money import Money
+from django.core.exceptions import SuspiciousOperation, ValidationError
+from groups.models import Group, Balance
+from accounting.models import Transaction
+
 from . import sit
 from permissions.shortcuts import *
 from .functions import date_format_ics, date_format_moment, color_complement, color_format_css
-from djmoney.money import Money
 
 
 
@@ -98,8 +103,8 @@ class Event(models.Model):
     date = models.DateField()
     time = models.TimeField(blank=True, null=True)
     default_time = (8,)
-    currency =models.CharField(max_length=20, choices=_choices) 
-    
+    currency = CurrencyField(default=DEFAULT_CURRENCY, choices=CURRENCY_CHOICES)
+
     def date_time(self): return combine(self.date, self.time, self.default_time)
 
     date_end = models.DateField()

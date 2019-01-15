@@ -41,7 +41,7 @@ class Transaction(models.Model):
     date = models.DateTimeField(default=timezone.now)
     payer = models.ForeignKey(User, on_delete=models.PROTECT,
                               related_name='%(class)s_payer')
-    amount = MoneyField(max_digits=14, decimal_places=2, default_currency='EUR')
+    amount = MoneyField(max_digits=14, decimal_places=2, default_currency=DEFAULT_CURRENCY)
     calculated =  models.BooleanField(default=False)
 
     @classmethod
