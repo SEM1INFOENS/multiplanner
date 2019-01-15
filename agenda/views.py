@@ -46,7 +46,7 @@ def create_event(request):
             #info = messages.info(request, 'Event created')
             #debug = messages.debug(request, 'Event created')
             #all_m = [success, warn, info, error]
-            for u in event.invited.iterator():
+            for u in event.invited.members.all():
                 notify.send(request.user, recipient = u, actor=request.user, verb = 'has invited you to an event.', nf_type = 'invited_to_event')
             #url_e = reverse('event', event.id)
             # redirect to a new URL:
@@ -82,7 +82,7 @@ def edit_event(request, ide):
             event.save()
             
             for u in event.invited.iterator():
-                notify.send(request.user, recipient = u, actor=event, verb = ',an event you were invited to, has been modified.', nf_type = 'invited_to_event')
+                notify.send(request.user, recipient = u, actor=event, verb = ', an event you were invited to, has been modified.', nf_type = 'invited_to_event')
 
             group = event.attendees
             # If the number of members changes then update balances in event
@@ -101,6 +101,7 @@ def edit_event(request, ide):
 
             success = messages.success(request, 'Event successfully modified')
             return redirect('event', ide=event.id)
+
     else:
         form = EventForm(creator_user=event.creator, new=False, instance=event)
         admins_form = PermGroupForm(label='admins', instance=event.admins, prefix='admins')

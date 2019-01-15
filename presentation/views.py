@@ -44,7 +44,9 @@ def index(request):
         nb_minutes = (e.date_time() - timezone.now()).seconds /60
         nb_hours = nb_minutes/60
         print(e.date_time() - timezone.now())
-        if (nb_days <= 0):
+        if ((nb_days <= 0) & (e.notifications_sent == 0)):
+            e.notifications_sent = e.notifications_sent + 1
+            e.save()
             notify.send(user, recipient = user, actor=e, verb = 'is in %d hours and %d minutes from now.' % (nb_hours,nb_minutes%60), nf_type = 'upcoming_event')
     return render(request, 'users/index.html', context)
 
