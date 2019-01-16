@@ -63,7 +63,14 @@ heroku ps:scale web=1 -a multiplanner
 
 ### Project documentation
 
-Documentation is available at `http://127.0.0.1:8000/admin/doc`. To use this, you should install `docutils` module by `pip install docutils`.
+`pip install sphinx` to install docs generating tool. Then 
+```
+cd docs
+sphinx-apidoc -o . ..
+make html
+```
+
+Documentation will be available in `docs/_build/index.html`.
 
 ### Generate architecture's graph
 Requirements:
