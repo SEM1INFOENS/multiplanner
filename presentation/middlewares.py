@@ -1,3 +1,12 @@
+from django.utils import timezone
+
+from datetime import timedelta
+
+from agenda.models import Event
+
+from notify.models import Notification
+from notify.signals import notify
+
 INITIAL_DELAY_SECONDS = 24*3600 #the first notification for an upcoming event is sent INITIAL_DELAY_SECONDS seconds before the beginning of
 # the event
 
