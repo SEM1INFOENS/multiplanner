@@ -234,5 +234,6 @@ class VariousFunctionsTestCase(TestCase):
         assert date_format_ics(self.day, self.time) == "19990523T063000Z"
         assert date_format_ics(self.day, None) == "19990523T000000Z"
         assert date_format_moment(self.day, self.time) == "1999-05-23 06:30:00"
+        assert date_format_moment(self.day, None) == "1999-05-23 00:00:00"
         assert color_format_css(self.r, self.g, self.b) == "#a031b0"
         assert color_complement(self.r, self.g, self.b) == (96, 207, 80)
