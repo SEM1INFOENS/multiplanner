@@ -58,7 +58,7 @@ def index(request):
         #print('delay', e.date_time() - timezone.now(), (e.date_time() - timezone.now()).total_seconds())
         seconds_before_event = (e.date_time() - timezone.now()).total_seconds()
 
-        if (e.notifications_sent != -1) and seconds_before_event < 1/(2**e.notifications_sent)*INITIAL_DELAY_SECONDS:
+        if ((e.notifications_sent != -1) and not(e.has_begun())) and seconds_before_event < 1/(2**e.notifications_sent)*INITIAL_DELAY_SECONDS:
             e.notifications_sent = e.notifications_sent + 1
             e.save()
             notify.send(user, recipient = user, actor=e, \
