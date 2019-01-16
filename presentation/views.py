@@ -47,6 +47,7 @@ def index(request):
         event = notif.actor#the only 'read' notifications are upcoming_event ones, the others are immediately deleted
         event.notifications_sent = -1
         notif.delete()
+        event.save()
 
 
     for e in Event.objects.attending(user):
