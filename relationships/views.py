@@ -72,6 +72,7 @@ def friendship_request(request):
     redirect_url = request.POST.get('redirect_url')
     user_page = User.objects.get(username=request.POST.get('user_page'))
     functions.friendship_update(request, user_page)
-    notify.send(request.user, recipient=user_page, actor=request.user,
-    verb = 'sent a friends request.', nf_type = 'requested_by_one_user')
+    if "add" in request.POST:
+        notify.send(request.user, recipient=user_page, actor=request.user,
+        verb = 'sent a friends request.', nf_type = 'requested_by_one_user')
     return redirect(redirect_url)

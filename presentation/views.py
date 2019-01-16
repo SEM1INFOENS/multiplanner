@@ -20,8 +20,6 @@ from presentation.forms import UserSettingsForm
 from notify.models import Notification
 from notify.signals import notify
 
-
-            
 @login_required
 def index(request):
     nb_of_friends = 6
