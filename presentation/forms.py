@@ -7,4 +7,4 @@ class UserSettingsForm(ModelForm):
 
     class Meta:
         model = UserProfile
-        fields = ['default_currency']
+        fields = ['default_currency', 'notif_invited_to_event', 'notif_requested_by_one_user', 'notif_upcoming_event', 'notif_edited_event']

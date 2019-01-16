@@ -81,9 +81,10 @@ def edit_event(request, ide):
             event = form.save(commit=False)
             event.save()
             
-            for u in event.invited.iterator():
-                notify.send(request.user, recipient = u, actor=event, verb = ', an event you were invited to, has been modified.', nf_type = 'invited_to_event')
 
+            for u in event.invited.members.all():
+                notify.send(request.user, recipient = u, actor=event, verb = ', an event you were invited to, has been modified.', nf_type = 'edited_event')
+            
             group = event.attendees
             # If the number of members changes then update balances in event
             balances = Balance.objects.balancesOfGroup(group)     

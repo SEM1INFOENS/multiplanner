@@ -21,7 +21,6 @@ from notify.models import Notification
 from notify.signals import notify
 
 
-            
 @login_required
 def index(request):
     nb_of_friends = 6
@@ -41,7 +40,6 @@ def index(request):
         'balance_plus' : spent,
         'balance_minus' : -due,
     }
-    
     return render(request, 'users/index.html', context)
 
 
