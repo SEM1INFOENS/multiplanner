@@ -4,12 +4,23 @@
 {% load presentation_filters %}
 {% load groups_filters %}
 {% load agenda_filters %}
+{% load staticfiles %}
+{% load notification_tags %}
+
+
+
+{% load accounting_filters %}
+{% load presentation_filters %}
+{% load groups_filters %}
+{% load agenda_filters %}
 
 {% block active_agenda %} active{% endblock %}
 {% block active_groups %} active{% endblock %}
 {% block active_friends %} active{% endblock %}
 
 {% block content %}
+
+
 
 
 <div class="container-fluid" style="margin-top: 0.97rem">
@@ -84,7 +95,7 @@
               <ul class="list-group list-group-flush">
                 {% for tr,amount,type,entity in last_transactions %}
                 <li class="list-group-item">
-              <!--    {% if amount >= 0 %}
+
                   <span class="text-success">+{{ amount }}€</span>
                   {% else %}
                   <span class="text-danger">{{ amount }}€</span>
@@ -136,6 +147,7 @@
 
 
 
+
         <!--
     <ul class="list-group list-group-flush">
       <li class="list-group-item">You are invited to <a href=#>this event</a></li>
@@ -152,5 +164,7 @@
 </div>
 
 </div>
+
+
 
 {% endblock %}

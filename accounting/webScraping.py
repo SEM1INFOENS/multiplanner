@@ -10,6 +10,7 @@ def get_float (tag):
     elif i != ',':
       value+=i
 
+
 def get_currency_equivalence(fromCurrency, toCurrency, amount):
     ''' Function that gets the omline exchange rate value '''
 
@@ -26,4 +27,4 @@ def get_currency_equivalence(fromCurrency, toCurrency, amount):
     soup = bs.BeautifulSoup(sauce, 'lxml')
     tag = soup.find_all('span',class_="ccOutputRslt")
     tag = tag[0].get_text()
-    return float(get_float(tag)) 
+    return float(get_float(tag))

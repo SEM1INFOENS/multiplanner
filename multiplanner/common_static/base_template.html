@@ -1,3 +1,6 @@
+{% load staticfiles %}
+{% load notification_tags %}
+
 <!doctype html>
 <html lang="en">
 
@@ -55,6 +58,7 @@
         <li class="nav-item{% block active_friends %}{% endblock %}">
           <a class="nav-link" href="{% url 'friends:friends' %}">Friends</a>
         </li>
+
       </ul>
 
       <ul class="nav navbar-nav navbar-right">
@@ -78,6 +82,11 @@
             <a class="btn btn-primary" href="{% url 'users:logout'%}"> Logout <i class="fas fa-sign-out-alt"></i></a>
 	  </form>
 	</li>
+  <li class="nav-item">
+    <form>
+      <a class="btn btn-light" href="{% url 'users:settings'%}"><i class="fas fa-cog"></i></a>
+    </form>
+  </li>
       </ul>
     </div>
   </nav>
@@ -113,16 +122,42 @@
 
   <div class="container" id="content">
     {% block content %}{% endblock %}
+
+
+    <hr>
+    <button class="mark-all-notifications" data-mark-action="read">Mark all as read</button>
+    <button class="mark-all-notifications" data-mark-action="unread">Mark all as unread</button>
+    <ul class="notifications list-group">
+    {% render_notifications using request.user.notifications.unread for box %}
+    </ul>
+
+    
   </div>
+
   <!-- Optional JavaScript -->
   <!-- jQuery first, then Popper.js, then Bootstrap JS -->
   <!-- CREATES SOMES BUGS WITH CALENDAR... <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
     crossorigin="anonymous"></script> -->
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+  <script src="{% static 'lib/jquery.min.js' %}"></script>
+  <script src="{% static 'lib/moment.min.js' %}"></script>
+  <script src="{% static 'fullcalendar/fullcalendar.js' %}"></script>
+
+
+
   <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
     crossorigin="anonymous"></script>
+
+
   <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
     crossorigin="anonymous"></script>
 
+
+  {% load notification_tags %}
+  {% include_notify_js_variables %}
+  <script src="{% static 'notify/notifyX.js' %}"></script>
 
 </body>
 

@@ -1,11 +1,14 @@
-from groups.models import Group
-from agenda.models import Event
 from random import shuffle
 from friendship.models import Friend
 from django.utils import timezone
 from django.db.models import Q
+from djmoney.money import Money
+from groups.models import Group, Balance
+from agenda.models import Event
 from accounting.models import Transaction
 from accounting import functions as acc_functions
+from accounting.webScraping import get_currency_equivalence
+from presentation.models import UserProfile
 
 def queryset_to_list(Q):
     L = []
@@ -71,8 +74,8 @@ def n_transactions_of_user(u, n):
     transactions_plus = [transaction_infos(tr,u) for tr in transactions]
     return transactions_plus
 
-def balance_of_user(u):
-    """Returns the financial balance of user u, i.e. the total amount that
+def balance_of_user(user):
+    """Returns the financial balance of user, i.e. the total amount that
     they owe and the total amount that is owed to them"""
     spent = 0
     due = 0
@@ -84,3 +87,4 @@ def balance_of_user(u):
         elif payed < 0 :
             due += -payed
     return spent, due
+

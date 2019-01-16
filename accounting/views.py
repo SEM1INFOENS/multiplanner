@@ -37,6 +37,7 @@ def transaction_details(request, ide):
         formset = TransactionFormSet(queryset=tr.transactionpart_set.all(), amount=tr.amount)
 
 
+
     context = {
         'transaction' : tr,
         'id' : ide,

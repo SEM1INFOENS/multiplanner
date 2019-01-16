@@ -15,6 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import include, path
+from django.conf.urls import url
 
 
 urlpatterns = [
@@ -25,5 +26,7 @@ urlpatterns = [
     path('groups/', include('groups.urls', namespace='groups')),
     path('friends/', include('relationships.urls', namespace='friends')),
     path('accounting/', include('accounting.urls')),
+    path('permissions/', include('permissions.urls')),
+    url(r'^notifications/', include('notify.urls', 'notifications')),
     path('permissions/', include('permissions.urls')),
 ]

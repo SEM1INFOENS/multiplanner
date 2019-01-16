@@ -4,6 +4,9 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import SuspiciousOperation
 #from django.core.exceptions import ValidationError
+from django.urls import reverse
+from djmoney.models.fields import MoneyField, CurrencyField
+from djmoney.settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
 from accounting.models import Transaction
 from permissions.models import PermGroup
 from relationships.models import SecretMark
@@ -38,6 +41,7 @@ class Group(models.Model):
     public = models.BooleanField(default=False)
     currency =models.CharField(max_length=20, choices=_choices) 
 
+
     @classmethod
     def create_new(cls, name='', members=[], admins=[], transactions=[], public=False, commit=True):
         '''Default method for creating a group
@@ -62,7 +66,11 @@ class Group(models.Model):
         group = cls(members=members_gp)
         group.public = False
         group.inEvent = True
+<<<<<<< HEAD
         group.currency = currency 
+=======
+        group.currency = currency
+>>>>>>> 3c5f6cd... Pull from resolution branch
         group.save(set_perms=False)
         return group
 
@@ -119,15 +127,24 @@ class BalanceManager(models.Manager):
         return Balance.objects.filter(group = group, user=user)
 
 class Balance (models.Model):
+<<<<<<< HEAD
     ''' A balance is related to a person in a group 
+=======
+    ''' A balance is related to a person in a group
+>>>>>>> 3c5f6cd... Pull from resolution branch
     This class is made to prevent from calculating the balance
     each time we click on the group number'''
     objects = BalanceManager()
 
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     group = models.ForeignKey(Group,on_delete=models.CASCADE)
+<<<<<<< HEAD
     amount = MoneyField(max_digits=14, decimal_places=2, default_currency='EUR')
     
+=======
+    amount = MoneyField(max_digits=14, decimal_places=2, default_currency=DEFAULT_CURRENCY)
+
+>>>>>>> 3c5f6cd... Pull from resolution branch
     @classmethod
     def create_new(cls, user, group, amount):
         '''Default method for creating a balance'''
