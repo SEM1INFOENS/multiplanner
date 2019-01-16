@@ -41,19 +41,11 @@ class AccountTestCase(StaticLiveServerTestCase):
         password2.send_keys('cavacava')
         
         submit.click()
-        
-        print(selenium.page_source)
-
         #check the returned result
         assert 'Your current balance' in selenium.page_source
 
-        time.sleep(3)
-
-
     def sub_test_create_group(self):
         selenium = self.selenium
-
-        print(selenium.page_source)
         selenium.find_element_by_xpath('//*[@id="navbarSupportedContent"]/ul[1]/li[2]/a').click()
         element = selenium.find_element_by_link_text("create a new group")
         element.click()
