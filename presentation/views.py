@@ -42,9 +42,6 @@ def index(request):
         'balance_minus' : -due,
     }
     
-    #notifications(user)
-
-
     return render(request, 'users/index.html', context)
 
 @login_required
