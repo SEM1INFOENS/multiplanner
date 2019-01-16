@@ -3,9 +3,19 @@ python:
   - "3.6.4"
 env:
   -DJANGO_VERSION=2.1.2
+addons:
+  firefox: "63.0.3"
 before_install: 
   - sed '/django-heroku==/d' requirements.txt > requirements-build.txt
+  - wget https://github.com/mozilla/geckodriver/releases/download/v0.23.0/geckodriver-v0.23.0-linux64.tar.gz
+  - mkdir geckodriver
+  - tar -xzf geckodriver-v0.23.0-linux64.tar.gz -C geckodriver
+  - export PATH=$PATH:$PWD/geckodriver
 install:
   - pip install -r requirements-build.txt
+before_script:
+  - "export DISPLAY=:99.0"
+  - "/sbin/start-stop-daemon --start --quiet --pidfile /tmp/custom_xvfb_99.pid --make-pidfile --background --exec /usr/bin/Xvfb -- :99 -ac -screen 0 1280x1024x16"
+  - sleep 3 # give xvfb some time to start
 script:
   - python manage.py test
