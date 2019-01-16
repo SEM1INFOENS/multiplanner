@@ -48,7 +48,6 @@ def middleware_notifications(get_response):
         except:
             pass
 
-
         response = get_response(request)
 
 
