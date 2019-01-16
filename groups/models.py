@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 from django.core.exceptions import SuspiciousOperation
 #from django.core.exceptions import ValidationError
 from accounting.models import Transaction
@@ -36,7 +37,7 @@ class Group(models.Model):
     transactions = models.ManyToManyField(Transaction, blank=True)
     inEvent = models.BooleanField(default=False)
     public = models.BooleanField(default=False)
-    currency =models.CharField(max_length=20, choices=_choices) 
+    currency =models.CharField(max_length=20, choices=_choices)
 
     @classmethod
     def create_new(cls, name='', members=[], admins=[], transactions=[], public=False, commit=True):
@@ -62,7 +63,7 @@ class Group(models.Model):
         group = cls(members=members_gp)
         group.public = False
         group.inEvent = True
-        group.currency = currency 
+        group.currency = currency
         group.save(set_perms=False)
         return group
 
@@ -106,6 +107,44 @@ class Group(models.Model):
                     ()
         return M, list_mem
 
+
+class GroupInvite(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_groupinvite_set')
+    date = models.DateTimeField(default=timezone.now())
+
+    class Meta:
+        unique_together = (('group', 'user'),)
+
+    @classmethod
+    def create_new(cls, group, user):
+        if user in group.members.all():
+            raise SuspiciousOperation("GroupInvite already sent to this user for this group")
+        gi = cls(group=group, user=user)
+        gi.save()
+        return gi
+
+    def accept(self):
+        self.group.members.add(self.user)
+        self.delete()
+
+    def decline(self):
+        self.delete()
+
+    @classmethod
+    def related_to_group(cls, group):
+        return cls.objects.filter(group=group)
+
+    @classmethod
+    def related_to_user(cls, user):
+        return cls.objects.filter(user=user)
+
+    @classmethod
+    def users_invited(cls, group):
+        '''returns the list of users invited to a certain group'''
+        return User.objects.filter(user_groupinvite_set__group=group)
+
+
 class BalanceManager(models.Manager):
     @classmethod
     def balancesOfGroup(self, group):
@@ -119,7 +158,7 @@ class BalanceManager(models.Manager):
         return Balance.objects.filter(group = group, user=user)
 
 class Balance (models.Model):
-    ''' A balance is related to a person in a group 
+    ''' A balance is related to a person in a group
     This class is made to prevent from calculating the balance
     each time we click on the group number'''
     objects = BalanceManager()
@@ -127,7 +166,7 @@ class Balance (models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     group = models.ForeignKey(Group,on_delete=models.CASCADE)
     amount = MoneyField(max_digits=14, decimal_places=2, default_currency='EUR')
-    
+
     @classmethod
     def create_new(cls, user, group, amount):
         '''Default method for creating a balance'''
