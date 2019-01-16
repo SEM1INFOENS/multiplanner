@@ -3,12 +3,14 @@ class="notification list-group-item {{ notification.read|yesno:'read,unread' }}"
     <a href="{{ notification.actor_url }}">{{ notification.actor }}</a> {{ notification.verb }}
     <span class="timesince">{{ notification.created|timesince }} ago</span>
 
-    <button data-id="{{ notification.id }}" class="mark-notification"
-        data-mark-action="{{ notification.read|yesno:'unread,read' }}"
-        data-toggle-text="Mark as {{ notification.read|yesno:_('read,unread') }}">
+    <button class="delete-notification" data-id="{{ notification.id }}">Delay</button>
 
-        Mark as {{ notification.read|yesno:'unread,read' }}
+
+<button data-id="{{ notification.id }}" class="mark-notification"
+        data-mark-action="{{ notification.read|yesno:'unread,read' }}"
+        data-toggle-text="{{ notification.read|yesno:'Notification deleted,Notification deleted' }}">
+
+        {{ notification.read|yesno:'X,X' }}
 
     </button>
-    <button class="delete-notification" data-id="{{ notification.id }}">X</button>
 </li>

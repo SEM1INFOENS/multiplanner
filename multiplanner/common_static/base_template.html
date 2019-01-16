@@ -131,7 +131,7 @@
     <button class="mark-all-notifications" data-mark-action="read">Mark all as read</button>
     <button class="mark-all-notifications" data-mark-action="unread">Mark all as unread</button>
     <ul class="notifications list-group">
-    {% render_notifications using request.user.notifications.active for box %}
+    {% render_notifications using request.user.notifications.unread for box %}
     </ul>
 
     
