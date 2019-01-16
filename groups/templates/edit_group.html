@@ -8,7 +8,7 @@
   {{ group_form.media }}
   {% csrf_token %}
   {{ group_form.as_p }}
-  {{ members_form.as_p }}
+  {% if not new %} {{ members_form.as_p }} {% endif %}
   {{ admins_form.as_p }}
   <input type="button" class="btn btn-primary" value="Back" onclick="history.back()">
   <input type="submit" class="btn btn-primary" value="Save">

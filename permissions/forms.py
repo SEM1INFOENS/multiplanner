@@ -12,7 +12,7 @@ class PermGroupForm(forms.ModelForm):
         fields = []
 
     members_field = forms.ModelMultipleChoiceField(
-        User.objects.all(),
+        queryset=None,
         required=False,
     )
 
@@ -26,7 +26,9 @@ class PermGroupForm(forms.ModelForm):
             initial_param = kwargs.pop('initial')
         else:
             initial_param = None
+        queryset = kwargs.pop('queryset', User.objects.all())
         super().__init__(*args, **kwargs)
+        self.fields['members_field'].queryset = queryset
         if self.instance.pk:
             self.initial['members_field'] = self.instance.all().values_list('pk', flat=True)
         else:

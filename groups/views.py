@@ -9,7 +9,7 @@ from permissions.forms import PermGroupForm
 from .forms import *
 from accounting.forms import TransactionForm
 from accounting import resolution
-from .models import Group, Balance
+from .models import Group, Balance, GroupInvite
 from djmoney.money import Money
 
 @login_required
@@ -28,22 +28,17 @@ def create_group (request):
     if request.method == 'POST':
         group_form = GroupForm(request.POST, creator_user=request.user)
         admins_form = PermGroupForm(request.POST, prefix='admins')
-        members_form = PermGroupForm(request.POST)
-        if group_form.is_valid() and admins_form.is_valid() and members_form.is_valid():
+        if group_form.is_valid() and admins_form.is_valid():
             group_form.instance.admins = admins_form.save()
-            group_form.instance.members = members_form.save()
+            group_form.instance.members = PermGroup.create_new()
             group = group_form.save()
             group.save()
             success = messages.success(request, 'Group has been successfully created')
-            for m in group.members.all():
-                b = Balance (user=m,group = group,amount = Money(0,group.currency))
-                b.save()
             return redirect('groups:group-number', ide=group.id)
     else :
         group_form = GroupForm(creator_user=request.user)
         admins_form = PermGroupForm(label='admins', prefix='admins', initial=[request.user])
-        members_form = PermGroupForm(label='members')
-    context.update({'group_form': group_form, 'admins_form': admins_form, 'members_form': members_form})
+    context.update({'group_form': group_form, 'admins_form': admins_form,})
     return render(request, 'edit_group.html', context)
 
 
@@ -53,18 +48,18 @@ change_perm = get_default_permission_name(Group, 'change')
 def edit_group(request,ide):
     context = {'new' : False}
     group = get_object_or_404(Group, pk=ide)
-    
+
     if request.method == 'POST':
         group_form = GroupForm(request.POST, creator_user=request.user, instance=group)
         admins_form = PermGroupForm(request.POST, prefix='admins', instance=group.admins)
         members_form = PermGroupForm(request.POST, instance=group.members)
         if group_form.is_valid() and admins_form.is_valid() and members_form.is_valid():
-            balances = Balance.objects.balancesOfGroup(group)     
+            balances = Balance.objects.balancesOfGroup(group)
             admins_form.save()
             members_form.save()
             group = group_form.save()
             group.save()
-            
+
             # If the number of members changes then update balances in group
             u = []
             for b in balances:
@@ -82,7 +77,7 @@ def edit_group(request,ide):
     else :
         group_form = GroupForm(creator_user=request.user, instance=group)
         admins_form = PermGroupForm(label='admins', prefix='admins', instance=group.admins)
-        members_form = PermGroupForm(label='members', instance=group.members)
+        members_form = PermGroupForm(label='members', instance=group.members, queryset=group.members.all())
 
     context.update({'ide': group.id, 'group_form': group_form, 'admins_form': admins_form, 'members_form': members_form})
     return render(request, 'edit_group.html', context)
@@ -114,6 +109,7 @@ def group_number(request,ide):
     perm_name = get_default_permission_name(Group,'change')
     can_edit = request.user.has_perm(perm_name) or request.user.has_perm(perm_name, group)
 
+    user = request.user
     context= {
 	'group' : group,
     'can_edit' : can_edit,
@@ -121,5 +117,53 @@ def group_number(request,ide):
 	'resolution' : res ,
 	'transactions' :  group.transactions.all(),
 	'form' : form,
+    #for group invitations :
+    'can_accept_invite' : user in GroupInvite.users_invited(group),
+    'can_quit_group' : user in group.members.all(),
     }
     return render(request, 'group_number.html',context)
+
+
+change_perm = get_default_permission_name(Group, 'change')
+@login_required
+@permission_required_or_403(change_perm, (Group, 'pk', 'ide'), accept_global_perms=True)
+def group_invites(request,ide):
+    group = get_object_or_404(Group, pk=ide)
+    if request.method == 'POST':
+        form = GroupInviteForm(request.POST, current_group=group)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Invitations succesfully sent')
+            return redirect('groups:group-number', ide=group.id)
+    else:
+        form = GroupInviteForm(current_group=group)
+
+    context= {
+	'group' : group,
+    'invited' : GroupInvite.users_invited(group),
+	'form' : form,
+    }
+    return render(request, 'group_invites.html',context)
+
+
+@login_required
+def invitation_answer_group(request):
+    assert request.method == 'POST'
+    redirect_url = request.POST.get('redirect_url')
+    user = request.user
+    group = Group.objects.get(pk=request.POST.get('group'))
+    if "accept_invite" in request.POST:
+        invite = GroupInvite.objects.get(user=user, group=group)
+        invite.accept()
+    if "decline_invite" in request.POST:
+        invite = GroupInvite.objects.get(user=user, group=group)
+        invite.decline()
+    if "quit_group" in request.POST:
+        b = Balance.objects.get(user=user,group = group)
+        if b.amount.amount != 0:
+            #the user can't quit the group
+            messages.warning(request, 'Your balance must be null to quit the group')
+        else:
+            group.members.remove(user)
+            b.delete()
+    return redirect(redirect_url)

@@ -2,6 +2,7 @@
 
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 from django.core.exceptions import SuspiciousOperation
 #from django.core.exceptions import ValidationError
 from django.urls import reverse
@@ -11,6 +12,8 @@ from accounting.models import Transaction
 from permissions.models import PermGroup
 from relationships.models import SecretMark
 from permissions.shortcuts import *
+from django.urls import reverse
+from djmoney.models.fields import MoneyField, Money
 
 
 class GroupManager(models.Manager):
@@ -107,6 +110,48 @@ class Group(models.Model):
                 except SecretMark.DoesNotExist:
                     ()
         return M, list_mem
+
+
+class GroupInvite(models.Model):
+    group = models.ForeignKey(Group, on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_groupinvite_set')
+    date = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        unique_together = (('group', 'user'),)
+
+    @classmethod
+    def create_new(cls, group, user):
+        if user in group.members.all():
+            raise SuspiciousOperation("GroupInvite already sent to this user for this group")
+        gi = cls(group=group, user=user)
+        gi.save()
+        return gi
+
+    def accept(self):
+        user = self.user
+        group = self.group
+        self.group.members.add(user)
+        b = Balance (user=user,group = group,amount = Money(0,group.currency))
+        b.save()
+        self.delete()
+
+    def decline(self):
+        self.delete()
+
+    @classmethod
+    def related_to_group(cls, group):
+        return cls.objects.filter(group=group)
+
+    @classmethod
+    def related_to_user(cls, user):
+        return cls.objects.filter(user=user)
+
+    @classmethod
+    def users_invited(cls, group):
+        '''returns the list of users invited to a certain group'''
+        return User.objects.filter(user_groupinvite_set__group=group)
+
 
 class BalanceManager(models.Manager):
     @classmethod

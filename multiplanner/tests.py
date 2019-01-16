@@ -55,7 +55,7 @@ class AccountTestCase(StaticLiveServerTestCase):
 
         selenium.find_element_by_xpath("//*[@id='id_currency']/option[3]").click()
 
-        selenium.find_element_by_xpath('//*[@id="id_members_field"]/option[2]').click()
+        #selenium.find_element_by_xpath('//*[@id="id_members_field"]/option[2]').click()
 
         selenium.find_element_by_xpath('//*[@id="content"]/form/input[3]').click()
         selenium.find_element_by_xpath('//*[@id="content"]/a[1]').click()
@@ -79,4 +79,4 @@ class AccountTestCase(StaticLiveServerTestCase):
     def test_integration(self):
         self.sub_test_register()
         self.sub_test_create_group()
-        self.sub_test_create_transaction()
+        #self.sub_test_create_transaction()
