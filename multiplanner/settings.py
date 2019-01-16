@@ -49,9 +49,6 @@ INSTALLED_APPS = [
     'guardian',
     'jsonify',
     'notify',
-    'djmoney',
-    'guardian',
-    'jsonify',
 
     #'django_extensions',
 ]
