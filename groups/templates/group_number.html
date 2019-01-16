@@ -6,6 +6,7 @@
 
 {% if can_edit %}
 <a class="btn btn-primary" href="{% url 'groups:edit-group' ide=group.id %}">edit <i class="fas fa-edit"></i></a>
+<a class="btn btn-primary" href="{% url 'groups:group-invites' ide=group.id %}">Send invitations <i class="fab fa-telegram-plane"></i></a>
 {% endif %}
 
 <h1>{{group.name}}</h1>

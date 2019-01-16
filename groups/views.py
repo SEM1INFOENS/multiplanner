@@ -9,7 +9,7 @@ from permissions.forms import PermGroupForm
 from .forms import *
 from accounting.forms import TransactionForm
 from accounting import resolution
-from .models import Group, Balance
+from .models import Group, Balance, GroupInvite
 from djmoney.money import Money
 
 @login_required
@@ -53,18 +53,18 @@ change_perm = get_default_permission_name(Group, 'change')
 def edit_group(request,ide):
     context = {'new' : False}
     group = get_object_or_404(Group, pk=ide)
-    
+
     if request.method == 'POST':
         group_form = GroupForm(request.POST, creator_user=request.user, instance=group)
         admins_form = PermGroupForm(request.POST, prefix='admins', instance=group.admins)
         members_form = PermGroupForm(request.POST, instance=group.members)
         if group_form.is_valid() and admins_form.is_valid() and members_form.is_valid():
-            balances = Balance.objects.balancesOfGroup(group)     
+            balances = Balance.objects.balancesOfGroup(group)
             admins_form.save()
             members_form.save()
             group = group_form.save()
             group.save()
-            
+
             # If the number of members changes then update balances in group
             u = []
             for b in balances:
@@ -123,3 +123,25 @@ def group_number(request,ide):
 	'form' : form,
     }
     return render(request, 'group_number.html',context)
+
+
+change_perm = get_default_permission_name(Group, 'change')
+@login_required
+@permission_required_or_403(change_perm, (Group, 'pk', 'ide'), accept_global_perms=True)
+def group_invites(request,ide):
+    group = get_object_or_404(Group, pk=ide)
+    if request.method == 'POST':
+        form = GroupInviteForm(request.POST, current_group=group)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Invitations succesfully sent')
+            return redirect('groups:group-number', ide=group.id)
+    else:
+        form = GroupInviteForm(current_group=group)
+
+    context= {
+	'group' : group,
+    'invited' : GroupInvite.users_invited(group),
+	'form' : form,
+    }
+    return render(request, 'group_invites.html',context)

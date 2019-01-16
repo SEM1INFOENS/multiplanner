@@ -111,7 +111,7 @@ class Group(models.Model):
 class GroupInvite(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='user_groupinvite_set')
-    date = models.DateTimeField(default=timezone.now())
+    date = models.DateTimeField(default=timezone.now)
 
     class Meta:
         unique_together = (('group', 'user'),)

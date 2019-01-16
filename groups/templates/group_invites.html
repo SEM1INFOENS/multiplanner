@@ -1,0 +1,45 @@
+{%extends "base_template_groups.html" %}
+{% load presentation_filters %}
+
+{% block content %}
+
+
+<h1>Invite users to the group <b>{{group.name}}</b></h1>
+
+<p>
+  <form action="" method="post">
+    {{ form.media }}
+    {% csrf_token %}
+    {{ form.as_p }}
+    <input type="button" class="btn btn-primary" value="Back" onclick="history.back()">
+    <button type="submit" class="btn btn-primary">Send invites <i class="fab fa-telegram-plane"></i></button>
+  </form>
+</p>
+
+<p>
+  <h2>Members</h2>
+  <ul>
+    {% for user in group.members.all %}
+    <li>
+      <b>
+        {{ user|display_user }}
+      </b>
+    </li>
+    {% endfor %}
+  </ul>
+</p>
+
+<p>
+  <h2>Already invited</h2>
+  <ul>
+    {% for user in invited %}
+    <li>
+      <b>
+        {{ user|display_user }}
+      </b>
+    </li>
+    {% endfor %}
+  </ul>
+</p>
+
+{% endblock %}
