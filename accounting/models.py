@@ -8,16 +8,16 @@ from django.utils import timezone
 from django.urls import reverse
 from django.db.models import Q
 
-def validate_amount(value):
-    '''Checks that the amount is positive and has less than two
-    figures after the comma.'''
-    try:
-        value = float(value)
-        assert value >= 0.
-        assert round(value, 2) == value
-        return value
-    except:
-        raise ValidationError('{} is neither a positive integer nor a float  number'.format(value))
+# def validate_amount(value):
+#  '''Checks that the amount is positive and has less than two
+#  figures after the comma.'''
+#  try:
+#      value = float(value)
+#      assert value >= 0.
+#      assert round(value, 2) == value
+#      return value
+#  except:
+#      raise ValidationError('{} is neither a positive integer nor a float  number'.format(value))
 
 
 class TransactionManager(models.Manager):

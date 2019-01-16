@@ -5,9 +5,12 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from accounting.models import *
 from accounting.resolution import *
+from accounting.functions import *
 
 from groups.models import *
+from agenda.models import *
 import numpy as np
+import datetime
 
 
 class SharedAccountTestcase(TestCase):
@@ -17,9 +20,10 @@ class SharedAccountTestcase(TestCase):
         bob = User()
         bob.username = "blou"
         bob.save()
+        self.bob = bob
 
         sa_name="this is bob"
-        sa = SharedAccount.create_new(sa_name, [bob])
+        sa = SharedAccount.create_new(sa_name, [self.bob])
         self.sa_list=[(sa, sa_name)]
 
 
@@ -44,9 +48,43 @@ class TransactionTestCase(TestCase):
         transaction = Transaction.create_new(tango, 20, self.benef, motive='testing', date=now)
         self.tr = transaction
 
+        gr = Group.create_new(name='T&Bgroup')
+        gr.members.add(*[tango, bravo])
+        transaction2 = Transaction.create_new(tango, 20, self.benef, motive='testing_group', date=now)
+        print(transaction2.amount)
+        self.tr2 = transaction2
+        print(self.tr2.amount)
+        gr.transactions.add(self.tr2)
+        self.gr = gr
+
+        gr2 = Group.create_for_event('EUR')
+        e1 = Event.create_new(
+             date=timezone.now(),
+             time=timezone.now(),
+             date_end=timezone.now()+datetime.timedelta(days=1),
+             time_end=timezone.now()+datetime.timedelta(hours=1),
+             creator=tango,
+             attendees=gr2,
+             currency = 'EUR')
+        transaction3 = Transaction.create_new(tango, amount=2, beneficiaries=[bravo], motive='testing_event', date=now)
+        self.tr3 = transaction3
+        gr2.transactions.add(self.tr3)
+        self.e1 = e1
+        self.gr2 = gr2
+
 
     def test(self):
         assert set(self.tr.get_beneficiaries()) == set(self.benef)
+        # print('#####################',self.tr2, self.tr2.amount, "#########################")
+        # assert str(self.tr3) == "testing_event (tango payed 20 for bravo)"
+
+    def test_related_entity(self):
+        assert related_entity(self.tr)==('',None)
+        assert related_entity(self.tr2)==('group', self.gr)
+        assert related_entity(self.tr3)==('event', self.e1)
+
+
+
 
 
 ''' Test set for the resolution app '''
@@ -118,5 +156,5 @@ class ResolutionTestCase(TestCase) :
         print (members)
         assert (sum(balance)==0)
 
-# to test balance_in_floats we should create Balances for the people 
+# to test balance_in_floats we should create Balances for the people
 # in the database then save them and apply balance_in_floats
