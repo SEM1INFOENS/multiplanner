@@ -79,6 +79,7 @@ def balance_of_user(user):
     they owe and the total amount that is owed to them"""
     spent = 0
     due = 0
+    u = user
 
     for tr in Transaction.objects.with_user(u):
         payed = tr.amount_payed(u)
