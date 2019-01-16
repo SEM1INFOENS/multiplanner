@@ -17,6 +17,9 @@ from django.utils import timezone
 from .models import *
 from accounting import resolution
 
+from notify.signals import notify
+from presentation.models import UserProfile
+
 from guardian.decorators import permission_required_or_403
 from permissions.utils import get_default_permission_name
 from permissions.forms import PermGroupForm
@@ -47,7 +50,12 @@ def create_event(request):
             #debug = messages.debug(request, 'Event created')
             #all_m = [success, warn, info, error]
             for u in event.invited.members.all():
-                notify.send(request.user, recipient = u, actor=request.user, verb = 'has invited you to an event.', nf_type = 'invited_to_event')
+                try:
+                    profile = UserProfile.objects.get(user=u)
+                    if profile.notif_invited_to_event:
+                        notify.send(request.user, recipient = u, actor=request.user, verb = 'has invited you to an event.', nf_type = 'invited_to_event')
+                except:
+                    pass
             #url_e = reverse('event', event.id)
             # redirect to a new URL:
             return redirect('event', ide=event.id)
@@ -83,8 +91,13 @@ def edit_event(request, ide):
             
 
             for u in event.invited.members.all():
-                notify.send(request.user, recipient = u, actor=event, verb = ', an event you were invited to, has been modified.', nf_type = 'edited_event')
-            
+                try:
+                    profile = UserProfile.objects.get(user=u)
+                    if profile.notif_edited_event:
+                        notify.send(request.user, recipient = u, actor=event, verb = ', an event you were invited to, has been modified.', nf_type = 'edited_event')
+                except:
+                    pass
+                    
             group = event.attendees
             # If the number of members changes then update balances in event
             balances = Balance.objects.balancesOfGroup(group)     
