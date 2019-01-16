@@ -39,7 +39,12 @@ def notifications(user):
 def middleware_notifications(get_response):
 
     def middleware(request):
-        notifications(request.user)
+        
+        try:#avoids problems if no user is logged in
+            notifications(request.user)
+        except:
+            pass
+
 
         response = get_response(request)
 
