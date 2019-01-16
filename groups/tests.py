@@ -175,3 +175,39 @@ class GroupPermissionsTestCase(TestCase):
         assert has_perm(a, change_perm, gp)
         assert not has_perm(m, change_perm, gp)
         assert not has_perm(u, change_perm, gp)
+
+
+class GroupInviteTestCase(TestCase):
+
+    def setUp(self):
+        u = User.objects.create_user(username='alice')
+        g = Group.create_new(name='ab')
+
+    def test(self):
+        u = User.objects.get(username='alice')
+        g = Group.objects.get(pk=1)
+
+        gi = GroupInvite.create_new(g, u)
+
+        assert gi in GroupInvite.related_to_user(u)
+        assert gi in GroupInvite.related_to_group(g)
+        assert u in GroupInvite.users_invited(g)
+
+        assert u not in g.members.all()
+
+        gi.accept()
+        assert u in g.members.all()
+        assert u not in GroupInvite.users_invited(g)
+
+        try:
+            gi2 = GroupInvite.create_new(g, u)
+            assert False
+        except SuspiciousOperation:
+            pass
+
+        g.members.remove(u)
+        assert u not in g.members.all()
+
+        gi = GroupInvite.create_new(g, u)
+        gi.decline()
+        assert u not in g.members.all()
