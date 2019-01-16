@@ -14,4 +14,6 @@ urlpatterns = [
     path('users/<str:username>/', views.page, name='page'),
     path('set_secret_mark', views.set_secret_mark, name='set_secret_mark'),
     path('settings/', views.settings, name='settings'),
+    path('signup/', views.signup, name='signup'),
+
 ]
