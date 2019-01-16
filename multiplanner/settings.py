@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     'accounting.apps.AccountingConfig',
     'agenda.apps.AgendaConfig',
     'groups.apps.GroupsConfig',
-    #'notifications.apps.NotificationsConfig',
     'presentation.apps.PresentationConfig',
     'relationships.apps.RelationshipsConfig',
     'permissions.apps.PermissionsConfig',
@@ -78,6 +77,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'presentation.apps.middlewares.middleware_notifications',
 ]
 
 ROOT_URLCONF = 'multiplanner.urls'
