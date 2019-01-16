@@ -112,6 +112,7 @@ def group_number(request,ide):
     perm_name = get_default_permission_name(Group,'change')
     can_edit = request.user.has_perm(perm_name) or request.user.has_perm(perm_name, group)
 
+    user = request.user
     context= {
 	'group' : group,
     'can_edit' : can_edit,
@@ -119,6 +120,9 @@ def group_number(request,ide):
 	'resolution' : res ,
 	'transactions' :  group.transactions.all(),
 	'form' : form,
+    #for group invitations :
+    'can_accept_invite' : user in GroupInvite.users_invited(group),
+    'can_quit_group' : user in group.members.all(),
     }
     return render(request, 'group_number.html',context)
 
@@ -143,3 +147,20 @@ def group_invites(request,ide):
 	'form' : form,
     }
     return render(request, 'group_invites.html',context)
+
+
+@login_required
+def invitation_answer_group(request):
+    assert request.method == 'POST'
+    redirect_url = request.POST.get('redirect_url')
+    user = request.user
+    group = Group.objects.get(pk=request.POST.get('group'))
+    invite = GroupInvite.objects.get(user=user, group=group)
+    if "accept_invite" in request.POST:
+        invite.accept()
+    if "decline_invite" in request.POST:
+        invite.decline()
+    if "quit_group" in request.POST:
+        group.members.remove(user)
+
+    return redirect(redirect_url)

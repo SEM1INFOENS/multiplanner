@@ -38,6 +38,27 @@
   </div>
 </div>
 
+<form action="{% url 'groups:invitation_answer_group' %}" method="post">
+  <input type="hidden" name="redirect_url" value="{{ request.get_full_path }}">
+  <input type="hidden" name="group" value="{{ group.id }}">
+
+  {% csrf_token %}
+  {% if can_accept_invite %}
+  You are invited to this group
+  <button type="submit" class="btn btn-success"  name="accept_invite">
+    Accept invite <i class="fas fa-check"></i></button>
+  <button type="submit" class="btn btn-warning"  name="decline_invite">
+    Decline invite <i class="fas fa-times"></i></button>
+    {% endif %}
+
+  {% if can_quit_group%}
+  You are in this group
+  <button type="submit" class="btn btn-danger"  name="quit_group">
+    Quit group <i class="fas fa-sign-out-alt"></i></button>
+  {% endif %}
+</form>
+
+
 <p>
   <h2>Members</h2>
   <ul>
