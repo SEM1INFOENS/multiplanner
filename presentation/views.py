@@ -10,7 +10,7 @@ from datetime import timedelta
 
 from accounting.models import Transaction
 from agenda.models import Event
-from groups.models import Group
+from groups.models import Group, GroupInvite
 from .functions import *
 from relationships import functions as rel
 from relationships.models import SecretMark
@@ -19,6 +19,7 @@ from presentation.forms import UserSettingsForm
 
 from notify.models import Notification
 from notify.signals import notify
+
 
 
 @login_required
@@ -35,6 +36,7 @@ def index(request):
         'events_invitations' : Event.objects.invited(user),
         'events_will_attend' : Event.objects.attending(user),
         'friendship_requests' : friendship_requests(user),
+        'group_invites' : GroupInvite.related_to_user(user),
         'friends' : n_random_friends(user, nb_of_friends),
         'balance' : (spent*100 - due*100)/100,
         'balance_plus' : spent,
