@@ -159,6 +159,11 @@ def invitation_answer_group(request):
         invite = GroupInvite.objects.get(user=user, group=group)
         invite.decline()
     if "quit_group" in request.POST:
-        group.members.remove(user)
-
+        b = Balance.objects.get(user=user,group = group)
+        if b.amount.amount != 0:
+            #the user can't quit the group
+            messages.warning(request, 'Your balance must be null to quit the group')
+        else:
+            group.members.remove(user)
+            b.delete()
     return redirect(redirect_url)
