@@ -71,28 +71,3 @@ class FunctionsTestCase(TestCase):
         assert set(n_tr(C, 1)) == {trABC}
         assert set(n_tr(C, 2)) == {trABC, trAC}
 
-    # def test_balance_of_user(self):
-    #     from djmoney.settings import DEFAULT_CURRENCY
-    #     from djmoney.money import Money
-
-    #     m = lambda x : Money(x, DEFAULT_CURRENCY)
-    #     A = User.objects.create_user(username='A')
-    #     B = User.objects.create_user(username='B')
-    #     C = User.objects.create_user(username='C')
-
-    #     trAB = Transaction.create_new(payer=A, amount=10, beneficiaries=[A, B], motive='1')
-    #     trAC = Transaction.create_new(payer=C, amount=10, beneficiaries=[A, C], motive='2')
-    #     trABC = Transaction.create_new(payer=B, amount=60, beneficiaries=[A, B, C], motive='3')
-
-    #     groupAB = Group.create_new(name='AB', members=[A, B], transactions=[trAB], admins=[])
-    #     groupAC = Group.create_new(name='AC', members=[A, C], transactions=[trAC], admins=[])
-    #     groupABC = Group.create_new(name='ABC', members=[A, B, C], transactions=[trABC], admins=[])
-
-    #     bal = balance_of_user(A)
-    #     print("\nbalance_of_user : ({}, {}) .. expected : ({}, {})\n".format(bal[0], bal[1], m(5), m(25)))
-    #     assert balance_of_user(A) == (m(5), m(25))
-    #     # paid 10/2=5 for B ; C paid 10/2=5 and B paid 60/3=20 for A
-    #     assert balance_of_user(B) == (m(40), m(5))
-    #     # paid 60*2/3=40 for A and C ; A paid 10/2=5 for B
-    #     assert balance_of_user(C) == (m(5), m(20))
-    #     # paid 10/2=5 for A ; B paid 60/3=20 for C

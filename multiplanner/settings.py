@@ -173,3 +173,6 @@ except ImportError:
 #STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 #ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
 
+
+CURRENCIES = ('USD', 'EUR', 'RUB')
+DEFAULT_CURRENCY = 'EUR'

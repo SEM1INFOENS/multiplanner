@@ -40,7 +40,9 @@
           </div>
 
           <div class="col">
+
             <h3>Your current balance is:</h2>
+
                <h2>
                 {% if balance >= 0 %}
                 <span class="text-success">+{{ balance }}€</span>
@@ -95,7 +97,8 @@
               <ul class="list-group list-group-flush">
                 {% for tr,amount,type,entity in last_transactions %}
                 <li class="list-group-item">
-              <!--    {% if amount >= 0 %}
+              <!-- Change here the code + add currency
+                 {% if amount >= 0 %}
                   <span class="text-success">+{{ amount }}€</span>
                   {% else %}
                   <span class="text-danger">{{ amount }}€</span>

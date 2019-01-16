@@ -11,8 +11,6 @@ from accounting.models import Transaction
 from permissions.models import PermGroup
 from relationships.models import SecretMark
 from permissions.shortcuts import *
-from django.urls import reverse
-from djmoney.models.fields import MoneyField
 
 
 class GroupManager(models.Manager):
@@ -39,7 +37,7 @@ class Group(models.Model):
     transactions = models.ManyToManyField(Transaction, blank=True)
     inEvent = models.BooleanField(default=False)
     public = models.BooleanField(default=False)
-    currency =models.CharField(max_length=20, choices=_choices) 
+    currency =  CurrencyField(default=DEFAULT_CURRENCY, choices=CURRENCY_CHOICES)
 
 
     @classmethod
@@ -130,7 +128,9 @@ class Balance (models.Model):
 
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     group = models.ForeignKey(Group,on_delete=models.CASCADE)
-    amount = MoneyField(max_digits=14, decimal_places=2, default_currency='EUR')
+
+    amount = MoneyField(max_digits=14, decimal_places=2, default_currency=DEFAULT_CURRENCY)
+
     @classmethod
     def create_new(cls, user, group, amount):
         '''Default method for creating a balance'''
