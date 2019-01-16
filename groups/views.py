@@ -28,10 +28,9 @@ def create_group (request):
     if request.method == 'POST':
         group_form = GroupForm(request.POST, creator_user=request.user)
         admins_form = PermGroupForm(request.POST, prefix='admins')
-        members_form = PermGroupForm(request.POST)
-        if group_form.is_valid() and admins_form.is_valid() and members_form.is_valid():
+        if group_form.is_valid() and admins_form.is_valid():
             group_form.instance.admins = admins_form.save()
-            group_form.instance.members = members_form.save()
+            group_form.instance.members = PermGroup.create_new()
             group = group_form.save()
             group.save()
             success = messages.success(request, 'Group has been successfully created')
@@ -42,8 +41,7 @@ def create_group (request):
     else :
         group_form = GroupForm(creator_user=request.user)
         admins_form = PermGroupForm(label='admins', prefix='admins', initial=[request.user])
-        members_form = PermGroupForm(label='members')
-    context.update({'group_form': group_form, 'admins_form': admins_form, 'members_form': members_form})
+    context.update({'group_form': group_form, 'admins_form': admins_form,})
     return render(request, 'edit_group.html', context)
 
 
@@ -82,7 +80,7 @@ def edit_group(request,ide):
     else :
         group_form = GroupForm(creator_user=request.user, instance=group)
         admins_form = PermGroupForm(label='admins', prefix='admins', instance=group.admins)
-        members_form = PermGroupForm(label='members', instance=group.members)
+        members_form = PermGroupForm(label='members', instance=group.members, queryset=group.members.all())
 
     context.update({'ide': group.id, 'group_form': group_form, 'admins_form': admins_form, 'members_form': members_form})
     return render(request, 'edit_group.html', context)
