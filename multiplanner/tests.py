@@ -23,7 +23,7 @@ class AccountTestCase(StaticLiveServerTestCase):
     def tearDown(self):
         self.selenium.quit()
         super(AccountTestCase, self).tearDown()
-
+    
     def sub_test_register(self):
         selenium = self.selenium
         #Opening the link we want to test
@@ -39,7 +39,7 @@ class AccountTestCase(StaticLiveServerTestCase):
         username.send_keys('unary2')
         password1.send_keys('cavacava')
         password2.send_keys('cavacava')
-
+        
         submit.click()
         #check the returned result
         assert 'Your current balance' in selenium.page_source
@@ -62,7 +62,7 @@ class AccountTestCase(StaticLiveServerTestCase):
         selenium.find_element_by_xpath('//*[@id="content"]/form/input[3]').click()
 
         assert len(Group.objects.all()) == 1
-
+        
 
     def sub_test_create_transaction(self):
         selenium = self.selenium
