@@ -10,7 +10,7 @@ from permissions.models import PermGroup
 from relationships.models import SecretMark
 from permissions.shortcuts import *
 from django.urls import reverse
-from djmoney.models.fields import MoneyField
+from djmoney.models.fields import MoneyField, Money
 
 
 class GroupManager(models.Manager):
@@ -125,7 +125,11 @@ class GroupInvite(models.Model):
         return gi
 
     def accept(self):
-        self.group.members.add(self.user)
+        user = self.user
+        group = self.group
+        self.group.members.add(user)
+        b = Balance (user=user,group = group,amount = Money(0,group.currency))
+        b.save()
         self.delete()
 
     def decline(self):

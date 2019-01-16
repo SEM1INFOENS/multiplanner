@@ -34,9 +34,6 @@ def create_group (request):
             group = group_form.save()
             group.save()
             success = messages.success(request, 'Group has been successfully created')
-            for m in group.members.all():
-                b = Balance (user=m,group = group,amount = Money(0,group.currency))
-                b.save()
             return redirect('groups:group-number', ide=group.id)
     else :
         group_form = GroupForm(creator_user=request.user)
