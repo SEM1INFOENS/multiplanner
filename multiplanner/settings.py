@@ -34,7 +34,6 @@ INSTALLED_APPS = [
     'accounting.apps.AccountingConfig',
     'agenda.apps.AgendaConfig',
     'groups.apps.GroupsConfig',
-    'notifications.apps.NotificationsConfig',
     'presentation.apps.PresentationConfig',
     'relationships.apps.RelationshipsConfig',
     'permissions.apps.PermissionsConfig',
@@ -49,6 +48,8 @@ INSTALLED_APPS = [
     'djmoney',
     'guardian',
     'jsonify',
+    'notify',
+
     #'django_extensions',
 ]
 
@@ -76,6 +77,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'presentation.middlewares.middleware_notifications',
 ]
 
 ROOT_URLCONF = 'multiplanner.urls'
@@ -139,7 +141,7 @@ AUTHENTICATION_BACKENDS = (
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Paris'
 
 USE_I18N = True
 
@@ -173,3 +175,4 @@ except ImportError:
 
 
 CURRENCIES = ('USD', 'EUR', 'RUB')
+DEFAULT_CURRENCY = 'EUR'

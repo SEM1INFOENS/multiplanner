@@ -7,6 +7,8 @@ from django.contrib.auth.models import User
 from friendship.models import Friend
 from django.db.models import Q
 from . import functions
+from notify.signals import notify
+from presentation.models import UserProfile
 
 
 def filter_r(query_list, result):
@@ -85,4 +87,12 @@ def friendship_request(request):
     redirect_url = request.POST.get('redirect_url')
     user_page = User.objects.get(username=request.POST.get('user_page'))
     functions.friendship_update(request, user_page)
+    if "add" in request.POST:
+        try:
+            profile = UserProfile.objects.get(user=request.user)
+            if profile.notif_requested_by_one_user:
+                notify.send(request.user, recipient=user_page, actor=request.user, \
+                verb = 'sent a friends request.', nf_type = 'requested_by_one_user')
+        except:
+            pass
     return redirect(redirect_url)

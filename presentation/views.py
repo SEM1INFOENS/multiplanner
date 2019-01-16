@@ -6,12 +6,20 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django.contrib import messages
 
+from datetime import timedelta
+
 from accounting.models import Transaction
 from agenda.models import Event
 from groups.models import Group
 from .functions import *
 from relationships import functions as rel
 from relationships.models import SecretMark
+from presentation.models import UserProfile
+from presentation.forms import UserSettingsForm
+
+from notify.models import Notification
+from notify.signals import notify
+
 
 @login_required
 def index(request):
@@ -33,6 +41,18 @@ def index(request):
         'balance_minus' : -due,
     }
     return render(request, 'users/index.html', context)
+
+
+@login_required
+def settings(request):
+    user = request.user
+
+    context = {
+        'loggedin_user' : user,
+        }
+
+    return render(request, 'users/settings.html', context)
+
 
 @login_required
 def page(request, username):
@@ -78,3 +98,15 @@ def signup(request):
 
 def login(request):
     return render(request, 'users/login.html', {})
+
+@login_required
+def settings(request):
+    user = request.user
+    user_profile = UserProfile.get_or_create(user)
+    if request.method == 'POST':
+        form = UserSettingsForm(request.POST, instance=user_profile)
+        if form.is_valid():
+            form.save()
+    else:
+        form = UserSettingsForm(instance=user_profile)
+    return render(request, 'users/settings.html', {'form': form})

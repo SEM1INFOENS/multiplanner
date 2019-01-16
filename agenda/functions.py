@@ -18,7 +18,7 @@ def date_format_ics(date, time):
     s4 = str(time.hour)
     s5 = str(time.minute)
     s6 = str(time.second)
-    return add_zeros(s1) + add_zeros(s2) + add_zeros(s3) + "T" + add_zeros(s4) + add_zeros(s5) + add_zeros(s6) + "Z"
+    return add_zeros(s1, year=True) + add_zeros(s2) + add_zeros(s3) + "T" + add_zeros(s4) + add_zeros(s5) + add_zeros(s6) + "Z"
 
 def date_format_moment(date, time):
     '''for FullCalandar'''

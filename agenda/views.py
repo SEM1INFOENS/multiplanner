@@ -5,6 +5,10 @@ from django.contrib import messages
 from django.core.exceptions import PermissionDenied
 from django.template import Context, loader
 from django.urls import reverse
+from guardian.decorators import permission_required_or_403
+from permissions.utils import get_default_permission_name
+from permissions.forms import PermGroupForm
+from .functions import date_format_ics
 from .forms import *
 from accounting.forms import TransactionForm
 import datetime
@@ -12,10 +16,16 @@ from django.forms.formsets import formset_factory
 from django.utils import timezone
 from .models import *
 from accounting import resolution
+
+from notify.signals import notify
+from presentation.models import UserProfile
+
 from guardian.decorators import permission_required_or_403
 from permissions.utils import get_default_permission_name
 from permissions.forms import PermGroupForm
 from .functions import date_format_ics
+
+from notify.signals import notify
 
 @login_required
 def create_event(request):
@@ -32,10 +42,21 @@ def create_event(request):
             form.instance.admins = admins_form.save()
             form.instance.invited = invited_form.save()
             event = form.save()
-           
 
-            
             success = messages.success(request, 'Event successfully created')
+            #warn = messages.warning(request, 'Event created')
+            #error = messages.error(request, 'Event created')
+            #info = messages.info(request, 'Event created')
+            #debug = messages.debug(request, 'Event created')
+            #all_m = [success, warn, info, error]
+            for u in event.invited.members.all():
+                try:
+                    profile = UserProfile.objects.get(user=u)
+                    if profile.notif_invited_to_event:
+                        notify.send(request.user, recipient = u, actor=request.user, verb = 'has invited you to an event.', nf_type = 'invited_to_event')
+                except:
+                    pass
+            #url_e = reverse('event', event.id)
             # redirect to a new URL:
             return redirect('event', ide=event.id)
             #return HttpResponseRedirect('/user/')
@@ -57,6 +78,7 @@ def edit_event(request, ide):
     context = {'new' : False}
     event = get_object_or_404(Event, pk=ide)
     user = request.user
+
     if request.method == "POST":
         form = EventForm(request.POST, creator_user=event.creator, new=False, instance=event)
         admins_form = PermGroupForm(request.POST, instance=event.admins, prefix='admins')
@@ -67,9 +89,19 @@ def edit_event(request, ide):
             event = form.save(commit=False)
             event.save()
             
+
+            for u in event.invited.members.all():
+                try:
+                    profile = UserProfile.objects.get(user=u)
+                    if profile.notif_edited_event:
+                        notify.send(request.user, recipient = u, actor=event, verb = ', an event you were invited to, has been modified.', nf_type = 'edited_event')
+                except:
+                    pass
+                    
             group = event.attendees
             # If the number of members changes then update balances in event
             balances = Balance.objects.balancesOfGroup(group)     
+
             u = []
             for b in balances:
                 if b.user not in group.members.all():
@@ -83,6 +115,7 @@ def edit_event(request, ide):
 
             success = messages.success(request, 'Event successfully modified')
             return redirect('event', ide=event.id)
+
     else:
         form = EventForm(creator_user=event.creator, new=False, instance=event)
         admins_form = PermGroupForm(label='admins', instance=event.admins, prefix='admins')
@@ -133,7 +166,7 @@ def event(request, ide):
         sitting_arrangement = event.sitting#.table__set.all()
     except Sitting.DoesNotExist:
         sitting_arrangement = None
-        
+
     balance = resolution.balance_in_floats(group)
     balance1 = [b for b in balance]
     res = resolution.resolution_tuple(group,balance1)

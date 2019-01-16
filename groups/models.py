@@ -5,6 +5,9 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 from django.core.exceptions import SuspiciousOperation
 #from django.core.exceptions import ValidationError
+from django.urls import reverse
+from djmoney.models.fields import MoneyField, CurrencyField
+from djmoney.settings import CURRENCY_CHOICES, DEFAULT_CURRENCY
 from accounting.models import Transaction
 from permissions.models import PermGroup
 from relationships.models import SecretMark
@@ -37,7 +40,8 @@ class Group(models.Model):
     transactions = models.ManyToManyField(Transaction, blank=True)
     inEvent = models.BooleanField(default=False)
     public = models.BooleanField(default=False)
-    currency =models.CharField(max_length=20, choices=_choices)
+    currency =  CurrencyField(default=DEFAULT_CURRENCY, choices=CURRENCY_CHOICES)
+
 
     @classmethod
     def create_new(cls, name='', members=[], admins=[], transactions=[], public=False, commit=True):
@@ -169,7 +173,8 @@ class Balance (models.Model):
 
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     group = models.ForeignKey(Group,on_delete=models.CASCADE)
-    amount = MoneyField(max_digits=14, decimal_places=2, default_currency='EUR')
+
+    amount = MoneyField(max_digits=14, decimal_places=2, default_currency=DEFAULT_CURRENCY)
 
     @classmethod
     def create_new(cls, user, group, amount):

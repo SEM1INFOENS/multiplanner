@@ -2,6 +2,15 @@ import bs4 as bs
 import urllib.request
 import datetime
 
+def get_float (tag):
+  value = ""
+  for i in tag:
+    if i == ' ':
+      return value
+    elif i != ',':
+      value+=i
+
+
 def get_currency_equivalence(fromCurrency, toCurrency, amount):
     ''' Function that gets the omline exchange rate value '''
 
@@ -17,4 +26,5 @@ def get_currency_equivalence(fromCurrency, toCurrency, amount):
     sauce = urllib.request.urlopen(req).read()
     soup = bs.BeautifulSoup(sauce, 'lxml')
     tag = soup.find_all('span',class_="ccOutputRslt")
-    return float(tag[0].get_text()[0:8])
+    tag = tag[0].get_text()
+    return float(get_float(tag))

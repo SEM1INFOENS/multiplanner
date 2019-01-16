@@ -4,20 +4,21 @@ from django.db import models
 from django.forms import ValidationError
 from django.contrib.auth.models import User
 from djmoney.models.fields import MoneyField
+from djmoney.settings import DEFAULT_CURRENCY
 from django.utils import timezone
 from django.urls import reverse
 from django.db.models import Q
 
-def validate_amount(value):
-    '''Checks that the amount is positive and has less than two
-    figures after the comma.'''
-    try:
-        value = float(value)
-        assert value >= 0.
-        assert round(value, 2) == value
-        return value
-    except:
-        raise ValidationError('{} is neither a positive integer nor a float  number'.format(value))
+# def validate_amount(value):
+#  '''Checks that the amount is positive and has less than two
+#  figures after the comma.'''
+#  try:
+#      value = float(value)
+#      assert value >= 0.
+#      assert round(value, 2) == value
+#      return value
+#  except:
+#      raise ValidationError('{} is neither a positive integer nor a float  number'.format(value))
 
 
 class TransactionManager(models.Manager):
@@ -40,7 +41,7 @@ class Transaction(models.Model):
     date = models.DateTimeField(default=timezone.now)
     payer = models.ForeignKey(User, on_delete=models.PROTECT,
                               related_name='%(class)s_payer')
-    amount = MoneyField(max_digits=14, decimal_places=2, default_currency='EUR')
+    amount = MoneyField(max_digits=14, decimal_places=2, default_currency=DEFAULT_CURRENCY)
     calculated =  models.BooleanField(default=False)
 
     @classmethod
@@ -94,7 +95,7 @@ class Transaction(models.Model):
 class TransactionPart(models.Model):
     transaction = models.ForeignKey(Transaction, on_delete=models.CASCADE)
     beneficiary = models.ForeignKey(User, on_delete=models.PROTECT)
-    amount = MoneyField(max_digits=14, decimal_places=2, default_currency='EUR')
+    amount = MoneyField(max_digits=14, decimal_places=2, default_currency=DEFAULT_CURRENCY)
 
 
 
