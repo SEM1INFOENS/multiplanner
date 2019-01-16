@@ -102,6 +102,53 @@ class AgendaTestCase(TestCase):
         assert(assi(3) == assi(5))
 
 
+# class EventFiltersTestCase(TestCase):
+#
+#     def setUp(self):
+#         A = User.objects.create_user('Albert')
+#         grA = Group.create_new(members=[A], name='group_of_A')
+#         e1 = Event.create_new(  # event that is over & that A did not attend
+#             date=timezone.now()-datetime.timedelta(days=2),
+#             time=timezone.now()-datetime.timedelta(days=2),
+#             date_end=timezone.now()-datetime.timedelta(days=1),
+#             time_end=timezone.now()-datetime.timedelta(hours=1),
+#             creator=A,
+#             invited=[A],
+#             currency = 'EUR',
+#         )
+#         e2 = Event.create_new(  # event that is current & that A attends
+#             date=timezone.now()-datetime.timedelta(days=2),
+#             time=timezone.now()-datetime.timedelta(days=2),
+#             date_end=timezone.now()+datetime.timedelta(days=1),
+#             time_end=timezone.now()+datetime.timedelta(hours=1),
+#             creator=A,
+#             attendees=grA,
+#             currency = 'EUR',
+#         )
+#         e3 = Event.create_new(  # upcoming event that A will attend
+#             date=timezone.now()+datetime.timedelta(days=2),
+#             time=timezone.now()+datetime.timedelta(days=2),
+#             date_end=timezone.now()+datetime.timedelta(days=3),
+#             time_end=timezone.now()+datetime.timedelta(hours=3),
+#             creator=A,
+#             attendees=grA,
+#             currency = 'EUR',
+#         )
+#         e4 = Event.create_new(  # upcoming event that A will not attend
+#             date=timezone.now()+datetime.timedelta(days=2),
+#             time=timezone.now()+datetime.timedelta(days=2),
+#             date_end=timezone.now()+datetime.timedelta(days=3),
+#             time_end=timezone.now()+datetime.timedelta(hours=3),
+#             creator=A,
+#             invited=[A],
+#             currency = 'EUR',
+#         )
+#         self.usr = A
+#         self.gr = grA
+#         self.e1, self.e2, self.e3, self.e4 = e1, e2, e3, e4
+#
+#     def test(self):
+#         print(EventManager.attending_all(self.usr))
 
 class EventPermissionsTestCase(TestCase):
 
@@ -172,3 +219,20 @@ class EventPermissionsTestCase(TestCase):
         assert has_perm(a, change_perm, gp)
         assert not has_perm(m, change_perm, gp)
         assert not has_perm(u, change_perm, gp)
+
+
+
+class VariousFunctionsTestCase(TestCase):
+
+    def setUp(self):
+        self.day = datetime.date(1999, 5, 23)
+        self.time = datetime.time(6, 30)
+        self.r, self.g, self.b = 160, 49, 176 #convert to a0, 31, b0 in hex
+
+
+    def test(self):
+        assert date_format_ics(self.day, self.time) == "19990523T063000Z"
+        assert date_format_ics(self.day, None) == "19990523T000000Z"
+        assert date_format_moment(self.day, self.time) == "1999-05-23 06:30:00"
+        assert color_format_css(self.r, self.g, self.b) == "#a031b0"
+        assert color_complement(self.r, self.g, self.b) == (96, 207, 80)
