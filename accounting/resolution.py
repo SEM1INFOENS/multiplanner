@@ -54,13 +54,9 @@ def get_decimals(balance2):
 def sort (members,balances):
     balances2 = []
     for i in range(len(members)):
-        boolean = True
-        j = -1
-        while boolean == True:
-            j += 1
+        for j in range(len(balances)):
             if balances[j].user == members[i]:
-                boolean = False
-        balances2.append(balances[j])
+                balances2.append(balances[j])
     return balances2
 
 def balance_in_floats(group):
