@@ -152,10 +152,11 @@ def invitation_answer_group(request):
     redirect_url = request.POST.get('redirect_url')
     user = request.user
     group = Group.objects.get(pk=request.POST.get('group'))
-    invite = GroupInvite.objects.get(user=user, group=group)
     if "accept_invite" in request.POST:
+        invite = GroupInvite.objects.get(user=user, group=group)
         invite.accept()
     if "decline_invite" in request.POST:
+        invite = GroupInvite.objects.get(user=user, group=group)
         invite.decline()
     if "quit_group" in request.POST:
         group.members.remove(user)
