@@ -20,6 +20,8 @@
     Remove app-admin rights <i class="fas fa-minus-circle"></i></button>
   {% endif %}
 </form>
+  <br>
+
 
 <form action="{% url 'friends:friendship_request' %}" method="post">
   <input type="hidden" name="redirect_url" value="{{ request.get_full_path }}">
@@ -45,6 +47,7 @@
     Decline <i class="fas fa-user-times"></i></button>
   {% endif %}
 
+  <br>
   {% if can_remove %}
   Remove user from friends
   <button type="submit" class="btn btn-danger" name="remove">
@@ -52,6 +55,7 @@
   {% endif %}
 </form>
 
+<br>
 <button type="button" class="btn btn-secondary" data-toggle="modal" data-target="#secretModal">
   Set secret mark
 </button>
