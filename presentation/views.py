@@ -20,6 +20,8 @@ from presentation.forms import UserSettingsForm
 from notify.models import Notification
 from notify.signals import notify
 
+import math
+
 INITIAL_DELAY_SECONDS = 24*3600 #the first notification for an upcoming event is sent INITIAL_DELAY_SECONDS seconds before the beginning of
 # the event
 
@@ -57,9 +59,9 @@ def index(request):
 
         #print('delay', e.date_time() - timezone.now(), (e.date_time() - timezone.now()).total_seconds())
         seconds_before_event = (e.date_time() - timezone.now()).total_seconds()
-
+        
         if ((e.notifications_sent != -1) and not(e.has_begun())) and seconds_before_event < 1/(2**e.notifications_sent)*INITIAL_DELAY_SECONDS:
-            e.notifications_sent = e.notifications_sent + 1
+            e.notifications_sent = math.floor(math.log2(INITIAL_DELAY_SECONDS/seconds_before_event)) + 1
             e.save()
             notify.send(user, recipient = user, actor=e, \
                 verb = 'is in %d hours and %d minutes from now.' % (nb_hours,nb_minutes%60), nf_type = 'upcoming_event')

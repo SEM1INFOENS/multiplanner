@@ -18,7 +18,8 @@
 <form method="post" action=".">
   {% csrf_token %}
   {{ form.as_p }}
-  <input type="button" class="btn btn-primary" value="Back" onclick="history.back()">
+  If notifications are activated, you will be notified if someone sent you a friend request, if someone invited you to an event, or if someone edited an event you were invited to. <br>In addition, you will be notified if an event you are attending is in less than 24 hours. If the delay button on this type of notifications is pressed, you will be notified 12 hours before the event. If delay is pressed again, you will be notified 6 hours before the event, and so on. <br>
+<input type="button" class="btn btn-primary" value="Back" onclick="history.back()">
   <input type="submit" class="btn btn-primary" value="Save">
 </form>
 {% endblock %}
