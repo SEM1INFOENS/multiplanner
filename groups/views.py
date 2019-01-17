@@ -52,7 +52,7 @@ def edit_group(request,ide):
     if request.method == 'POST':
         group_form = GroupForm(request.POST, creator_user=request.user, instance=group)
         admins_form = PermGroupForm(request.POST, prefix='admins', instance=group.admins)
-        members_form = PermGroupForm(request.POST, instance=group.members)
+        members_form = PermGroupForm(request.POST, instance=group.members, queryset=group.members.all(), required=False)
         if group_form.is_valid() and admins_form.is_valid() and members_form.is_valid():
             balances = Balance.objects.balancesOfGroup(group)
             admins_form.save()
@@ -77,7 +77,7 @@ def edit_group(request,ide):
     else :
         group_form = GroupForm(creator_user=request.user, instance=group)
         admins_form = PermGroupForm(label='admins', prefix='admins', instance=group.admins)
-        members_form = PermGroupForm(label='members', instance=group.members, queryset=group.members.all())
+        members_form = PermGroupForm(label='members', instance=group.members, queryset=group.members.all(), required=False)
 
     context.update({'ide': group.id, 'group_form': group_form, 'admins_form': admins_form, 'members_form': members_form})
     return render(request, 'edit_group.html', context)
