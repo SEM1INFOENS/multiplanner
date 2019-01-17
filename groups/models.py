@@ -136,11 +136,11 @@ class GroupInvite(models.Model):
         b = Balance (user=user,group = group,amount = Money(0,group.currency))
         b.save()
         self.delete()
-        remove_user_view_perm(group, user)
+        remove_user_view_perm(self.group, self.user)
 
     def decline(self):
         self.delete()
-        remove_user_view_perm(group, user)
+        remove_user_view_perm(self.group, self.user)
 
     @classmethod
     def related_to_group(cls, group):
