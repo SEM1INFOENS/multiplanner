@@ -42,3 +42,13 @@ def set_members_perm(obj, group, public=False):
         set_public(obj)
     else:
         set_private(obj)
+
+def assign_user_view_perm(obj, user):
+    model = type(obj)
+    view_perm = get_default_permission_name(model, 'view')
+    assign_perm(view_perm, user, obj)
+
+def remove_user_view_perm(obj, user):
+    model = type(obj)
+    view_perm = get_default_permission_name(model, 'view')
+    remove_perm(view_perm, user, obj)

@@ -14,7 +14,7 @@ from relationships.models import SecretMark
 from permissions.shortcuts import *
 from django.urls import reverse
 from djmoney.models.fields import MoneyField, Money
-
+from permissions.shortcuts import assign_user_view_perm, remove_user_view_perm
 
 class GroupManager(models.Manager):
 
@@ -126,6 +126,7 @@ class GroupInvite(models.Model):
             raise SuspiciousOperation("GroupInvite already sent to this user for this group")
         gi = cls(group=group, user=user)
         gi.save()
+        assign_user_view_perm(group, user)
         return gi
 
     def accept(self):
@@ -135,9 +136,11 @@ class GroupInvite(models.Model):
         b = Balance (user=user,group = group,amount = Money(0,group.currency))
         b.save()
         self.delete()
+        remove_user_view_perm(group, user)
 
     def decline(self):
         self.delete()
+        remove_user_view_perm(group, user)
 
     @classmethod
     def related_to_group(cls, group):
