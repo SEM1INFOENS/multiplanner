@@ -174,5 +174,12 @@ except ImportError:
 #ALLOWED_HOSTS = ['127.0.0.1', '.herokuapp.com']
 
 
-CURRENCIES = ('USD', 'EUR', 'RUB')
+CURRENCIES = (
+'AED', 'ARS', 'AUD', 'BGN', 'BHD', 'BND', 'BRL', 'BWP', 'CAD',
+'CHF', 'CLP', 'CNY', 'COP', 'CZK', 'DKK', 'EUR', 'GBP', 'HKD',
+'HRK', 'HUF', 'IDR', 'ILS', 'INR', 'IRR', 'ISK', 'JPY', 'KRW',
+'KWD', 'KZT', 'LKR', 'LYD', 'MUR', 'MXN', 'MYR', 'NOK', 'NPR',
+'NZD', 'OMR', 'PHP', 'PKR', 'PLN', 'QAR', 'RON', 'RUB', 'SAR',
+'SEK', 'SGD', 'THB', 'TRY', 'TTD', 'TWD', 'USD', 'VEF', 'ZAR'
+)
 DEFAULT_CURRENCY = 'EUR'
