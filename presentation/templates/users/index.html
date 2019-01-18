@@ -44,13 +44,13 @@
             <h3>Your current balance is:</h2>
 
                <h2>
-                {% if balance >= 0 %}
+                {% if balance.amount >= 0 %}
                 <span class="text-success">+{{ balance }}</span>
                 {% else %}
                 <span class="text-danger">{{ balance }}</span>
                 {% endif %}
                 <sub>
-                  {% if balance_plus != 0 and balance_minus != 0 %}
+                  {% if balance_plus.amount != 0 and balance_minus.amount != 0 %}
                   ( <span class="text-success">+{{ balance_plus }}</span>
                   | <span class="text-danger">{{ balance_minus }}</span> )
                   {% endif %}

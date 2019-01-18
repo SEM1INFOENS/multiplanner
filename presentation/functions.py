@@ -92,4 +92,4 @@ def balance_of_user(user):
             if b.amount.currency != user_profile.default_currency:
                amount = get_currency_equivalence(b.amount.currency,user_profile.default_currency,amount)
             due += amount*1000000
-    return Money(round(spent/10000000,2), user_profile.default_currency), Money(round(due/10000000,2), user_profile.default_currency)
+    return Money(round(spent/1000000,2), user_profile.default_currency), Money(round(due/1000000,2), user_profile.default_currency)

@@ -38,9 +38,9 @@ def index(request):
         'friendship_requests' : friendship_requests(user),
         'group_invites' : GroupInvite.related_to_user(user),
         'friends' : n_random_friends(user, nb_of_friends),
-        'balance' : (spent*100 - due*100)/100,
+        'balance' : (spent*100 + due*100)/100,
         'balance_plus' : spent,
-        'balance_minus' : -due,
+        'balance_minus' : due,
     }
     return render(request, 'users/index.html', context)
 
