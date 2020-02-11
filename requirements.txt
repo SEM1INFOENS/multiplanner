@@ -1,7 +1,7 @@
 # This file is for listing all necessary libs
 
 # Django: here we list django related packages
-Django==2.1.5
+Django==2.2.10
 
 # General part: here we list general packages
 pytest==3.9.1
