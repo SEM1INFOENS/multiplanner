@@ -33,5 +33,5 @@ django-jsonify==0.3.0
 
 #To scrape the web
 beautifulsoup4==4.7.1
-lxml==4.3.0
+lxml==4.9.1
 selenium
